@@ -2,40 +2,62 @@
 using DO;
 namespace Dal;
 
-internal class CallImplementation : ICall
+public class CallImplementation : ICall
 {
     public void Create(Call item)
     {
-        Call call = DataSource.Calls.FirstOrDefault(c => c.Id == item.Id);  
-        if (Read(call.Id) == null)
+        if (Read(item.Id) == null)
         {
-            int index = DataSource.Calls.FindIndex(c => c.Id == item.Id);
-            DataSource.Calls[index] = item;
+            item = item.WithId(ConfigImplementation.NextCallId);
+            DataSource.Calls.Add(item);
         }
-        
-
-            
+        else
+        {
+            throw new InvalidOperationException("Call already exists");
+        }
     }
     public void Update(Call item)
     {
-        throw new NotImplementedException();
-
-
+        if(Read(item.Id) != null)
+        {
+            DataSource.Calls.Remove(Read(item.Id));
+            DataSource.Calls.Add(item);
+        }
+        else
+        {
+            throw new InvalidOperationException("Call does not exist");
+        }
     }
     public void Delete(int id)
     {
-        throw new NotImplementedException();
+        if (Read(id) != null)
+        {
+            DataSource.Calls.Remove(Read(id));
+        }
+        else
+        {
+            throw new InvalidOperationException("Call does not exist");
+        }
     }
     public Call Read(int id)
     {
-        throw new NotImplementedException();
+        Call? call = DataSource.Calls.Find(c => c.Id == id);
+        if (call != null)
+        {
+            return call;
+        }
+        else
+        {
+            throw new InvalidOperationException("Call does not exist");
+        }
     }
     public List<Call> ReadAll()
     {
-        throw new NotImplementedException();
+        List<Call> calls = DataSource.Calls;
+        return calls;
     }
     public void DeleteAll()
     {
-        throw new NotImplementedException();
+        DataSource.Calls.Clear();
     }
 }

@@ -3,7 +3,7 @@ using DO;
 
 namespace Dal
 {
-    internal class VolunteerImplementation : IVolunteer
+    public class VolunteerImplementation : IVolunteer
     {
         public void Create(Volunteer item)
         {
@@ -17,7 +17,7 @@ namespace Dal
 
         public void Delete(int id)
         {
-            Volunteer volunteer = DataSource.Volunteers.Find(v => v.id == id);
+            Volunteer? volunteer = DataSource.Volunteers.Find(v => v.id == id);
             if (volunteer == null)
             {
                 throw new Exception("Volunteer with the same id not found...");
@@ -32,7 +32,7 @@ namespace Dal
 
         public Volunteer? Read(int id)
         {
-            Volunteer volunteer = DataSource.Volunteers.Find(v => v.id == id);
+            Volunteer? volunteer = DataSource.Volunteers.Find(v => v.id == id);
             if ( volunteer == null)
             {
                 return null;

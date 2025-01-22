@@ -19,6 +19,7 @@ namespace DO
     (
         int id,
         string FullName,
+        string CallNumber,
         string EmailAddress,
         string Password,
         string FullCurrentAddress,
@@ -40,6 +41,7 @@ namespace DO
             (
             this.id,
             this.FullName,
+            this.CallNumber,
             this.EmailAddress,
             this.Password,
             this.FullCurrentAddress,
@@ -54,7 +56,7 @@ namespace DO
         ///<summary>
         /// default constructor
         /// </summary>
-        public Volunteer() : this(0, "", "", "", "", 0, 0, User.volnteer, false, 0, Distance.air){}
+        public Volunteer() : this(0, ""," ", "", "", "", 0, 0, User.volnteer, false, 0, Distance.air){}
         
     };
 
