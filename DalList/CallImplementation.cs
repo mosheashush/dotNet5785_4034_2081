@@ -8,7 +8,7 @@ public class CallImplementation : ICall
     {
         if (Read(item.Id) == null)
         {
-            item = item.WithId(ConfigImplementation.NextCallId);
+            item = item.WithId(Config.NextCallId);
             DataSource.Calls.Add(item);
         }
         else

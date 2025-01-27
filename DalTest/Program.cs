@@ -1,6 +1,7 @@
 ﻿using Dal;
 using DalApi;
 using DO;
+using Microsoft.VisualBasic;
 using System;
 using System.Collections.Specialized;
 using System.Diagnostics;
@@ -8,17 +9,18 @@ using System.Diagnostics;
 namespace DalTest;
 public class Program
 {
-    private static  IVolunteer? s_dalVolunteer = new VolunteerImplementation();
-    private static  IAssignment? s_dalAssignment = new AssignmentImplementation();
-    private static  ICall? s_dalCall = new CallImplementation();
- 
+    private static IVolunteer? s_dalVolunteer = new VolunteerImplementation();
+    private static IAssignment? s_dalAssignment = new AssignmentImplementation();
+    private static ICall? s_dalCall = new CallImplementation();
+    private static IConfig? s_dalConfig = new ConfigImplementation();
 
-    static void Main()
+
+    static void Main(string[] args)
     {
 
         try
         {
-            Initialization.Do(s_dalVolunteer, s_dalAssignment, s_dalCall);
+            Initialization.Do(s_dalVolunteer, s_dalAssignment, s_dalCall, s_dalConfig);
 
             int userInput = menu();
             int id;
@@ -258,7 +260,7 @@ public class Program
         Console.WriteLine("Enter Volunteer Longitude");
         double Longitude = double.Parse(Console.ReadLine()!);
         Console.WriteLine("Enter Volunteer Current Position");
-        User CurrentPosition = (User)Enum.Parse(typeof(User),Console.ReadLine()!);
+        User CurrentPosition = (User)Enum.Parse(typeof(User), Console.ReadLine()!);
         Console.WriteLine("Enter Volunteer Active");
         bool Active = bool.Parse(Console.ReadLine()!);
         Console.WriteLine("Enter Volunteer Max Distance For Call");
@@ -374,7 +376,7 @@ public class Program
             Console.WriteLine("ERROR\nEnter number again please");
             l = int.Parse(Console.ReadLine()!);
         }
-        CallType callType = (CallType)l;
+        DO.CallType callType = (DO.CallType)l;
 
         Console.WriteLine("Enter Call Description");
         string description = Console.ReadLine()!;

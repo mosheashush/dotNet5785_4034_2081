@@ -47,7 +47,7 @@ public static class Initialization
                 numberphone = s_rand.Next(500000000, 599999999); // 9 digits
                 password = s_rand.Next(100000, 999999); // 6 digits
             }
-            while (s_dalVolunteer!.Read(id) == null);
+            while (s_dalVolunteer!.Read(id) != null);
 
             string name = data[i, 0];
             bool even = id % 2 == 0;
@@ -85,7 +85,7 @@ public static class Initialization
         // Create 20 assignments with random data
         List<int> list = s_dalVolunteer!.ReadAll().Select(v => v.id).ToList();
         List<int> callList = s_dalCall!.ReadAll().Select(c => c.Id).ToList();
-        for (int i = 1; i < 20; i++)
+        for (int i = 1; i < 15; i++)
         {
             int idcall, id_volunteer, finishtype;
             CompletionType type = 0;
@@ -124,7 +124,7 @@ public static class Initialization
     private static void createCall()
     {
         // Create 20 calls with random data
-        for (int i = 1; i < 20; i++)
+        for (int i = 1; i < 15; i++)
         {
             int type = s_rand.Next(0, 1);
 
@@ -141,12 +141,17 @@ public static class Initialization
             s_dalCall!.Create(call);
         }
     }
-    public static void Do(IVolunteer? dalVolunteer, IAssignment? dalAssignment, ICall? dalCall)
+
+
+
+    public static void Do(IVolunteer? dalVolunteer, IAssignment? dalAssignment, ICall? dalCall, IConfig? dalConfig)
     {
-        dalVolunteer = s_dalVolunteer ?? throw new NullReferenceException("DALvolunteer object can not be null! ");
-        dalAssignment = s_dalAssignment ?? throw new NullReferenceException("DALassignment object can not be null! ");
-        dalCall = s_dalCall ?? throw new NullReferenceException("DALcall object can not be null! ");
-        //dalConfig = s_dalConfig ?? throw new NullReferenceException("DALconfig object can not be null! ");
+        s_dalVolunteer = dalVolunteer ?? throw new NullReferenceException("DALvolunteer object can not be null! ");
+        s_dalAssignment = dalAssignment ?? throw new NullReferenceException("DALassignment object can not be null! ");
+        s_dalCall = dalCall ?? throw new NullReferenceException("DALcall object can not be null! ");
+        s_dalConfig = dalConfig ?? throw new NullReferenceException("DALconfig object can not be null! ");
+
+        
 
         Console.WriteLine("Reset Configuration values and List values...");
 
@@ -159,6 +164,7 @@ public static class Initialization
         createVolunteer();
         createAssignment();
         createCall();
+
     }
 }
 

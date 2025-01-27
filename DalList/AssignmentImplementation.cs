@@ -14,7 +14,7 @@ namespace Dal
         {
            if(Read(item.Id) == null)
             {
-                item = item.WithId(ConfigImplementation.NextAssignmentId);
+                item = item.WithId(Config.NextAssignmentId);
                 DataSource.Assignments.Add(item);
             }
             else
