@@ -1,43 +1,52 @@
-﻿using DalApi;
-using DO;
+using DalApi;
 
-namespace Dal
+namespace Dal;
+
+/// <summary>
+///Implement the properties and methods defined in the IConfig interface to manage configurations related to the "Configuration" entity.
+/// </summary>
+/// 
+public class ConfigImplementation : IConfig
 {
-    internal class ConfigImplementation : IConfig
+    /// <summary>
+    /// Gets or sets the current clock time for the configuration.
+    /// This property interacts with the Config.Clock field to get or set the value.
+    /// </summary>
+    public DateTime Clock
     {
-        /// <summary>
-        /// The starting point for the call id
-        /// <param name = "StartCallId"> The starting point for the call id</param>
-        /// <param name="nextCallId"> The next call id</param>
-        /// <param name="StartAssignmentId"> The starting point for the assignment id</param>
-        /// <param name="nextAssignmentId"> The next assignment id</param>
-        /// <param name="Clock"> The clock time</param>
-        /// <param name="RiskRange"> The risk range</param>
-        /// <param name="Reset"> The reset function</param>
-        /// </summary>
-        internal const int StartCallId = 1000;
-        private static int nextCallId = StartCallId;
-        internal static int NextCallId { get => nextCallId++; }
+        get => Config.Clock;
+        set => Config.Clock = value;
+    }
 
-        internal const int StartAssignmentId = 2000;
-        private static int nextAssignmentId = StartAssignmentId;
+    /// <summary>
+    /// Gets or sets the risk range time span for the configuration.
+    /// This property interacts with the Config.RiskRange field to get or set the value.
+    /// </summary>
+    public TimeSpan RiskRange
+    {
+        get => Config.RiskRange;
+        set => Config.RiskRange = value;
+    }
 
-        public DateTime Clock { get; private set; }
-        internal static int NextAssignmentId { get => nextAssignmentId++; }
+    /// <summary>
+    /// Gets the next available Call ID for the configuration.
+    /// This property is read-only and retrieves the next Call ID from the Config.NextCallId field.
+    /// </summary>
+    public int nextCallId
+    { get => Config.NextCallId; }
 
-        internal static TimeSpan RiskRange { get; set; } = TimeSpan.Zero;
-        DateTime IConfig.Clock { get; set; } = DateTime.Now;
-        int IConfig.NextCallId { get => NextCallId; }
-        TimeSpan IConfig.RiskRange { get; set; } = TimeSpan.Zero;
+    /// <summary>
+    /// Gets the next available Assignment ID.
+    /// This property currently throws a NotImplementedException as it is not implemented yet.
+    /// </summary>
+    public int nextAsignmentId { get => Config.NextAssignmentId; }
 
-        int IConfig.NextAssignmentId { get => NextAssignmentId; }
-
-        void IConfig.Reset()
-        {
-            nextCallId = StartCallId;
-            nextAssignmentId = StartAssignmentId;
-            Clock = DateTime.Now;
-            RiskRange = TimeSpan.Zero;
-        }
+    /// <summary>
+    /// Resets the configuration settings.
+    /// Calls the Config.Reset method to reset the configuration to its default state.
+    /// </summary>
+    public void Reset()
+    {
+        Config.Reset();
     }
 }

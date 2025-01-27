@@ -4,10 +4,9 @@ namespace DalApi
     public interface IConfig
     {
         DateTime Clock { get; set; }
-        int NextAssignmentId { get; }
-        int NextCallId { get;  }
         TimeSpan RiskRange { get; set; }
-
+        int nextCallId { get; }
+        int nextAsignmentId { get; }
         void Reset();
 
 
