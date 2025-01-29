@@ -46,10 +46,8 @@ public class CallImplementation : ICall
         {
             return call;
         }
-        else
-        {
-            throw new InvalidOperationException("Call does not exist");
-        }
+        return null;
+
     }
     public List<Call> ReadAll()
     {

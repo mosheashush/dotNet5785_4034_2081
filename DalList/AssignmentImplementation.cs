@@ -47,10 +47,7 @@ namespace Dal
             {
                 return assignment;
             }
-            else
-            {
-                throw new InvalidOperationException("Assignment does not exist");
-            }
+            return null;
         }
 
         public List<Assignment> ReadAll()

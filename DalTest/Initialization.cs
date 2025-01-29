@@ -80,6 +80,27 @@ public static class Initialization
 
         }
     }
+
+    private static void createCall()
+    {
+        // Create 20 calls with random data
+        for (int i = 1; i < 15; i++)
+        {
+            int type = s_rand.Next(0, 1);
+
+            Call call = new Call
+            {
+                Type = (type == 0) ? CallType.makingfood : CallType.deliveringfood,
+                description = null,
+                FullAddress = data[i, 1],
+                Latitude = double.Parse(data[i, 2]),
+                Longitude = double.Parse(data[i, 3]),
+                CallStartTime = DateTime.Now,
+                MaxTimeForCall = null,
+            };
+            s_dalCall!.Create(call);
+        }
+    }
     private static void createAssignment()
     {
         // Create 20 assignments with random data
@@ -121,26 +142,7 @@ public static class Initialization
 
         }
     }
-    private static void createCall()
-    {
-        // Create 20 calls with random data
-        for (int i = 1; i < 15; i++)
-        {
-            int type = s_rand.Next(0, 1);
-
-            Call call = new Call
-            {
-                Type = (type == 0) ? CallType.makingfood : CallType.deliveringfood,
-                description = null,
-                FullAddress = data[i, 1],
-                Latitude = double.Parse(data[i, 2]),
-                Longitude = double.Parse(data[i, 3]),
-                CallStartTime = DateTime.Now,
-                MaxTimeForCall = null,
-            };
-            s_dalCall!.Create(call);
-        }
-    }
+    
 
 
 
@@ -162,8 +164,9 @@ public static class Initialization
 
         Console.WriteLine("Initializing all list ...");
         createVolunteer();
-        createAssignment();
         createCall();
+        createAssignment();
+        
 
     }
 }
