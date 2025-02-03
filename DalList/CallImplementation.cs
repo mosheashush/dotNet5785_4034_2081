@@ -13,7 +13,7 @@ public class CallImplementation : ICall
         }
         else
         {
-            throw new InvalidOperationException("Call already exists");
+            throw new Exception($"Call already ID={item.Id} exists");
         }
     }
     public void Update(Call item)
@@ -25,18 +25,19 @@ public class CallImplementation : ICall
         }
         else
         {
-            throw new InvalidOperationException("Call does not exist");
+            throw new Exception($"Call does ID={item.Id} not exist");
         }
     }
     public void Delete(int id)
     {
-        if (Read(id) != null)
+        Call? call = DataSource.Calls.Find(c => c.Id == id);
+        if (call != null)
         {
-            DataSource.Calls.Remove(Read(id));
+            DataSource.Calls.Remove(call);
         }
         else
         {
-            throw new InvalidOperationException("Call does not exist");
+            throw new Exception($"Call does ID={id} not exist");
         }
     }
     public Call Read(int id)
@@ -46,8 +47,10 @@ public class CallImplementation : ICall
         {
             return call;
         }
-        return null;
-
+        else
+        {
+            return null;
+        }
     }
     public List<Call> ReadAll()
     {

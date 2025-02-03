@@ -12,6 +12,7 @@ namespace Dal
     {
         public void Create(Assignment item)
         {
+
            if(Read(item.Id) == null)
             {
                 item = item.WithId(Config.NextAssignmentId);
@@ -19,19 +20,20 @@ namespace Dal
             }
             else
             {
-                throw new InvalidOperationException("Assignment already exists");
+                throw new Exception($"Assignment already ID={item.Id} exists");
             }
         }
 
         public void Delete(int id)
         {
-            if (Read(id) != null)
+            Assignment? assignment = DataSource.Assignments.Find(a => a.Id == id);
+            if (assignment != null)
             {
-                DataSource.Assignments.Remove(Read(id));
+                DataSource.Assignments.Remove(assignment);
             }
             else
             {
-                throw new InvalidOperationException("Assignment does not exist");
+                throw new Exception($"Assignment does not ID={id} exist");
             }
         }
 
@@ -47,7 +49,10 @@ namespace Dal
             {
                 return assignment;
             }
-            return null;
+            else
+            {
+                return null;
+            }
         }
 
         public List<Assignment> ReadAll()
@@ -65,7 +70,7 @@ namespace Dal
             }
             else
             {
-                throw new InvalidOperationException("Assignment does not exist");
+                throw new Exception($"Assignment does not ID={item.Id}  exist");
             }
         }
     }

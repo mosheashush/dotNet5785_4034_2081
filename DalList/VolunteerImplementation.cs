@@ -7,12 +7,16 @@ namespace Dal
     {
         public void Create(Volunteer item)
         {
-            Volunteer volunteer = item;
-            if (Read(volunteer.id) != null)
+
+            if (Read(item.id) == null)
             {
-                throw new Exception("Volunteer with the same id already exists...");
+                DataSource.Volunteers.Add(item);
             }
-            DataSource.Volunteers.Add(volunteer);
+
+            else
+            {
+                throw new Exception($"Volunteer with the same ID={item.id} already exists...");
+            }
         }
 
         public void Delete(int id)
@@ -20,7 +24,7 @@ namespace Dal
             Volunteer? volunteer = DataSource.Volunteers.Find(v => v.id == id);
             if (volunteer == null)
             {
-                throw new Exception("Volunteer with the same id not found...");
+                throw new Exception($"Volunteer with the same ID={id} not found...");
             }
             DataSource.Volunteers.Remove(volunteer);
         }
@@ -49,7 +53,7 @@ namespace Dal
         {
             if (Read(item.id) == null)
             {
-                throw new Exception("Volunteer with the same id not found...");
+                throw new Exception($"Volunteer with the same ID={item.id} not found...");
             }
             Delete(item.id);
             Create(item);
