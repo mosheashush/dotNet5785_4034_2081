@@ -5,11 +5,12 @@ using System.Security.Cryptography;
 
 public static class Initialization
 {
-    private static IVolunteer? s_dalVolunteer;
-    private static IAssignment? s_dalAssignment;
-    private static ICall? s_dalCall;
-    private static IConfig? s_dalConfig;
+    //private static IVolunteer? s_dalVolunteer; // stage1
+    //private static IAssignment? s_dalAssignment; // stage1
+    //private static ICall? s_dalCall; // stage1
+    //private static IConfig? s_dalConfig; // stage1
 
+    private static IDal? s_dal; // stage2
     private static readonly Random s_rand = new();
     private static string[,] data = new string[20, 4]
         {
@@ -47,7 +48,7 @@ public static class Initialization
                 numberphone = s_rand.Next(500000000, 599999999); // 9 digits
                 password = s_rand.Next(100000, 999999); // 6 digits
             }
-            while (s_dalVolunteer!.Read(id) != null);
+            while (s_dal.Volunteer!.Read(id) != null);
 
             string name = data[i, 0];
             bool even = id % 2 == 0;
@@ -75,7 +76,7 @@ public static class Initialization
                 TypeOfDistance = di,
             };
 
-            s_dalVolunteer!.Create(volunteer);
+            s_dal.Volunteer!.Create(volunteer);
 
 
         }
@@ -98,14 +99,14 @@ public static class Initialization
                 CallStartTime = DateTime.Now,
                 MaxTimeForCall = null,
             };
-            s_dalCall!.Create(call);
+            s_dal.Call!.Create(call);
         }
     }
     private static void createAssignment()
     {
         // Create 20 assignments with random data
-        List<int> list = s_dalVolunteer!.ReadAll().Select(v => v.id).ToList();
-        List<int> callList = s_dalCall!.ReadAll().Select(c => c.Id).ToList();
+        List<int> list = s_dal.Volunteer!.ReadAll().Select(v => v.id).ToList();
+        List<int> callList = s_dal.Call!.ReadAll().Select(c => c.Id).ToList();
         for (int i = 1; i < 15; i++)
         {
             int idcall, id_volunteer, finishtype;
@@ -136,31 +137,36 @@ public static class Initialization
                 CompletionTime = DateTime.Now,
                 FinishType = type,
             };
-            s_dalAssignment!.Create(assignment);
+            s_dal.Assignment!.Create(assignment);
             list.Remove(id_volunteer);
             callList.Remove(idcall);
 
         }
     }
-    
 
 
 
-    public static void Do(IVolunteer? dalVolunteer, IAssignment? dalAssignment, ICall? dalCall, IConfig? dalConfig)
+
+    //public static void Do(IVolunteer? dalVolunteer, IAssignment? dalAssignment, ICall? dalCall, IConfig? dalConfig) // stage1
+    public static void Do(IDal dal)
     {
-        s_dalVolunteer = dalVolunteer ?? throw new NullReferenceException("DALvolunteer object can not be null! ");
-        s_dalAssignment = dalAssignment ?? throw new NullReferenceException("DALassignment object can not be null! ");
-        s_dalCall = dalCall ?? throw new NullReferenceException("DALcall object can not be null! ");
-        s_dalConfig = dalConfig ?? throw new NullReferenceException("DALconfig object can not be null! ");
+        //s_dalVolunteer = dalVolunteer ?? throw new NullReferenceException("DALvolunteer object can not be null! "); // stage1
+        //s_dalAssignment = dalAssignment ?? throw new NullReferenceException("DALassignment object can not be null! "); // stage1
+        //s_dalCall = dalCall ?? throw new NullReferenceException("DALcall object can not be null! "); // stage1
+        //s_dalConfig = dalConfig ?? throw new NullReferenceException("DALconfig object can not be null! "); // stage1
 
-        
+
+        s_dal = dal ?? throw new NullReferenceException("DAL object can not be null!"); // stage 2
+
 
         Console.WriteLine("Reset Configuration values and List values...");
 
-        s_dalVolunteer.DeleteAll();
-        s_dalAssignment.DeleteAll();
-        s_dalCall.DeleteAll();
-        s_dalConfig.Reset();
+        //s_dalVolunteer.DeleteAll(); // stage1
+        //s_dalAssignment.DeleteAll(); // stage1
+        //s_dalCall.DeleteAll(); // stage1
+        //s_dalConfig.Reset(); // stage1
+
+        s_dal.ResetDB(); // stage2
 
         Console.WriteLine("Initializing all list ...");
         createVolunteer();

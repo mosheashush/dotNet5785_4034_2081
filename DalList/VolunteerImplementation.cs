@@ -3,7 +3,7 @@ using DO;
 
 namespace Dal
 {
-    public class VolunteerImplementation : IVolunteer
+    internal class VolunteerImplementation : IVolunteer
     {
         public void Create(Volunteer item)
         {
@@ -15,45 +15,60 @@ namespace Dal
 
             else
             {
-                throw new Exception($"Volunteer with the same ID={item.id} already exists...");
+                throw new DalDoesNotExistException($"Volunteer with the same ID={item.id} already exists...");
             }
         }
+
+        
 
         public void Delete(int id)
         {
             Volunteer? volunteer = DataSource.Volunteers.Find(v => v.id == id);
             if (volunteer == null)
             {
-                throw new Exception($"Volunteer with the same ID={id} not found...");
+                throw new DalDoesNotExistException($"Volunteer with the same ID={id} not found...");
             }
             DataSource.Volunteers.Remove(volunteer);
         }
 
         public void DeleteAll()
         {
-           Dal.DataSource.Volunteers.Clear();
+           DataSource.Volunteers.Clear();
         }
 
         public Volunteer? Read(int id)
         {
-            Volunteer? volunteer = DataSource.Volunteers.Find(v => v.id == id);
-            if ( volunteer == null)
-            {
-                return null;
-            }
-            return volunteer;
+            //return DataSource.Volunteers.Find(v => v.id == id); // stage 1
+
+            return DataSource.Volunteers.FirstOrDefault(item => item.id == id); //stage 2
+
+
         }
 
-        public List<Volunteer> ReadAll()
+        public Volunteer? Read(Func<Volunteer, bool> filter)
         {
-            return DataSource.Volunteers;
+            return DataSource.Volunteers.FirstOrDefault(filter);
         }
+
+        //public List<Volunteer> ReadAll() // stage 1
+        //{
+        //    return DataSource.Volunteers;
+        //}
+
+        public IEnumerable<Volunteer> ReadAll(Func<Volunteer, bool>? filter = null) // stage 2
+        
+            => filter == null
+            ? DataSource.Volunteers.Select(item => item)
+            : DataSource.Volunteers.Where(filter);
+
+
+        
 
         public void Update(Volunteer item)
         {
             if (Read(item.id) == null)
             {
-                throw new Exception($"Volunteer with the same ID={item.id} not found...");
+                throw new DalDoesNotExistException($"Volunteer with the same ID={item.id} not found...");
             }
             Delete(item.id);
             Create(item);

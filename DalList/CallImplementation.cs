@@ -2,7 +2,7 @@
 using DO;
 namespace Dal;
 
-public class CallImplementation : ICall
+internal class CallImplementation : ICall
 {
     public void Create(Call item)
     {
@@ -13,7 +13,7 @@ public class CallImplementation : ICall
         }
         else
         {
-            throw new Exception($"Call already ID={item.Id} exists");
+            throw new DalAlreadyExistsException($"Call already ID={item.Id} exists");
         }
     }
     public void Update(Call item)
@@ -25,7 +25,7 @@ public class CallImplementation : ICall
         }
         else
         {
-            throw new Exception($"Call does ID={item.Id} not exist");
+            throw new DalDoesNotExistException($"Call does ID={item.Id} not exist");
         }
     }
     public void Delete(int id)
@@ -37,28 +37,34 @@ public class CallImplementation : ICall
         }
         else
         {
-            throw new Exception($"Call does ID={id} not exist");
+            throw new DalDoesNotExistException($"Call does ID={id} not exist");
         }
     }
-    public Call Read(int id)
-    {
-        Call? call = DataSource.Calls.Find(c => c.Id == id);
-        if (call != null)
-        {
-            return call;
-        }
-        else
-        {
-            return null;
-        }
-    }
-    public List<Call> ReadAll()
-    {
-        List<Call> calls = DataSource.Calls;
-        return calls;
-    }
+
     public void DeleteAll()
     {
         DataSource.Calls.Clear();
     }
+    public Call? Read(int id)
+    {
+        //return DataSource.Assignment.Find(v => v.id == id); // stage 1
+
+        return DataSource.Calls.FirstOrDefault(item => item.Id == id); //stage 2
+    }
+    public Call? Read(Func<Call, bool> filter)
+    {
+        return DataSource.Calls.FirstOrDefault(filter);
+    }
+
+    //public List<Assignment> ReadAll() // stage 1
+    //{
+    //    return DataSource.Assignment;
+    //}
+
+    public IEnumerable<Call> ReadAll(Func<Call, bool>? filter = null) // stage 2
+        => filter == null
+        ? DataSource.Calls.Select(item => item)
+        : DataSource.Calls.Where(filter);
+
+   
 }

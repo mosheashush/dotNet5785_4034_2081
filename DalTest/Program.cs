@@ -9,10 +9,13 @@ using System.Diagnostics;
 namespace DalTest;
 public class Program
 {
-    private static IVolunteer? s_dalVolunteer = new VolunteerImplementation();
-    private static IAssignment? s_dalAssignment = new AssignmentImplementation();
-    private static ICall? s_dalCall = new CallImplementation();
-    private static IConfig? s_dalConfig = new ConfigImplementation();
+    //private static IVolunteer? s_dalVolunteer = new VolunteerImplementation(); // stage 1
+    //private static IAssignment? s_dalAssignment = new AssignmentImplementation(); // stage 1
+    //private static ICall? s_dalCall = new CallImplementation(); // stage 1
+    //private static IConfig? s_dalConfig = new ConfigImplementation(); // stage 1
+
+    static readonly IDal? s_dal = new DalList(); //stage 2
+
 
 
     static void Main(string[] args)
@@ -20,7 +23,7 @@ public class Program
 
         try
         {
-            Initialization.Do(s_dalVolunteer, s_dalAssignment, s_dalCall, s_dalConfig);
+            Initialization.Do(s_dal);
 
             int userInput = menu();
             int id;
@@ -40,21 +43,21 @@ public class Program
                             case 2:
                                 Console.WriteLine("Enter Volunteer ID");
                                 id = int.Parse(Console.ReadLine()!);
-                                PrintTheReadFunctionOfVolunteer(s_dalVolunteer!.Read(id));
+                                PrintTheReadFunctionOfVolunteer(s_dal.Volunteer!.Read(id));
                                 break;
                             case 3:
                                 readAllVolunteers();
                                 break;
                             case 4:
-                                s_dalVolunteer!.Update(updateVolunteer());
+                                s_dal.Volunteer!.Update(updateVolunteer());
                                 break;
                             case 5:
                                 Console.WriteLine("Enter Volunteer ID");
                                 id = int.Parse(Console.ReadLine()!);
-                                s_dalVolunteer!.Delete(id);
+                                s_dal.Volunteer!.Delete(id);
                                 break;
                             case 6:
-                                s_dalVolunteer!.DeleteAll();
+                                s_dal.Volunteer!.DeleteAll();
                                 break;
                         }
                         break;
@@ -69,21 +72,21 @@ public class Program
                             case 2:
                                 Console.WriteLine("Enter Assignment ID");
                                 id = int.Parse(Console.ReadLine()!);
-                                PrintTheReadFunctionOfAssignment(s_dalAssignment!.Read(id));
+                                PrintTheReadFunctionOfAssignment(s_dal.Assignment!.Read(id));
                                 break;
                             case 3:
                                 readAllAssignments();
                                 break;
                             case 4:
-                                s_dalAssignment!.Update(updateAssignment());
+                                s_dal.Assignment!.Update(updateAssignment());
                                 break;
                             case 5:
                                 Console.WriteLine("Enter Assignment ID");
                                 id = int.Parse(Console.ReadLine()!);
-                                s_dalAssignment!.Delete(id);
+                                s_dal.Assignment!.Delete(id);
                                 break;
                             case 6:
-                                s_dalAssignment!.DeleteAll();
+                                s_dal.Assignment!.DeleteAll();
                                 break;
                         }
                         break;
@@ -98,21 +101,21 @@ public class Program
                             case 2:
                                 Console.WriteLine("Enter Call ID");
                                 id = int.Parse(Console.ReadLine()!);
-                                PrintTheReadFunctionOfCall(s_dalCall!.Read(id));
+                                PrintTheReadFunctionOfCall(s_dal.Call!.Read(id));
                                 break;
                             case 3:
                                 readAllCalls();
                                 break;
                             case 4:
-                                s_dalCall!.Update(updateCall());
+                                s_dal.Call!.Update(updateCall());
                                 break;
                             case 5:
                                 Console.WriteLine("Enter Call ID");
                                 id = int.Parse(Console.ReadLine()!);
-                                s_dalCall!.Delete(id);
+                                s_dal.Call!.Delete(id);
                                 break;
                             case 6:
-                                s_dalCall!.DeleteAll();
+                                s_dal.Call!.DeleteAll();
                                 break;
                         }
                         break;
@@ -200,7 +203,7 @@ public class Program
         DO.Volunteer volunteer = new DO.Volunteer(id, FullName, CallphoneNumber, Email
             , password.ToString(), FullCurrentAddress, Latitude, Longitude, CurrentPosition, Active, MaxDistanceForCall, TypeOfDistance);
 
-        s_dalVolunteer!.Create(volunteer);
+        s_dal.Volunteer!.Create(volunteer);
     }
 
     // fuction to print the read function of Volunteer
@@ -232,7 +235,7 @@ public class Program
     // Function to read all volunteers
     public static void readAllVolunteers()
     {
-        var volunteers = s_dalVolunteer!.ReadAll();
+        var volunteers = s_dal.Volunteer!.ReadAll();
         foreach (var volunteer in volunteers)
         {
             PrintTheReadFunctionOfVolunteer(volunteer);
@@ -308,7 +311,7 @@ public class Program
 
         DO.Assignment assignment = new Assignment(id, CallId, VolunteerId, EntryTime, CompletionTime, completionType);
 
-        s_dalAssignment!.Create(assignment);
+        s_dal.Assignment!.Create(assignment);
     }
 
     // Function to print the read function of Volunteer
@@ -333,7 +336,7 @@ public class Program
     // Function to read all assignments
     public static void readAllAssignments()
     {
-        var assignments = s_dalAssignment!.ReadAll();
+        var assignments = s_dal.Assignment!.ReadAll();
         foreach (var assignment in assignments)
         {
             PrintTheReadFunctionOfAssignment(assignment);
@@ -389,7 +392,7 @@ public class Program
 
         Call call = new Call();
 
-        s_dalCall!.Create(call);
+        s_dal.Call!.Create(call);
 
     }
 
@@ -417,7 +420,7 @@ public class Program
     // Function to read all calls
     public static void readAllCalls()
     {
-        var calls = s_dalCall!.ReadAll();
+        var calls = s_dal.Call!.ReadAll();
         foreach (var call in calls)
         {
             PrintTheReadFunctionOfCall(call);

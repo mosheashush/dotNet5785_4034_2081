@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Dal
 {
-    public class AssignmentImplementation : IAssignment
+    internal class AssignmentImplementation : IAssignment
     {
         public void Create(Assignment item)
         {
@@ -20,7 +20,7 @@ namespace Dal
             }
             else
             {
-                throw new Exception($"Assignment already ID={item.Id} exists");
+                throw new DalAlreadyExistsException($"Assignment already ID={item.Id} exists");
             }
         }
 
@@ -33,7 +33,7 @@ namespace Dal
             }
             else
             {
-                throw new Exception($"Assignment does not ID={id} exist");
+                throw new DalDoesNotExistException($"Assignment does not ID={id} exist");
             }
         }
 
@@ -42,24 +42,27 @@ namespace Dal
             DataSource.Assignments.Clear();
         }
 
-        public Assignment Read(int id)
+        public Assignment? Read(int id)
         {
-            Assignment? assignment = DataSource.Assignments.Find(a => a.Id == id);
-            if (assignment != null)
-            {
-                return assignment;
-            }
-            else
-            {
-                return null;
-            }
+            //return DataSource.Assignment.Find(v => v.id == id); // stage 1
+
+            return DataSource.Assignments.FirstOrDefault(item => item.Id == id); //stage 2
         }
 
-        public List<Assignment> ReadAll()
+        public Assignment? Read(Func<Assignment, bool> filter)
         {
-            List<Assignment> assignments = DataSource.Assignments;
-            return assignments;
+            return DataSource.Assignments.FirstOrDefault(filter);
         }
+
+        //public List<Assignment> ReadAll() // stage 1
+        //{
+        //    return DataSource.Assignment;
+        //}
+
+        public IEnumerable<Assignment> ReadAll(Func<Assignment, bool>? filter = null) // stage 2
+            => filter == null
+            ? DataSource.Assignments.Select(item => item)
+            : DataSource.Assignments.Where(filter);
 
         public void Update(Assignment item)
         {
@@ -70,7 +73,7 @@ namespace Dal
             }
             else
             {
-                throw new Exception($"Assignment does not ID={item.Id}  exist");
+                throw new DalDoesNotExistException($"Assignment does not ID={item.Id}  exist");
             }
         }
     }
