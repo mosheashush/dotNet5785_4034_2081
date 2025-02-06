@@ -15,3 +15,19 @@ public class DalAlreadyExistsException : Exception
     public DalAlreadyExistsException(string? message) : base(message) { }
 }
 
+[Serializable]
+public class DalXMLFileLoadCreateException : Exception
+{
+    public DalXMLFileLoadCreateException()
+    {
+    }
+
+    public DalXMLFileLoadCreateException(string? message) : base(message)
+    {
+    }
+
+    public DalXMLFileLoadCreateException(string? message, Exception? innerException) : base(message, innerException)
+    {
+    }
+}
+

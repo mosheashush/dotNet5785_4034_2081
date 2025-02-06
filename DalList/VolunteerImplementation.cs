@@ -15,7 +15,7 @@ namespace Dal
 
             else
             {
-                throw new DalDoesNotExistException($"Volunteer with the same ID={item.id} already exists...");
+                throw new DalAlreadyExistsException($"Volunteer with the same ID={item.id} already exists...");
             }
         }
 

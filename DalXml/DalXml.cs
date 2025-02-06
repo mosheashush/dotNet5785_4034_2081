@@ -1,11 +1,12 @@
-﻿
-using DalApi;
+﻿using DalApi;
 namespace Dal;
-sealed public class DalList : IDal
+sealed public class DalXml: IDal
 {
+
     public IAssignment Assignment { get; } = new AssignmentImplementation();
-    public ICall Call { get; } = new CallImplementation();  
+    public ICall Call { get; } = new CallImplementation();
     public IVolunteer Volunteer { get; } = new VolunteerImplementation();
+    public IConfig Config { get; } = new ConfigImplementation();
     public void ResetDB()
     {
         Assignment.DeleteAll();
