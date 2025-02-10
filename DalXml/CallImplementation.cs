@@ -39,21 +39,26 @@ namespace Dal
 
         public void Create(Call item)
         {
-            List<Call> calls = XMLTools.LoadListFromXMLSerializer<Call>(Config.s_calls_xml);
+            List<Call> listCalls = XMLTools.LoadListFromXMLSerializer<Call>(Config.s_calls_xml);
             if (item.Id == 0)
                 item = item.WithId(Config.NextCallId);
+            listCalls.Add(item);
+            XMLTools.SaveListToXMLSerializer(listCalls, Config.s_calls_xml);
+            //List<Call> calls = XMLTools.LoadListFromXMLSerializer<Call>(Config.s_calls_xml);
+            //if (item.Id == 0)
+            //    item = item.WithId(Config.NextCallId);
 
-            else if (calls.FirstOrDefault(c => c.Id == item.Id) != null)
-            {
-                throw new DalAlreadyExistsException($"Call with the same ID={item.Id} already exists...");
-            }
-            else
-            {
-                XElement callElem = createCallElement(item);
-                XMLTools.SaveListToXMLElement(callElem, Config.s_calls_xml);
-                calls.Add(item);
-                XMLTools.SaveListToXMLSerializer<Call>(calls, Config.s_calls_xml);
-            }
+            //else if (calls.FirstOrDefault(c => c.Id == item.Id) != null)
+            //{
+            //    throw new DalAlreadyExistsException($"Call with the same ID={item.Id} already exists...");
+            //}
+            //else
+            //{
+            //    XElement callElem = createCallElement(item);
+            //    XMLTools.SaveListToXMLElement(callElem, Config.s_calls_xml);
+            //    calls.Add(item);
+            //    XMLTools.SaveListToXMLSerializer<Call>(calls, Config.s_calls_xml);
+            //}
         }
 
         public void Delete(int id)

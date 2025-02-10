@@ -23,16 +23,19 @@ namespace Dal
         }
         public void Create(Assignment item)
         {
-            List<Assignment> assignments = XMLTools.LoadListFromXMLSerializer<Assignment>(Config.s_assignments_xml);
-            if (assignments.FirstOrDefault(a => a.Id == item.Id) != null)
-                throw new DalAlreadyExistsException($"Assignment with the same ID={item.Id} already exists...");
-            else
-            {
-                XElement assignmentElem = createssignmentElement(item);
-                XMLTools.SaveListToXMLElement( assignmentElem , Config.s_assignments_xml);
-                assignments.Add(item);
-                XMLTools.SaveListToXMLSerializer<Assignment>(assignments, Config.s_assignments_xml);
-            }
+            if (item.Id == 0)
+                item = item.WithId(Config.NextAssignmentId);
+
+            XElement assignmentRootElem = XMLTools.LoadListFromXMLElement(Config.s_assignments_xml);
+
+            if (assignmentRootElem.Elements()
+                .Any(assign => (int?)assign.Element("Id") == item.Id))
+                throw new DalDoesNotExistException($"Assignment with ID={item.Id} already exists");
+
+            XElement newAssignment = createAssignmentElement(item);
+            assignmentRootElem.Add(newAssignment);
+
+            XMLTools.SaveListToXMLElement(assignmentRootElem, Config.s_assignments_xml);
         }
 
         public void Delete(int id)
@@ -76,12 +79,12 @@ namespace Dal
             ?? throw new DO.DalDoesNotExistException($"Assignment with ID={item.Id} does Not exist"))
                     .Remove();
 
-            assignmentsRootElem.Add(new XElement("Assignment", createssignmentElement(item)));
+            assignmentsRootElem.Add(new XElement("Assignment", createAssignmentElement(item)));
 
             XMLTools.SaveListToXMLElement(assignmentsRootElem, Config.s_assignments_xml);
         }
 
-        private XElement? createssignmentElement(Assignment item)
+        private XElement? createAssignmentElement(Assignment item)
         {
             return new XElement("Assignment",
                 new XElement("Id", item.Id),

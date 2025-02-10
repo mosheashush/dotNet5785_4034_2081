@@ -8,7 +8,7 @@ using System.Xml.Serialization;
 
 static class XMLTools
 {
-    const string s_xmlDir = @"..\xml\";
+    const string s_xmlDir = @"C:\Users\moshe\OneDrive\שולחן העבודה\מיני פרוויקט בחלונות\New folder\xml\";
     static XMLTools()
     {
         if (!Directory.Exists(s_xmlDir))

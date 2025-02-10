@@ -85,7 +85,7 @@ public static class Initialization
     private static void createCall()
     {
         // Create 20 calls with random data
-        for (int i = 1; i < 15; i++)
+        for (int i = 1; i <= 15; i++)
         {
             int type = s_rand.Next(0, 1);
 
@@ -105,6 +105,7 @@ public static class Initialization
     private static void createAssignment()
     {
         // Create 20 assignments with random data
+        
         List<int> list = s_dal.Volunteer!.ReadAll().Select(v => v.id).ToList();
         List<int> callList = s_dal.Call!.ReadAll().Select(c => c.Id).ToList();
         for (int i = 1; i < 15; i++)
