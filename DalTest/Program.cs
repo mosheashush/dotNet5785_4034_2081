@@ -120,10 +120,6 @@ public class Program
                                 break;
                         }
                         break;
-
-
-
-
                 }
                 userInput = menu();
             }
@@ -273,9 +269,9 @@ public class Program
         Distance TypeOfDistance = (Distance)Enum.Parse(typeof(Distance), Console.ReadLine()!);
 
         Volunteer temp = new Volunteer(id, FullName, CallphoneNumber, Email
-            , password.ToString(), FullCurrentAddress, Latitude, Longitude, CurrentPosition, Active, MaxDistanceForCall, TypeOfDistance);
-        return temp;
+            ,password.ToString(), FullCurrentAddress, Latitude, Longitude, CurrentPosition, Active, MaxDistanceForCall, TypeOfDistance);
 
+        return temp;
     }
 
 
@@ -283,9 +279,6 @@ public class Program
     // Function create a new Assignment
     public static void creatAssignment()
     {
-
-        Console.WriteLine("Enter Assignment ID");
-        int id = int.Parse(Console.ReadLine()!);
         Console.WriteLine("Enter Assignment Call ID");
         int CallId = int.Parse(Console.ReadLine()!);
         Console.WriteLine("Enter Assignment Volunteer ID");
@@ -298,10 +291,10 @@ public class Program
 
         Console.WriteLine(" Enter FinishType:");
         Console.WriteLine("choose from next list");
-        Console.WriteLine("0 - Choose Treated");
-        Console.WriteLine("1 - Choose AdminCancellation");
-        Console.WriteLine("2 - Choose TimeUp");
-        Console.WriteLine("3 - exit");
+        Console.WriteLine("0 - Choose canceled of admin");
+        Console.WriteLine("1 - Choose canceled of volunteer");
+        Console.WriteLine("2 - Choose completed");
+        Console.WriteLine("3 - expired");
         int l = int.Parse(Console.ReadLine()!);
         while (l > 3 || l < 0)
         {
@@ -310,7 +303,7 @@ public class Program
         }
         DO.CompletionType completionType = (DO.CompletionType)l;
 
-        DO.Assignment assignment = new Assignment(id, CallId, VolunteerId, EntryTime, CompletionTime, completionType);
+        DO.Assignment assignment = new Assignment(0, CallId, VolunteerId, EntryTime, CompletionTime, completionType);
 
         s_dal.Assignment!.Create(assignment);
     }
@@ -359,10 +352,11 @@ public class Program
         Console.WriteLine("Enter Assignment Completion Time");
         DateTime CompletionTime = DateTime.Parse(Console.ReadLine()!);
 
-        Assignment temp = new Assignment(id, CallId, VolunteerId, EntryTime, CompletionTime, 0);
+        Assignment assignment = new Assignment(id, CallId, VolunteerId, EntryTime, CompletionTime, 0);
 
-        return temp;
+        s_dal.Assignment!.Update(assignment);
 
+        return assignment;
     }
 
 
@@ -370,6 +364,7 @@ public class Program
     // Function to create a new Call
     public static void creatCall()
     {
+        Console.WriteLine();
         Console.WriteLine("Enter Call Type");
         Console.WriteLine("choose from next list");
         Console.WriteLine("0 - Choose MakingFood");
@@ -380,21 +375,22 @@ public class Program
             Console.WriteLine("ERROR\nEnter number again please");
             l = int.Parse(Console.ReadLine()!);
         }
-        DO.CallType callType = (DO.CallType)l;
+        DO.CallType CallType = (DO.CallType)l;
 
         Console.WriteLine("Enter Call Description");
         string description = Console.ReadLine()!;
         Console.WriteLine("Enter Call Full Address");
-        string fulladdress = Console.ReadLine()!;
+        string fullAddress = Console.ReadLine()!;
         Console.WriteLine("Enter Call Latitude");
         double latitude = double.Parse(Console.ReadLine()!);
         Console.WriteLine("Enter Call Longitude");
         double longitude = double.Parse(Console.ReadLine()!);
+        Console.WriteLine("Enter Call Max Time For Call");
+        DateTime maxTimeForCall = DateTime.Parse(Console.ReadLine()!);
 
-        Call call = new Call();
+        Call call = new Call(0, CallType, fullAddress, latitude, longitude, DateTime.Now, description, maxTimeForCall);
 
         s_dal.Call!.Create(call);
-
     }
 
     // Function to print the read function of Call
@@ -431,12 +427,14 @@ public class Program
     // Function to update a call
     public static Call updateCall()
     {
+        Console.WriteLine("Enter Call ID");
+        int id = int.Parse(Console.ReadLine()!);
         Console.WriteLine("Enter Call Type");
         Console.WriteLine("choose from next list");
         Console.WriteLine("0 - Choose MakingFood");
         Console.WriteLine("1 - Choose DeliverFood");
         int l = int.Parse(Console.ReadLine()!);
-        while (l != 1 || l != 0)
+        while (l != 1 && l != 0)
         {
             Console.WriteLine("ERROR\nEnter number again please");
             l = int.Parse(Console.ReadLine()!);
@@ -445,17 +443,19 @@ public class Program
         Console.WriteLine("Enter Call Description");
         string description = Console.ReadLine()!;
         Console.WriteLine("Enter Call Full Address");
-        string fulladdress = Console.ReadLine()!;
+        string fullAddress = Console.ReadLine()!;
         Console.WriteLine("Enter Call Latitude");
         double latitude = double.Parse(Console.ReadLine()!);
         Console.WriteLine("Enter Call Longitude");
         double longitude = double.Parse(Console.ReadLine()!);
         Console.WriteLine("Enter Call Max Time For Call");
-        DateTime maxtimeforCall = DateTime.Parse(Console.ReadLine()!);
+        DateTime maxTimeForCall = DateTime.Parse(Console.ReadLine()!);
 
-        Call temp = new Call();
+        Call call = new Call(id, callType, fullAddress, latitude, longitude, DateTime.Now, description, maxTimeForCall);
 
-        return temp;
+        s_dal.Call!.Update(call);
+
+        return call;
 
     }
 
