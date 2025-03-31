@@ -6,7 +6,7 @@
     <FullAddress>Tel Aviv, Ibn Gabirol 69</FullAddress>
     <Latitude>32.085299</Latitude>
     <Longitude>34.781768</Longitude>
-    <CallStartTime>2025-03-31T00:35:17.5964858+03:00</CallStartTime>
+    <CallStartTime>2025-03-31T21:52:08.2638301+03:00</CallStartTime>
     <description />
     <MaxTimeForCall xsi:nil="true" />
   </Call>
@@ -16,7 +16,7 @@
     <FullAddress>Haifa, HaAliya Hashniya 1</FullAddress>
     <Latitude>32.818437</Latitude>
     <Longitude>34.988504</Longitude>
-    <CallStartTime>2025-03-31T00:35:17.615986+03:00</CallStartTime>
+    <CallStartTime>2025-03-31T21:52:08.2702264+03:00</CallStartTime>
     <description />
     <MaxTimeForCall xsi:nil="true" />
   </Call>
@@ -26,7 +26,7 @@
     <FullAddress>Be'er Sheva, Yitzhak Nafha 25</FullAddress>
     <Latitude>31.24387</Latitude>
     <Longitude>34.792345</Longitude>
-    <CallStartTime>2025-03-31T00:35:17.6806867+03:00</CallStartTime>
+    <CallStartTime>2025-03-31T21:52:08.2760871+03:00</CallStartTime>
     <description />
     <MaxTimeForCall xsi:nil="true" />
   </Call>
@@ -36,7 +36,7 @@
     <FullAddress>Eilat, Tarshish 7</FullAddress>
     <Latitude>29.55805</Latitude>
     <Longitude>34.94821</Longitude>
-    <CallStartTime>2025-03-31T00:35:17.7387446+03:00</CallStartTime>
+    <CallStartTime>2025-03-31T21:52:08.2783182+03:00</CallStartTime>
     <description />
     <MaxTimeForCall xsi:nil="true" />
   </Call>
@@ -46,7 +46,7 @@
     <FullAddress>Ashdod, HaOrgim 2</FullAddress>
     <Latitude>31.804381</Latitude>
     <Longitude>34.649288</Longitude>
-    <CallStartTime>2025-03-31T00:35:17.8033856+03:00</CallStartTime>
+    <CallStartTime>2025-03-31T21:52:08.2804404+03:00</CallStartTime>
     <description />
     <MaxTimeForCall xsi:nil="true" />
   </Call>
@@ -56,7 +56,7 @@
     <FullAddress>Netanya, David Hamelech 15</FullAddress>
     <Latitude>32.331759</Latitude>
     <Longitude>34.852056</Longitude>
-    <CallStartTime>2025-03-31T00:35:17.8585369+03:00</CallStartTime>
+    <CallStartTime>2025-03-31T21:52:08.2819167+03:00</CallStartTime>
     <description />
     <MaxTimeForCall xsi:nil="true" />
   </Call>
@@ -66,7 +66,7 @@
     <FullAddress>Petah Tikva, Haim Ozer 25</FullAddress>
     <Latitude>32.087439</Latitude>
     <Longitude>34.887668</Longitude>
-    <CallStartTime>2025-03-31T00:35:17.9142756+03:00</CallStartTime>
+    <CallStartTime>2025-03-31T21:52:08.2835731+03:00</CallStartTime>
     <description />
     <MaxTimeForCall xsi:nil="true" />
   </Call>
@@ -76,7 +76,7 @@
     <FullAddress>Holon, Mota Gur 6</FullAddress>
     <Latitude>32.01154</Latitude>
     <Longitude>34.77221</Longitude>
-    <CallStartTime>2025-03-31T00:35:17.9575175+03:00</CallStartTime>
+    <CallStartTime>2025-03-31T21:52:08.2855891+03:00</CallStartTime>
     <description />
     <MaxTimeForCall xsi:nil="true" />
   </Call>
@@ -86,7 +86,7 @@
     <FullAddress>Bat Yam, HaKomemiyut 10</FullAddress>
     <Latitude>32.02301</Latitude>
     <Longitude>34.750772</Longitude>
-    <CallStartTime>2025-03-31T00:35:17.9983992+03:00</CallStartTime>
+    <CallStartTime>2025-03-31T21:52:08.2884137+03:00</CallStartTime>
     <description />
     <MaxTimeForCall xsi:nil="true" />
   </Call>
@@ -96,7 +96,7 @@
     <FullAddress>Herzliya, HaShunit 1</FullAddress>
     <Latitude>32.1663</Latitude>
     <Longitude>34.84363</Longitude>
-    <CallStartTime>2025-03-31T00:35:18.0363638+03:00</CallStartTime>
+    <CallStartTime>2025-03-31T21:52:08.2913572+03:00</CallStartTime>
     <description />
     <MaxTimeForCall xsi:nil="true" />
   </Call>
@@ -106,7 +106,7 @@
     <FullAddress>Rishon Lezion, Moshe Dayan 15</FullAddress>
     <Latitude>31.9648</Latitude>
     <Longitude>34.8021</Longitude>
-    <CallStartTime>2025-03-31T00:35:18.0736672+03:00</CallStartTime>
+    <CallStartTime>2025-03-31T21:52:08.2934131+03:00</CallStartTime>
     <description />
     <MaxTimeForCall xsi:nil="true" />
   </Call>
@@ -116,7 +116,7 @@
     <FullAddress>Kfar Saba, Weizmann 112</FullAddress>
     <Latitude>32.175</Latitude>
     <Longitude>34.9066</Longitude>
-    <CallStartTime>2025-03-31T00:35:18.1143417+03:00</CallStartTime>
+    <CallStartTime>2025-03-31T21:52:08.2952682+03:00</CallStartTime>
     <description />
     <MaxTimeForCall xsi:nil="true" />
   </Call>
@@ -126,7 +126,7 @@
     <FullAddress>Ra'anana, HaPark 5</FullAddress>
     <Latitude>32.1848</Latitude>
     <Longitude>34.8713</Longitude>
-    <CallStartTime>2025-03-31T00:35:18.1779238+03:00</CallStartTime>
+    <CallStartTime>2025-03-31T21:52:08.2973157+03:00</CallStartTime>
     <description />
     <MaxTimeForCall xsi:nil="true" />
   </Call>
@@ -136,7 +136,7 @@
     <FullAddress>Modi'in, Emek Hachula 10</FullAddress>
     <Latitude>31.8996</Latitude>
     <Longitude>35.0133</Longitude>
-    <CallStartTime>2025-03-31T00:35:18.2313978+03:00</CallStartTime>
+    <CallStartTime>2025-03-31T21:52:08.2994508+03:00</CallStartTime>
     <description> </description>
     <MaxTimeForCall xsi:nil="true" />
   </Call>
@@ -146,7 +146,7 @@
     <FullAddress>Ramat Gan, Abba Hillel 16</FullAddress>
     <Latitude>32.0684</Latitude>
     <Longitude>34.8248</Longitude>
-    <CallStartTime>2025-03-31T00:35:18.2701687+03:00</CallStartTime>
+    <CallStartTime>2025-03-31T21:52:08.301756+03:00</CallStartTime>
     <MaxTimeForCall xsi:nil="true" />
   </Call>
 </ArrayOfCall>

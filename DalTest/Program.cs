@@ -354,7 +354,6 @@ public class Program
 
         Assignment assignment = new Assignment(id, CallId, VolunteerId, EntryTime, CompletionTime, 0);
 
-        s_dal.Assignment!.Update(assignment);
 
         return assignment;
     }
