@@ -38,11 +38,12 @@ namespace Dal
 
         public Volunteer? Read(int id)
         {
+            //if (DataSource.Volunteers.FirstOrDefault(v => v.id == id) == null)                          //stage 2 and not stage 3
+              //  throw new DalDoesNotExistException($"Volunteer with the same ID={id} not found...");
+
             //return DataSource.Volunteers.Find(v => v.id == id); // stage 1
 
             return DataSource.Volunteers.FirstOrDefault(item => item.id == id); //stage 2
-
-
         }
 
         public Volunteer? Read(Func<Volunteer, bool> filter)
@@ -60,9 +61,6 @@ namespace Dal
             => filter == null
             ? DataSource.Volunteers.Select(item => item)
             : DataSource.Volunteers.Where(filter);
-
-
-        
 
         public void Update(Volunteer item)
         {

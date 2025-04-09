@@ -1,4 +1,5 @@
-﻿using DalApi;
+﻿using Dal;
+using DalApi;
 using DO;
 using System.Xml.Linq;
 
@@ -6,18 +7,28 @@ namespace Dal
 {
     internal class AssignmentImplementation : IAssignment
     {
-
-        
-        static Assignment getAssignment (XElement assignment)
+        private XElement? createAssignmentElement(Assignment item)
+        {
+            return new XElement("Assignment",
+                new XElement("Id", item.Id),
+                new XElement("CallId", item.CallId),
+                new XElement("VolunteerId", item.VolunteerId),
+                new XElement("StarCall", item.StarCall),
+                new XElement("CompletionTime", item.CompletionTime),
+                new XElement("FinishType", item.FinishType)
+                );
+        }
+        static Assignment getAssignment(XElement assignment)
         {
             return new DO.Assignment()
             {
-                Id = (int)assignment.Element("Id"),
-                CallId = (int)assignment.Element("CallId"),
-                VolunteerId = (int)assignment.Element("VolunteerId"),
-                StarCall = (DateTime)assignment.Element("StarCall"),
+                Id = (int?)assignment.Element("Id") ?? throw new ArgumentNullException("Id element is missing"),
+                CallId = (int?)assignment.Element("CallId") ?? throw new ArgumentNullException("CallId element is missing"),
+                VolunteerId = (int?)assignment.Element("VolunteerId") ?? throw new ArgumentNullException("VolunteerId element is missing"),
+                StarCall =  (DateTime?)assignment.Element("StarCall") ?? throw new ArgumentNullException("StarCall element is missing"),
+                CompletionTime = (DateTime?)assignment.Element("CompletionTime") ?? throw new ArgumentNullException("CompletionTime element is missing"),
                 FinishType = assignment.Element("FinishType") != null ?
-                             Enum.Parse<CompletionType>(assignment.Element("FinishType").Value) :
+                             Enum.Parse<CompletionType>(assignment.Element("FinishType")?.Value ?? throw new ArgumentNullException("FinishType element is missing")) :
                              (CompletionType?)null
             };
         }
@@ -28,11 +39,7 @@ namespace Dal
 
             XElement assignmentRootElem = XMLTools.LoadListFromXMLElement(Config.s_assignments_xml);
 
-            if (assignmentRootElem.Elements()
-                .Any(assign => (int?)assign.Element("Id") == item.Id))
-                throw new DalDoesNotExistException($"Assignment with ID={item.Id} already exists");
-
-            XElement newAssignment = createAssignmentElement(item);
+            XElement newAssignment = createAssignmentElement(item) ?? throw new InvalidOperationException("Failed to create assignment element");
             assignmentRootElem.Add(newAssignment);
 
             XMLTools.SaveListToXMLElement(assignmentRootElem, Config.s_assignments_xml);
@@ -40,23 +47,36 @@ namespace Dal
 
         public void Delete(int id)
         {
-            List<Assignment> assignments = XMLTools.LoadListFromXMLSerializer<Assignment>(Config.s_assignments_xml);
-            if (assignments.RemoveAll(it => it.Id == id) == 0)
-                throw new DalDoesNotExistException($"Assignment with ID={id} does Not exist");
-            XMLTools.SaveListToXMLSerializer(assignments, Config.s_assignments_xml);
+            // Implementation Delete assignment by XElement
+
+            XElement assignmentRootElem = XMLTools.LoadListFromXMLElement(Config.s_assignments_xml);
+
+            XElement? assignmentElem = assignmentRootElem.Elements().FirstOrDefault(a => (int?)a.Element("Id") == id);
+            if (assignmentElem == null)
+                throw new DO.DalDoesNotExistException($"Assignment with ID={id} does Not exist");
+
+            assignmentElem.Remove();
+            XMLTools.SaveListToXMLElement(assignmentRootElem, Config.s_assignments_xml);
         }
 
         public void DeleteAll()
         {
-             XMLTools.SaveListToXMLSerializer(new List<Assignment>(), Config.s_assignments_xml);  
+            // Implementation Delete assignment by XElement
+
+            XElement assignmentRootElem = XMLTools.LoadListFromXMLElement(Config.s_assignments_xml);
+            assignmentRootElem.RemoveAll();
+            XMLTools.SaveListToXMLElement(assignmentRootElem, Config.s_assignments_xml);
         }
 
         public Assignment? Read(int id)
         {
-            XElement? assignmentElem = 
-                                      XMLTools.LoadListFromXMLElement(Config.s_assignments_xml).Elements().FirstOrDefault(st =>
-                                      (int?)st.Element("Id") == id);
-            return assignmentElem is null ? null : getAssignment(assignmentElem);
+            // Implementation Read assignment by XElement
+            XElement assignmentRootElem = XMLTools.LoadListFromXMLElement(Config.s_assignments_xml);
+            XElement? assignmentElem = XMLTools.LoadListFromXMLElement(Config.s_assignments_xml).Elements().
+                                       FirstOrDefault(st => (int?)st.Element("Id") == id);
+            if (assignmentElem == null)
+                throw new DO.DalDoesNotExistException($"Assignment with ID={id} does Not exist");
+            return getAssignment(assignmentElem);
         }
 
         public Assignment? Read(Func<Assignment, bool> filter)
@@ -83,16 +103,8 @@ namespace Dal
 
             XMLTools.SaveListToXMLElement(assignmentsRootElem, Config.s_assignments_xml);
         }
-
-        private XElement? createAssignmentElement(Assignment item)
-        {
-            return new XElement("Assignment",
-                new XElement("Id", item.Id),
-                new XElement("CallId", item.CallId),
-                new XElement("VolunteerId", item.VolunteerId),
-                new XElement("StarCall", item.StarCall),
-                new XElement("FinishType", item.FinishType)
-                );
-        }
     }
 }
+//XElement? assignmentElem = XMLTools.LoadListFromXMLElement(Config.s_assignments_xml).Elements().
+//                                       FirstOrDefault(st => (int?)st.Element("Id") == id);
+//return assignmentElem is null ? null : getAssignment(assignmentElem);

@@ -16,6 +16,7 @@ public class Program
 
     //static readonly IDal? s_dal = new DalList(); //stage 2
 
+    
     static readonly IDal s_dal = new DalXml(); //stage 3
 
 
