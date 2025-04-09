@@ -1,4 +1,6 @@
 ﻿
+using DalApi;
+
 namespace DO;
 
 public record Assignment
@@ -25,7 +27,7 @@ public record Assignment
     /// <summary>
     /// default constructor
     /// </summary>
-    public Assignment() : this(0, 0, 0, DateTime.Now, null, null) { }
+    public Assignment() : this(0, 0, 0, new DateTime(2023, 1, 1, 8, 0, 0), null, null) { }
     /// <summary>
     /// constructor
     /// </summary>

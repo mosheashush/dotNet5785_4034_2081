@@ -8,6 +8,7 @@ namespace DalApi
         ICall Call { get; }
         IVolunteer Volunteer { get; }
 
+        IConfig Config { get; }
         void ResetDB();
     }
 

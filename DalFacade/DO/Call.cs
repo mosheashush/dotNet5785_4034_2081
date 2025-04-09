@@ -24,7 +24,7 @@ namespace DO
 
     )
     {
-        public Call() : this(0, 0, "", 0, 0, DateTime.Now, " ", null) { }
+        public Call() : this(0, 0, "", 0, 0, new DateTime(2023, 1, 1, 8, 0, 0), " ", null) { }
         public Call WithId(int id) => new Call
         {
             Id = id,

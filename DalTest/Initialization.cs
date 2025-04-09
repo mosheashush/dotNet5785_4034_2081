@@ -37,7 +37,6 @@ public static class Initialization
         };
     private static void createVolunteer()
     {
-
         // Create 20 volunteers with random data
         for (int i = 0; i < 20; i++)
         {
@@ -96,8 +95,8 @@ public static class Initialization
                 FullAddress = data[i, 1],
                 Latitude = double.Parse(data[i, 2]),
                 Longitude = double.Parse(data[i, 3]),
-                CallStartTime = DateTime.Now,
-                MaxTimeForCall = null,
+                CallStartTime = s_dal.Config.Clock,
+                MaxTimeForCall = s_dal.Config.Clock + new TimeSpan(7, s_rand.Next(0, 25), s_rand.Next(0, 24), 0, 0),
             };
             s_dal.Call!.Create(call);
         }
@@ -115,6 +114,7 @@ public static class Initialization
             finishtype = s_rand.Next(0, 4);
             idcall = callList[s_rand.Next(0, callList.Count)];
             id_volunteer = list[s_rand.Next(0, list.Count)];
+            DateTime CompletionTimeNew;
             switch (finishtype)
             {
                 case 0:
@@ -130,12 +130,25 @@ public static class Initialization
                     type = CompletionType.expired;
                     break;
             }
+
+            switch (finishtype)
+            {
+                case 0:
+                case 1:
+                case 2:
+                    CompletionTimeNew = s_dal.Config.Clock + new TimeSpan(5, s_rand.Next(0, 25), s_rand.Next(0, 24), 0, 0);
+                    break;
+                default:
+                    CompletionTimeNew = s_dal.Config.Clock + new TimeSpan(9, s_rand.Next(0, 25), s_rand.Next(0, 24), 0, 0);
+                    break;
+            }
+            
             Assignment assignment = new Assignment
             {
                 CallId = idcall,
                 VolunteerId = id_volunteer,
-                StarCall = DateTime.Now,
-                CompletionTime = DateTime.Now,
+                StarCall = s_dal.Config.Clock,
+                CompletionTime = CompletionTimeNew,
                 FinishType = type,
             };
             s_dal.Assignment!.Create(assignment);
@@ -167,6 +180,7 @@ public static class Initialization
         //s_dalCall.DeleteAll(); // stage1
         //s_dalConfig.Reset(); // stage1
 
+
         s_dal.ResetDB(); // stage2
 
         Console.WriteLine("Initializing all list ...");
@@ -177,4 +191,3 @@ public static class Initialization
 
     }
 }
-

@@ -5,10 +5,12 @@ using Microsoft.VisualBasic;
 using System;
 using System.Collections.Specialized;
 using System.Diagnostics;
+using System.Threading.Channels;
 
 namespace DalTest;
 public class Program
 {
+
     //private static IVolunteer? s_dalVolunteer = new VolunteerImplementation(); // stage 1
     //private static IAssignment? s_dalAssignment = new AssignmentImplementation(); // stage 1
     //private static ICall? s_dalCall = new CallImplementation(); // stage 1
@@ -18,7 +20,6 @@ public class Program
 
     
     static readonly IDal s_dal = new DalXml(); //stage 3
-
 
     static void Main(string[] args)
     {
@@ -388,7 +389,7 @@ public class Program
         Console.WriteLine("Enter Call Max Time For Call");
         DateTime maxTimeForCall = DateTime.Parse(Console.ReadLine()!);
 
-        Call call = new Call(0, CallType, fullAddress, latitude, longitude, DateTime.Now, description, maxTimeForCall);
+        Call call = new Call(0, CallType, fullAddress, latitude, longitude, s_dal.Config.Clock, description, maxTimeForCall);
 
         s_dal.Call!.Create(call);
     }
@@ -451,7 +452,7 @@ public class Program
         Console.WriteLine("Enter Call Max Time For Call");
         DateTime maxTimeForCall = DateTime.Parse(Console.ReadLine()!);
 
-        Call call = new Call(id, callType, fullAddress, latitude, longitude, DateTime.Now, description, maxTimeForCall);
+        Call call = new Call(id, callType, fullAddress, latitude, longitude, s_dal.Config.Clock, description, maxTimeForCall);
 
         s_dal.Call!.Update(call);
 

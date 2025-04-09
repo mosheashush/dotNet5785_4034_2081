@@ -37,8 +37,8 @@ internal static class Config
     {
         NextCallId = 1000 ;
         NextAssignmentId = 2000;
-        Clock = DateTime.Now;
-        RiskRange = TimeSpan.Zero;
+        Clock = new DateTime(2023, 1, 1, 8, 0, 0);
+        RiskRange = new TimeSpan(1, 12, 0, 0);
     }
 }
 
