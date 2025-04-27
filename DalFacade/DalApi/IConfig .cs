@@ -9,7 +9,5 @@ namespace DalApi
         int nextAsignmentId { get; }
         void Reset();
 
-
-
     }
 }
