@@ -18,16 +18,8 @@ public class DalAlreadyExistsException : Exception
 [Serializable]
 public class DalXMLFileLoadCreateException : Exception
 {
-    public DalXMLFileLoadCreateException()
-    {
-    }
-
-    public DalXMLFileLoadCreateException(string? message) : base(message)
-    {
-    }
-
-    public DalXMLFileLoadCreateException(string? message, Exception? innerException) : base(message, innerException)
-    {
-    }
+    public DalXMLFileLoadCreateException() {}
+    public DalXMLFileLoadCreateException(string? message) : base(message) { }
+    public DalXMLFileLoadCreateException(string? message, Exception? innerException) : base(message, innerException) { }
 }
 

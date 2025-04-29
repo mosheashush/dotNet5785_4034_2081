@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace BIApi;
 
-namespace BIApi
+public interface IBl
 {
-    public interface IBl
-    {
-    }
+    IAdmin Admin { get; }
+    ICall Call { get; }
+    IVolunteer Volunteer { get; }
+
 }

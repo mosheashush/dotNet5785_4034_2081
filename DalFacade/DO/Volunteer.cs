@@ -21,13 +21,13 @@ namespace DO
         string FullName,
         string CallNumber,
         string EmailAddress,
-        string Password,
-        string FullCurrentAddress,
-        double Latitude,
-        double Longitud,
+        string? Password,
+        string? FullCurrentAddress,
+        double? Latitude,
+        double? Longitud,
         User CurrentPosition,
         bool Active,
-        double MaxDistanceForCall,
+        double? MaxDistanceForCall,
         Distance TypeOfDistance
     )
 
