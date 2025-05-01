@@ -1,12 +1,13 @@
 ﻿using BIApi;
 using BO;
+using DO;
 using Helpers;
 namespace BlImplementation;
 
 internal class IVolunteerImplementation// : IVolunteer
 {
     private readonly DalApi.IDal _dal = DalApi.Factory.Get;
-    public void Creat(BO.Volunteer boVolunteer)
+    public void Create(BO.Volunteer boVolunteer)
     {
         if (boVolunteer == null)
             throw new blCanNotCreatArgumentNullException(nameof(boVolunteer));
@@ -64,18 +65,31 @@ internal class IVolunteerImplementation// : IVolunteer
             SumCallsCompleted = VolunteerManager.CalculatSumCallsCompleted(id),
             SumCallsExpired = VolunteerManager.CalculatSumCallsExpired(id),
             SumCallsConcluded = VolunteerManager.CalculatSumCallsConcluded(id),
-            //CallInProgress ? = VolunteerManager.IfCallInProgress(id)
+            CallInProgress = VolunteerManager.IfCallInProgress(id),
         };
-    }
-    public IEnumerable<BO.Volunteer> ReadAll(Func<BO.Volunteer, bool>? filter = null)
-    {
-        return _dal.Volunteer.ReadAll(filter);
     }
     public void Update(int id, BO.Volunteer volunteer)
     {
-        _dal.Volunteer.Update(id, volunteer);
+        var existingVolunteer = _dal.Volunteer.Read(id);
+        if (existingVolunteer == null)
+            throw new BO.BlDoesNotExistException($"Volunteer with ID={id} does Not exist");
+
+        Delete(id);
+        Create(volunteer);
     }
 
+    // implementation of Entrance
+    public BO.User Entrance(string name, string password)
+    {
+        var volunteer = _dal.Volunteer.ReadAll().FirstOrDefault(v => v.FullName == name);// && v.Password == password);
+        if (volunteer == null)
+            throw new BO.BlDoesNotExistException($"Volunteer with name={name} does Not exist");
 
+        if (volunteer.Password != password)
+            throw new BO.BlDoesNotExistException($"the password={name} does Not correctly");
 
+        return (BO.User)volunteer.CurrentPosition;
+    }
+
+    //public BO.VolunteerInList listOfVolunteer(bool isActive, VolunteerInListFields field){}
 }

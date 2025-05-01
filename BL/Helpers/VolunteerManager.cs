@@ -30,31 +30,59 @@ internal static class VolunteerManager
         return s_dal.Assignment.ReadAll().Where(c => c.VolunteerId == id && c.FinishType == DO.CompletionType.canceledVolunteer).Count();
     }
 
-    //IfCallInProgress
     public static BO.CallInProgress? IfCallInProgress(int id)
     {
-        var assignment = s_dal.Assignment.ReadAll().Where(c => c.VolunteerId == id).FirstOrDefault();
+        DO.Assignment assignment = s_dal.Assignment.ReadAll().Where(c => c.VolunteerId == id && c.FinishType == null).FirstOrDefault(); // volunteer can take only one call at a time
         if (assignment.FinishType  == null)
             return null;
         else
         {
-            var callInProgress = s_dal.Assignment.ReadAll().Where(c => c.VolunteerId == id && c.FinishType == null).FirstOrDefault();
+            DO.Call call = s_dal.Call.ReadAll().Where(c => c.Id == assignment.CallId).FirstOrDefault();
+            DO.Volunteer volunteer = s_dal.Volunteer.ReadAll().Where(c => c.id == id).FirstOrDefault();
             return new BO.CallInProgress()
             {
-                //IdCall = assignment.CallId,
-                //IdAssignment = assignment.Id,
-                //Type = (BO.CallType)s_dal.Call.ReadAll()?.FirstOrDefault(c => c.Id == assignment.CallId)?.Type,   // ?? BO.CallType.None,
-                //description = s_dal.Call.ReadAll()?.FirstOrDefault(c => c.Id == assignment.CallId)?.description,
-                //FullAddress = callInProgress.FinishType,
-                //CallStartTime = assignment.StarCall,
-                //MaxTimeForCall = assignment.CompletionTime,
-                //VolunteerTakeCall = assignment.StarCall,
-                //DistanceFromVolunteer = 0, // Placeholder for distance calculation
-                //CollState = 
+                IdCall = assignment.CallId,
+                IdAssignment = assignment.Id,
+                Type = (BO.CallType)call.Type,
+                description = call.description,
+                FullAddress = call.FullAddress,
+                CallStartTime = call.CallStartTime,
+                MaxTimeForCall = call.MaxTimeForCall,
+                VolunteerTakeCall = assignment.StarCall,
+                DistanceFromVolunteer = GetDistanceInKm(call.Latitude, call.Longitude, volunteer.Latitude, volunteer.Longitud),
+                CollState = GetCallState(call),
             };
         }
     }
+    public static double GetDistanceInKm(double? lat1, double? lon1, double? lat2, double? lon2)
+    {
+        if (lat1 == null || lat2 == null || lon1 == null || lon2 == null)
+            throw new ArgumentNullException("Latitude and Longitude is null");
+        else
+        {
+            double R = 6371; // radius of Earth in kilometers  
+            double dLat = DegreesToRadians(lat2.Value - lat1.Value);
+            double dLon = DegreesToRadians(lon2.Value - lon1.Value);
 
+            double a = Math.Sin(dLat / 2) * Math.Sin(dLat / 2) +
+                       Math.Cos(DegreesToRadians(lat1.Value)) * Math.Cos(DegreesToRadians(lat2.Value)) *
+                       Math.Sin(dLon / 2) * Math.Sin(dLon / 2);
 
+            double c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
+            return R * c;
+        }
+    }
 
+    private static double DegreesToRadians(double deg)
+    {
+        return deg * (Math.PI / 180);
+    }
+
+    public static BO.CallState GetCallState(DO.Call call)
+    {
+        if (call.MaxTimeForCall > ClockManager.Now)
+                return BO.CallState.processed;
+        else
+            return BO.CallState.ProcessedOnRisk;
+    }
 }
