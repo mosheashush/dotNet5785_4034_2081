@@ -26,4 +26,31 @@ public class blCanNotCreatArgumentNullException : Exception
 {
     public blCanNotCreatArgumentNullException(string? message) : base(message) { }
 }
+//BlInMiddlePerformingTaskException
 
+[Serializable]
+public class BlInMiddlePerformingTaskException : Exception
+{
+    public BlInMiddlePerformingTaskException(string? message) : base(message) { }
+}
+
+//BlNotAllowedMakeChangesException
+[Serializable]
+public class BlNotAllowedMakeChangesException : Exception
+{
+    public BlNotAllowedMakeChangesException(string? message) : base(message) { }
+}
+
+//BlInvalidValueException
+[Serializable]
+public class BlInvalidValueException : Exception
+{
+    public BlInvalidValueException(string? message) : base(message) { }
+}
+
+//BlCanNotOrderNotExistsFieldException
+[Serializable]
+public class BlCanNotOrderNotExistsFieldException : Exception
+{
+    public BlCanNotOrderNotExistsFieldException(string? message) : base(message) { }
+}
