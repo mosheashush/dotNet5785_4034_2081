@@ -16,7 +16,7 @@ public interface IAdmin
     /// <summary>
     /// Returns the current configuration value for "Risk Time Span".
     /// </summary>
-    TimeSpan RequestRiskTimeSpan();
+    TimeSpan GetRiskTimeSpan();
 
     /// <summary>
     /// Sets the configuration value for "Risk Time Span".

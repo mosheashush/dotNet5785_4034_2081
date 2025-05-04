@@ -1,5 +1,12 @@
 ﻿using DalApi;
+using BIApi;
+using Dal;
 using System.Data;
+using BlImplementation;
+using BO;
+using DO;
+using System.Numerics;
+using System.Threading.Tasks;
 
 namespace Helpers;
 
@@ -7,32 +14,96 @@ internal static class CallManager
 {
     private static IDal s_dal = Factory.Get; //stage 4
 
-    public static BO.CallState GetStatus(int CallId)
+    //MapDOToBOCall implementation
+    public static BO.Call MapDOToBOCall(DO.Call call)
     {
-        //todo: implement logic to determine the status of the call based on its ID
-        return new BO.CallState();
+        return new BO.Call()
+        {
+            IdCall = call.Id,
+            Type = (BO.CallType)call.Type,
+            description = call.description,
+            FullAddress = call.FullAddress,
+            CallStartTime = call.CallStartTime,
+            MaxTimeForCall = call.MaxTimeForCall,
+            Latitude = call.Latitude,
+            Longitude = call.Longitude,
+            CallState = GetCallState(call),
+            callAssignInLists = CreatAssignInList(call.Id)
+        };
+    }
+    //MapBOToDOCall implementation
+    public static DO.Call MapBOToDOCall(BO.Call call)
+    {
+        return new DO.Call()
+        {
+            Id = call.IdCall,
+            Type = (DO.CallType)call.Type,
+            description = call.description,
+            FullAddress = call.FullAddress,
+            CallStartTime = call.CallStartTime,
+            MaxTimeForCall = call.MaxTimeForCall,
+            Latitude = call.Latitude,
+            Longitude = call.Longitude
+        };
+    }
+    //Check Call implementation
+    public static void CheckCall(BO.Call boCall)
+    {
+        //check id
+        if (boCall.IdCall < 1000 || boCall.IdCall > 1999)
+            throw new BlInvalidValueException($"Call id ={boCall.IdCall} not have corrent digits");
+
+        //check time to complete task
+        if (boCall.MaxTimeForCall < boCall.CallStartTime)
+            throw new NoTimeCompleteTaskException("Max time for boCall must be greater than boCall start time");
+
+        //address check and update coordinates
+        (boCall.Latitude, boCall.Longitude)  = VolunteerManager.GetCoordinatesFromAddress(boCall.FullAddress);
+
     }
 
-    public static List<double> GetCoordinates(string address)
+    //CreatAssignInList implementation
+    public static List<BO.CallAssignInList> CreatAssignInList(int callId)
     {
-        //todo: implement logic to determine the coordinates of the call based on its ID
-        return new List<double>();
+        if (s_dal.Assignment.ReadAll().Where(c => c.CallId == callId)==null) return null;
+
+        
+        List<BO.CallAssignInList> list = s_dal.Assignment.ReadAll().Where(a => a.CallId == callId).Select(a=> new BO.CallAssignInList
+        {
+            IdVolunteer = a.VolunteerId,
+            FullName = s_dal.Volunteer.Read(a.VolunteerId).FullName,
+            CallStartTime = a.StarCall,
+            CompletionTime = a.CompletionTime,
+            FinishType = (BO.CompletionType)a.FinishType,
+        }).ToList();
+
+        return list;
     }
 
-    public static double GetDistance(string addressCall, string addressVolunteer)
+    //GetCallState implementation
+    public static BO.CallState GetCallState(DO.Call call)
     {
-        //todo: implement logic to determine the distance between the call and the volunteer
-        return 0;
+        if (call.MaxTimeForCall < ClockManager.Now)
+        {
+            if (s_dal.Assignment.ReadAll().FirstOrDefault(c => c.CallId == call.Id).FinishType == DO.CompletionType.completed)
+                return BO.CallState.completed;
+            else
+                return BO.CallState.expired;
+        }
+        if (call.MaxTimeForCall - s_dal.Config.RiskRange <= ClockManager.Now)
+        {
+            if (s_dal.Assignment.ReadAll().FirstOrDefault(c => c.CallId == call.Id) != null)
+                return BO.CallState.ProcessedOnRisk;
+            else
+                return BO.CallState.openOnRisk;
+        }
+        else if (call.MaxTimeForCall - s_dal.Config.RiskRange > ClockManager.Now)
+        {
+            if (s_dal.Assignment.ReadAll().FirstOrDefault(c => c.CallId == call.Id) != null)
+                return BO.CallState.processed;
+            else
+                return BO.CallState.open;
+        }
+        throw new ArgumentException("Invalid boCall state");
     }
-
-    public static void UpdateExpiredCall()
-    {
-        // todo: implement logic to update expired calls
-    }
-
-    public static void Simulator()
-    {
-        // todo: implement logic to simulate
-    }
-
-}
+} 

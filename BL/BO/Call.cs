@@ -10,8 +10,11 @@ public class Call
     public double Longitude { get; set; }
     public DateTime CallStartTime { get; set; }
     public DateTime? MaxTimeForCall { get; set; }
-    public CallState CollState { get; set; }
+    
+    //BO fields:
+    public CallState CallState { get; set; }
     public List<BO.CallAssignInList>? callAssignInLists { get; set; }
+
     public override string ToString() => this.ToString();
 
 }

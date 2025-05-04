@@ -1,22 +1,20 @@
 ﻿using BIApi;
-using BO;
-using DalApi;
-using DO;
+//using DalApi;
 using Helpers;
+using System.Collections.Generic;
+using System.Linq;
 namespace BlImplementation;
 
-internal class VolunteerImplementation// : IVolunteer
+internal class VolunteerImplementation : IVolunteer
 {
-    private readonly DalApi.IDal _dal = DalApi.Factory.Get;
+    private readonly DalApi.IDal s_dal = DalApi.Factory.Get;
     public void Create(BO.Volunteer boVolunteer)
     {
         VolunteerManager.CheckVolunteer(boVolunteer);
 
-        DO.Volunteer doVolunteer = VolunteerManager.MapBOToDOVolunteer(boVolunteer);
-
         try
         {
-            _dal.Volunteer.Create(doVolunteer);
+            s_dal.Volunteer.Create(VolunteerManager.MapBOToDOVolunteer(boVolunteer));
         }
         catch (DO.DalAlreadyExistsException ex)
         {
@@ -26,55 +24,34 @@ internal class VolunteerImplementation// : IVolunteer
 
     public void Delete(int id)
     {
-        DO.Volunteer doVolunteer;
+        if (s_dal.Volunteer.ReadAll().FirstOrDefault(v => v.id == id).Active == true)
+        {
+            throw new BO.BlInMiddlePerformingTaskException($"Volunteer with ID={id} has an assignment and cannot be deleted");
+        }
+
         try
         {
-            doVolunteer = _dal.Volunteer.Read(id);
+            s_dal.Volunteer.Delete(id);
         }
         catch (DO.DalDoesNotExistException ex)
         {
             throw new BO.BlDoesNotExistException($"Volunteer with ID={id} does Not exist", ex);
         }
-
-        if (doVolunteer.Active == true)
-        {
-            throw new BO.BlInMiddlePerformingTaskException($"Volunteer with ID={id} has an assignment and cannot be deleted");
-        }
-
-        _dal.Volunteer.Delete(id);
     }
     public BO.Volunteer? Read(int id)
     {
-        var doVolunteer = _dal.Volunteer.Read(id)
+        var doVolunteer = s_dal.Volunteer.Read(id)
             ?? throw new BO.BlDoesNotExistException($"Volunteer with ID={id} does Not exist");
 
         // Map DO.Volunteer to BO.Volunteer
-        return new BO.Volunteer()
-        {
-            id = id,
-            FullName = doVolunteer.FullName,
-            CallNumber = doVolunteer.CallNumber,
-            EmailAddress = doVolunteer.EmailAddress,
-            Password = doVolunteer.Password,
-            FullCurrentAddress = doVolunteer.FullCurrentAddress,
-            Latitude = doVolunteer.Latitude,
-            Longitude = doVolunteer.Longitud,
-            CurrentPosition = (BO.User)doVolunteer.CurrentPosition,
-            Active = doVolunteer.Active,
-            MaxDistanceForCall = doVolunteer.MaxDistanceForCall,
-            TypeOfDistance = (BO.Distance)doVolunteer.TypeOfDistance,
-            SumCallsCompleted = VolunteerManager.CalculatSumCallsCompleted(id),
-            SumCallsExpired = VolunteerManager.CalculatSumCallsExpired(id),
-            SumCallsConcluded = VolunteerManager.CalculatSumCallsConcluded(id),
-            CallInProgress = VolunteerManager.IfCallInProgress(id),
-        };
+        return VolunteerManager.MapDOToBOVolunteer(doVolunteer);
     }
     public void Update(int userId, BO.Volunteer boVolunteer)
     {
         DO.Volunteer doVolunteer; //new not exists 
         try
         {
-            doVolunteer = _dal.Volunteer.Read(boVolunteer.id);
+            doVolunteer = s_dal.Volunteer.Read(boVolunteer.id);
         }
         catch (DO.DalAlreadyExistsException ex)
         {
@@ -84,7 +61,7 @@ internal class VolunteerImplementation// : IVolunteer
         DO.Volunteer userVolunteer; //user exists
         try
         {
-            userVolunteer = _dal.Volunteer.Read(userId);
+            userVolunteer = s_dal.Volunteer.Read(userId);
         }
         catch (DO.DalDoesNotExistException ex)
         {
@@ -97,14 +74,22 @@ internal class VolunteerImplementation// : IVolunteer
             && boVolunteer.CurrentPosition == BO.User.admin))
             throw new BO.BlNotAllowedMakeChangesException($"Volunteer with ID={userId} can not do this change");
 
-        Delete(boVolunteer.id);
-        Create(boVolunteer);
+        VolunteerManager.CheckVolunteer(boVolunteer);
+
+        try
+        {
+            s_dal.Volunteer.Update(VolunteerManager.MapBOToDOVolunteer(boVolunteer));
+        }
+        catch (DO.DalDoesNotExistException ex)
+        {
+            throw new BO.BlDoesNotExistException($"Volunteer with ID={boVolunteer.id} does Not exist", ex);
+        }
     }
 
     // implementation of Entrance
     public BO.User Entrance(string name, string password)
     {
-        var volunteer = _dal.Volunteer.ReadAll().FirstOrDefault(v => v.FullName == name);
+        var volunteer = s_dal.Volunteer.ReadAll().FirstOrDefault(v => v.FullName == name);
         if (volunteer == null)
             throw new BO.BlDoesNotExistException($"Volunteer with name={name} does Not exist");
 
@@ -114,10 +99,11 @@ internal class VolunteerImplementation// : IVolunteer
         return (BO.User)volunteer.CurrentPosition;
     }
 
-    public List<BO.VolunteerInList> listOfVolunteer(bool? isActive, VolunteerInListFields? field)
+    // get filters and sort for volunteers and return a list of volunteers
+    public List<BO.VolunteerInList> listOfVolunteer(bool? isActive, BO.VolunteerInListFields? field)
     {
 
-        var volunteers = _dal.Volunteer.ReadAll();
+        var volunteers = s_dal.Volunteer.ReadAll();
         if (isActive != null)
         {
             volunteers = volunteers.Where(v => v.Active == isActive);
@@ -126,31 +112,31 @@ internal class VolunteerImplementation// : IVolunteer
         {
             switch (field)
             {
-                case VolunteerInListFields.IdVolunteer:
+                case BO.VolunteerInListFields.IdVolunteer:
                     volunteers = volunteers.OrderBy(v => v.id);
                     break;
-                case VolunteerInListFields.FullName:
+                case BO.VolunteerInListFields.FullName:
                     volunteers = volunteers.OrderBy(v => v.FullName);
                     break;
-                case VolunteerInListFields.Active:
+                case BO.VolunteerInListFields.Active:
                     volunteers = volunteers.OrderBy(v => v.Active);
                     break;
 
-                case VolunteerInListFields.IdCall:
+                case BO.VolunteerInListFields.IdCall:
                     if (isActive == false)
                         throw new BO.BlCanNotOrderNotExistsFieldException($"Volunteer with ID={isActive} can not do this change");
-                    volunteers = volunteers.OrderBy(v => _dal.Assignment.ReadAll().FirstOrDefault(c => c.VolunteerId == v.id).CallId);
+                    volunteers = volunteers.OrderBy(v => s_dal.Assignment.ReadAll().FirstOrDefault(c => c.VolunteerId == v.id).CallId);
                     break;
-                case VolunteerInListFields.Type:
-                    volunteers = volunteers.OrderBy(v => _dal.Call.ReadAll().FirstOrDefault(c => c.Id == _dal.Assignment.ReadAll().FirstOrDefault(c => c.VolunteerId == v.id).CallId).Type);
+                case BO.VolunteerInListFields.Type:
+                    volunteers = volunteers.OrderBy(v => s_dal.Call.ReadAll().FirstOrDefault(c => c.Id == s_dal.Assignment.ReadAll().FirstOrDefault(c => c.VolunteerId == v.id).CallId).Type);
                     break;
-                case VolunteerInListFields.SumCallsCompleted:
+                case BO.VolunteerInListFields.SumCallsCompleted:
                     volunteers = volunteers.OrderBy(v => VolunteerManager.CalculatSumCallsCompleted(v.id));
                     break;
-                case VolunteerInListFields.SumCallsExpired:
+                case BO.VolunteerInListFields.SumCallsExpired:
                     volunteers = volunteers.OrderBy(v => VolunteerManager.CalculatSumCallsExpired(v.id));
                     break;
-                case VolunteerInListFields.SumCallsConcluded:
+                case BO.VolunteerInListFields.SumCallsConcluded:
                     volunteers = volunteers.OrderBy(v => VolunteerManager.CalculatSumCallsConcluded(v.id));
                     break;
             }
@@ -158,22 +144,18 @@ internal class VolunteerImplementation// : IVolunteer
         else
             volunteers = volunteers.OrderBy(v => v.id);
 
-        return null;
-        /*new List<VolunteerInList>
-        {
-            Capacity = volunteers.Count(),
-            Count = volunteers.Count(),
-            List = volunteers.Select(v => new VolunteerInList()
-            {
-                IdVolunteer = v.id,
-                FullName = v.FullName,
-                Active = v.Active,
-                IdCall = _dal.Assignment.ReadAll().FirstOrDefault(c => c.VolunteerId == v.id).CallId,
-                Type = (BO.CallType)_dal.Call.ReadAll().FirstOrDefault(c => c.Id == _dal.Assignment.ReadAll().FirstOrDefault(c => c.VolunteerId == v.id).CallId).Type,
-                SumCallsCompleted = VolunteerManager.CalculatSumCallsCompleted(v.id),
-                SumCallsExpired = VolunteerManager.CalculatSumCallsExpired(v.id),
-                SumCallsConcluded = VolunteerManager.CalculatSumCallsConcluded(v.id),
-            }).ToList()
-        };*/
+    List<BO.VolunteerInList> converted = volunteers.Select(v => new BO.VolunteerInList
+    {
+        IdVolunteer = v.id,
+        FullName = v.FullName,
+        Active = v.Active,
+        IdCall = s_dal.Assignment.ReadAll().FirstOrDefault(c => c.VolunteerId == v.id).CallId,
+        Type = (BO.CallType)s_dal.Call.ReadAll().FirstOrDefault(c => c.Id == s_dal.Assignment.ReadAll().FirstOrDefault(c => c.VolunteerId == v.id).CallId).Type,
+        SumCallsCompleted = VolunteerManager.CalculatSumCallsCompleted(v.id),
+        SumCallsExpired = VolunteerManager.CalculatSumCallsExpired(v.id),
+        SumCallsConcluded = VolunteerManager.CalculatSumCallsConcluded(v.id),
+    }).ToList();
+
+        return converted;
     }
 }

@@ -4,10 +4,10 @@ public interface ICall
 {
     int[] GetCallsAmountByStatus();
     IEnumerable<BO.CallInList> GetCallsList(BO.CallInListFields? filterField, object? filterValue, BO.CallInListFields? orderByField);
-    BO.Call GetCallDetails(int callId);
-    void UpdateCall(BO.Call call);
-    void DeleteCall(int callId);
-    void AddCall(BO.Call call);
+    BO.Call Read(int callId);
+    void Update(BO.Call call);
+    void Delete(int callId);
+    void Creat(BO.Call call);
     IEnumerable<BO.ClosedCallInList> GetClosedCallsByVolunteer(int volunteerId, BO.CallType? filterType, BO.ClosedCallFields? orderByField);
     IEnumerable<BO.OpenCallInList> GetOpenCallsForVolunteer(int volunteerId, BO.CallType? filterType, BO.OpenCallFields? orderByField);
     void FinishTreatment(int volunteerId, int assignmentId);

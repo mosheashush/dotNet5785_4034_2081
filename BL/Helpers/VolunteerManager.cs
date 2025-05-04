@@ -3,6 +3,7 @@ using System.Net;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.IO;
+using BO;
 
 
 
@@ -36,9 +37,10 @@ internal static class VolunteerManager
         return s_dal.Assignment.ReadAll().Where(c => c.VolunteerId == id && c.FinishType == DO.CompletionType.canceledVolunteer).Count();
     }
 
+    //MP volunteer to volunteer in progress
     public static BO.CallInProgress? IfCallInProgress(int id)
     {
-        DO.Assignment assignment = s_dal.Assignment.ReadAll().FirstOrDefault(c => c.VolunteerId == id && c.FinishType == null); // volunteer can take only one call at a time
+        DO.Assignment assignment = s_dal.Assignment.ReadAll().FirstOrDefault(c => c.VolunteerId == id && c.FinishType == null); // volunteer can take only one volunteer at a time
         if (assignment == null)
             return null;
         else
@@ -56,10 +58,36 @@ internal static class VolunteerManager
                 MaxTimeForCall = call.MaxTimeForCall,
                 VolunteerTakeCall = assignment.StarCall,
                 DistanceFromVolunteer = GetDistanceInKm(call.Latitude, call.Longitude, volunteer.Latitude, volunteer.Longitud),
-                CollState = GetCallState(call),
+                CollState = CallManager.GetCallState(call),
             };
         }
     }
+
+    //MapDOToBOCall implementation
+    public static BO.Volunteer MapDOToBOVolunteer(DO.Volunteer doVolunteer)
+    {
+        return new BO.Volunteer()
+        {
+            id = doVolunteer.id,
+            FullName = doVolunteer.FullName,
+            CallNumber = doVolunteer.CallNumber,
+            EmailAddress = doVolunteer.EmailAddress,
+            Password = doVolunteer.Password,
+            FullCurrentAddress = doVolunteer.FullCurrentAddress,
+            Latitude = doVolunteer.Latitude,
+            Longitude = doVolunteer.Longitud,
+            CurrentPosition = (BO.User)doVolunteer.CurrentPosition,
+            Active = doVolunteer.Active,
+            MaxDistanceForCall = doVolunteer.MaxDistanceForCall,
+            TypeOfDistance = (BO.Distance)doVolunteer.TypeOfDistance,
+            SumCallsCompleted = VolunteerManager.CalculatSumCallsCompleted(id),
+            SumCallsExpired = VolunteerManager.CalculatSumCallsExpired(id),
+            SumCallsConcluded = VolunteerManager.CalculatSumCallsConcluded(id),
+            CallInProgress = VolunteerManager.IfCallInProgress(id),
+        };
+    }
+
+    //Get DistanceInKm implementation from two coordinates
     public static double GetDistanceInKm(double? lat1, double? lon1, double? lat2, double? lon2)
     {
         if (lat1 == null || lat2 == null || lon1 == null || lon2 == null)
@@ -79,19 +107,13 @@ internal static class VolunteerManager
         }
     }
 
+    //Degrees To Radians implementation
     private static double DegreesToRadians(double deg)
     {
         return deg * (Math.PI / 180);
     }
 
-    public static BO.CallState GetCallState(DO.Call call)
-    {
-        if (call.MaxTimeForCall > ClockManager.Now)
-            return BO.CallState.processed;
-        else
-            return BO.CallState.ProcessedOnRisk;
-    }
-
+    //check if the id is valid
     public static bool IsValidIsraeliId(int id)
     {
         if (id <= 0 || id > 999999999)
@@ -115,20 +137,21 @@ internal static class VolunteerManager
 
         return sum % 10 == 0;
     }
-    //IsValidEmail
+    //check if the email is valid
     public static bool IsValidEmail(string email)
     {
         // Regular expression for validating an Email
         string pattern = @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$";
         return Regex.IsMatch(email, pattern);
     }
-    //internal static (double Latitude, double Longitude) GetCoordinatesFromAddress(string address)
-    internal static bool GetCoordinatesFromAddress(BO.Volunteer boVolunteer)
-    {
-        if (string.IsNullOrWhiteSpace(boVolunteer.FullCurrentAddress))
-            throw new ArgumentException("address is null and not valid");
 
-        string url = $"https://geocode.maps.co/search?q={Uri.EscapeDataString(boVolunteer.FullCurrentAddress)}";
+    //Get volunteer and check if the address is valid, if yes update the coordinates 
+    internal static (double Latitude, double Longitude) GetCoordinatesFromAddress(string Address)
+    {
+        if (string.IsNullOrWhiteSpace(Address))
+            throw new BlNullPropertyException("address is null");
+
+        string url = $"https://geocode.maps.co/search?q={Uri.EscapeDataString(Address)}";
 
         HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
         request.Method = "GET";
@@ -142,23 +165,17 @@ internal static class VolunteerManager
 
             var results = doc.RootElement;
             if (results.GetArrayLength() == 0)
-                return false;
+                throw new BlDoesNotExistException("the address not exists");
 
             var firstResult = results[0];
-            boVolunteer.Latitude = double.Parse(firstResult.GetProperty("lat").GetString()!);
-            boVolunteer.Longitude = double.Parse(firstResult.GetProperty("lon").GetString()!);
-            
-            return true;
+            double lat = double.Parse(firstResult.GetProperty("lat").GetString()!);
+            double lon = double.Parse(firstResult.GetProperty("lon").GetString()!);
+
+            return (lat, lon);
         }
     }
-    //IsValidAddress
-    public static bool IsValidAddress(string address)
-    {
-        // Regular expression for validating an address
-        string pattern = @"^[a-zA-Z0-9\s,.'-]{5,}$";
-        return Regex.IsMatch(address, pattern);
-    }
-    //CheckVolunteer
+
+    //Check that Volunteer is valid
     public static bool CheckVolunteer(BO.Volunteer boVolunteer)
     {
         //id
@@ -177,13 +194,13 @@ internal static class VolunteerManager
         if (boVolunteer.Password.Length < 8)
             throw new BO.BlInvalidValueException($"Password={boVolunteer.Password} need to be minimom 8 digits");
 
-        //address
-        if (IsValidAddress(boVolunteer.FullCurrentAddress))
-            throw new BO.BlInvalidValueException($"Full address={boVolunteer.FullCurrentAddress} is not valid");
+        //address - Checks whether such an address exists and updates the latitude and longitude accordingly
+        (boVolunteer.Latitude, boVolunteer.Longitude) = GetCoordinatesFromAddress(boVolunteer.FullCurrentAddress);
+
 
         //MaxDistanceForCall
         if (boVolunteer.MaxDistanceForCall < 0)
-            throw new BO.BlInvalidValueException($"Max distance for call={boVolunteer.MaxDistanceForCall} is not valid");
+            throw new BO.BlInvalidValueException($"Max distance for volunteer={boVolunteer.MaxDistanceForCall} is not valid");
 
         return true;
     }

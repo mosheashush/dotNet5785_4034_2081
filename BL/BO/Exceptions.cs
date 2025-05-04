@@ -54,3 +54,10 @@ public class BlCanNotOrderNotExistsFieldException : Exception
 {
     public BlCanNotOrderNotExistsFieldException(string? message) : base(message) { }
 }
+
+//NoTimeCompleteTaskException
+[Serializable]
+public class NoTimeCompleteTaskException : Exception
+{
+    public NoTimeCompleteTaskException(string? message) : base(message) { }
+}
