@@ -24,25 +24,6 @@ internal class CallImplementation //: ICall
             throw new BO.BlAlreadyExistsException($"Call with ID={boCall.IdCall} already exists", ex);
         }
     }
-
-    //Delete implementation
-    public void Delete(int id)
-    {
-        if (CallManager.GetCallState(s_dal.Call.ReadAll().FirstOrDefault(c=> c.Id == id)) != BO.CallState.open)
-        {
-            throw new BO.BlInMiddlePerformingTaskException($"Call with ID={id} is in progress past or present and cannot be deleted");
-        }
-
-        try
-        {
-            s_dal.Call.Delete(id);
-        }
-        catch (DO.DalDoesNotExistException ex)
-        {
-            throw new BO.BlDoesNotExistException($"Call with ID={id} does Not exist", ex);
-        }
-    }
-
     //Read implementation
     public BO.Call Read(int id)
     {
@@ -67,6 +48,24 @@ internal class CallImplementation //: ICall
         }
     }
 
+    //Delete implementation
+    public void Delete(int id)
+    {
+        if (CallManager.GetCallState(s_dal.Call.ReadAll().FirstOrDefault(c=> c.Id == id)) != BO.CallState.open)
+        {
+            throw new BO.BlInMiddlePerformingTaskException($"Call with ID={id} is in progress past or present and cannot be deleted");
+        }
+
+        try
+        {
+            s_dal.Call.Delete(id);
+        }
+        catch (DO.DalDoesNotExistException ex)
+        {
+            throw new BO.BlDoesNotExistException($"Call with ID={id} does Not exist", ex);
+        }
+    }
+
     public int[] GetCallsAmountByStatus()
     {
         if (s_dal.Call.ReadAll() == null)
@@ -85,4 +84,51 @@ internal class CallImplementation //: ICall
 
         return callsAmountByStatus;
     }
+
+    public IEnumerable<BO.CallInList> GetCallsList(BO.CallInListFields? filterField, object? filterValue, BO.CallInListFields? orderByField)
+    {
+        var allCallInList = s_dal.Volunteer.ReadAll()
+            .Select(v => VolunteerManager.MPIdVolunteerToCallInProgress(v.id))
+            .Where(c => c != null) // take just when CallInProgress not was null
+            .Cast<BO.CallInList>();
+
+        // filter:
+        if (filterField != null && filterValue != null)
+        {
+            var prop = typeof(BO.CallInList).GetProperty(filterField.ToString());
+            allCallInList = allCallInList.Where(c => object.Equals(prop.GetValue(c), filterValue));
+        }
+
+        // sort:
+        if (orderByField == null)
+            orderByField = BO.CallInListFields.IdCall;
+
+        var orderProp = typeof(BO.CallInList).GetProperty(orderByField.ToString());
+        allCallInList = allCallInList.OrderBy(c => orderProp.GetValue(c));
+
+        return allCallInList;
+    }
+
+    //GetClosedCallsByVolunteer implementation
+    public IEnumerable<BO.ClosedCallInList> GetClosedCallsByVolunteer(int volunteerId, BO.CallType? filterType, BO.ClosedCallFields? orderByField)
+    {
+        var allClosedCalls = s_dal.Assignment.ReadAll()
+            .Where(a => a.VolunteerId == volunteerId)
+            .Where(a => a.FinishType != null)
+            .Select(a => AssignmentManager.MPIdAssignmentToClosedCall(a.Id));
+
+        // filter:
+        if (filterType != null)
+            allClosedCalls = allClosedCalls.Where(c => c.Type == filterType);
+
+        // sort:
+        if (orderByField == null)
+            orderByField = BO.ClosedCallFields.IdCall;
+
+        var orderProp = typeof(BO.ClosedCallInList).GetProperty(orderByField.ToString());
+        allClosedCalls = allClosedCalls.OrderBy(c => orderProp.GetValue(c));
+
+        return allClosedCalls;
+    }
 }
+

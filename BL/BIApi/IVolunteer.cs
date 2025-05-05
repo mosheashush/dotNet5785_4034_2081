@@ -7,7 +7,6 @@ public interface IVolunteer
 {
     public BO.User Entrance(string name, string password);
     public List<BO.VolunteerInList> listOfVolunteer(bool? isActive, VolunteerInListFields? field);
-    //public BO.Volunteer DetilsOfVolunteer(int IdVolunteer); //creat new
 
     public void Create(BO.Volunteer volunteer);
     public BO.Volunteer? Read (int IdVolunteer);

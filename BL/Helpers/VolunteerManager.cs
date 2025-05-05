@@ -38,7 +38,7 @@ internal static class VolunteerManager
     }
 
     //MP volunteer to volunteer in progress
-    public static BO.CallInProgress? IfCallInProgress(int id)
+    public static BO.CallInProgress? MPIdVolunteerToCallInProgress(int id)
     {
         DO.Assignment assignment = s_dal.Assignment.ReadAll().FirstOrDefault(c => c.VolunteerId == id && c.FinishType == null); // volunteer can take only one volunteer at a time
         if (assignment == null)
@@ -63,7 +63,7 @@ internal static class VolunteerManager
         }
     }
 
-    //MapDOToBOCall implementation
+    //MapDOToBOVolunteer implementation
     public static BO.Volunteer MapDOToBOVolunteer(DO.Volunteer doVolunteer)
     {
         return new BO.Volunteer()
@@ -80,10 +80,10 @@ internal static class VolunteerManager
             Active = doVolunteer.Active,
             MaxDistanceForCall = doVolunteer.MaxDistanceForCall,
             TypeOfDistance = (BO.Distance)doVolunteer.TypeOfDistance,
-            SumCallsCompleted = VolunteerManager.CalculatSumCallsCompleted(id),
-            SumCallsExpired = VolunteerManager.CalculatSumCallsExpired(id),
-            SumCallsConcluded = VolunteerManager.CalculatSumCallsConcluded(id),
-            CallInProgress = VolunteerManager.IfCallInProgress(id),
+            SumCallsCompleted = CalculatSumCallsCompleted(doVolunteer.id),
+            SumCallsExpired = CalculatSumCallsExpired(doVolunteer.id),
+            SumCallsConcluded = CalculatSumCallsConcluded(doVolunteer.id),
+            CallInProgress = MPIdVolunteerToCallInProgress(doVolunteer.id),
         };
     }
 
