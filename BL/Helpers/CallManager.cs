@@ -1,20 +1,16 @@
 ﻿using DalApi;
-using BIApi;
-using Dal;
-using System.Data;
-using BlImplementation;
-//using BO;
-using DO;
-using System.Numerics;
-using System.Threading.Tasks;
+using System.Net;
+using System.Text.Json;
+using System.Text.RegularExpressions;
+using System.IO;
 using BO;
+
 
 namespace Helpers;
 
 internal static class CallManager
 {
-    private static IDal s_dal = Factory.Get; //stage 4
-
+    private static IDal s_dal = Factory.Get;
     //MapDOToBOCall implementation
     public static BO.Call MapDOToBOCall(DO.Call call)
     {

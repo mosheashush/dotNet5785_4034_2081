@@ -51,7 +51,9 @@ internal class AdminImplementation : IAdmin
 
     public void InitializeDatabase()
     {
+
         s_dal.ResetDB();
+        Initialization.Do();
         ClockManager.UpdateClock(ClockManager.Now);
     }
 

@@ -1,11 +1,9 @@
 ﻿using BIApi;
-//using BO;
-//using DO;
+//using DalApi;
 using Helpers;
 using System.Collections.Generic;
 using System.Linq;
 namespace BlImplementation;
-
 
 internal class CallImplementation : ICall
 {

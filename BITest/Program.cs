@@ -10,6 +10,7 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace BlTest
 {
+
     class Program
     {
         static readonly BIApi.IBl s_dal = BIApi.Factory.Get();
@@ -20,6 +21,11 @@ namespace BlTest
         /// </summary>
         static void Main(string[] args)
         {
+            //Console.WriteLine(s_dal.Volunteer.Read(26181106));
+            //IBl s_dalt = BIApi.Factory.Get();
+
+           s_dal.Admin.InitializeDatabase();
+
             // Displaying the main menu to the user
             while (true)
             {
@@ -156,6 +162,7 @@ namespace BlTest
                                 throw new BO.BlInvalidValueException("Invalid input. Please enter a valid numeric ID.");
                             try
                             {
+                                
                                 var volunteerDetails = s_dal.Volunteer.Read(volunteerId);
                                 Console.WriteLine(volunteerDetails);
                             }
