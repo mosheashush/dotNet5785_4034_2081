@@ -7,7 +7,7 @@ public interface ICall
     BO.Call Read(int callId);
     void Update(BO.Call call);
     void Delete(int callId);
-    void Creat(BO.Call call);
+    void Create(BO.Call call);
     IEnumerable<BO.ClosedCallInList> GetClosedCallsByVolunteer(int volunteerId, BO.CallType? filterType, BO.ClosedCallFields? orderByField);
     IEnumerable<BO.OpenCallInList> GetOpenCallsForVolunteer(int volunteerId, BO.CallType? filterType, BO.OpenCallFields? orderByField);
     void FinishTreatment(int volunteerId, int assignmentId);

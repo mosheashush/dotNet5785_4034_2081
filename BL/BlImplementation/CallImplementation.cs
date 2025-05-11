@@ -1,12 +1,13 @@
 ﻿using BIApi;
-using DO;
+//using BO;
+//using DO;
 using Helpers;
 using System.Collections.Generic;
 using System.Linq;
 namespace BlImplementation;
 
 
-internal class CallImplementation //: ICall
+internal class CallImplementation : ICall
 {
     private readonly DalApi.IDal s_dal = DalApi.Factory.Get;
 
@@ -51,7 +52,7 @@ internal class CallImplementation //: ICall
     //Delete implementation
     public void Delete(int id)
     {
-        if (CallManager.GetCallState(s_dal.Call.ReadAll().FirstOrDefault(c=> c.Id == id)) != BO.CallState.open)
+        if (CallManager.GetCallState(s_dal.Call.ReadAll().FirstOrDefault(c => c.Id == id)) != BO.CallState.open)
         {
             throw new BO.BlInMiddlePerformingTaskException($"Call with ID={id} is in progress past or present and cannot be deleted");
         }
@@ -69,7 +70,7 @@ internal class CallImplementation //: ICall
     public int[] GetCallsAmountByStatus()
     {
         if (s_dal.Call.ReadAll() == null)
-            throw new DalDoesNotExistException("DAL is not initialized");
+            throw new BO.BlDoesNotExistException("DAL is not initialized");
 
         var grouped = s_dal.Call.ReadAll()
             .Select(CallManager.MapDOToBOCall)
@@ -134,10 +135,10 @@ internal class CallImplementation //: ICall
     //GetOpenCallsForVolunteer implementation
     public IEnumerable<BO.OpenCallInList> GetOpenCallsForVolunteer(int volunteerId, BO.CallType? filterType, BO.OpenCallFields? orderByField)
     {
-        var allOpenCalls = s_dal.Call .ReadAll()
+        var allOpenCalls = s_dal.Call.ReadAll()
             .Select(CallManager.MapDOToBOCall)
             .Where(a => a.CallState == BO.CallState.open || a.CallState == BO.CallState.openOnRisk)
-            .Select(a => CallManager.MPIdVolunteerToOpenCallInList(a,volunteerId));
+            .Select(a => CallManager.MPIdVolunteerToOpenCallInList(a, volunteerId));
 
         // filter:
         if (filterType != null)
@@ -153,13 +154,13 @@ internal class CallImplementation //: ICall
     }
 
     // Updated FinishTreatment method to use the 'With' expression for immutable record properties
-    void FinishTreatment(int volunteerId, int assignmentId)
+    public void FinishTreatment(int volunteerId, int assignmentId)
     {
         var assignment = s_dal.Assignment.Read(assignmentId)
             ?? throw new BO.BlDoesNotExistException($"Assignment with ID={assignmentId} does Not exist");
 
         if (assignment.VolunteerId != volunteerId)
-            throw new BO.BlNotAllowedMakeChangesEaxception($"Assignment with ID={assignmentId} does not belong to Volunteer with ID={volunteerId}");
+            throw new BO.BlNotAllowedMakeChangesException($"Assignment with ID={assignmentId} does not belong to Volunteer with ID={volunteerId}");
 
         if (assignment.FinishType != null)
             throw new BO.NoTimeCompleteTaskException($"Assignment with ID={assignmentId} already {assignment.FinishType}");
@@ -172,6 +173,70 @@ internal class CallImplementation //: ICall
         };
 
         s_dal.Assignment.Update(updatedAssignment);
+    }
+
+
+    public void CancelTreatment(int requesterId, int assignmentId)
+    {
+        var assignment = s_dal.Assignment.Read(assignmentId)
+           ?? throw new BO.BlDoesNotExistException($"Assignment with ID={assignmentId} does Not exist");
+        DO.Assignment updatedAssignment;
+
+        if (assignment.VolunteerId != requesterId ||
+            s_dal.Volunteer.Read(requesterId).CurrentPosition == DO.User.admin)
+            throw new BO.BlNotAllowedMakeChangesException($"Assignment with ID={assignmentId} does not belong to Volunteer with ID={requesterId}");
+        if (assignment.FinishType != null)
+            throw new BO.NoTimeCompleteTaskException($"Assignment with ID={assignmentId} already {assignment.FinishType}");
+        // Use 'With' to create a new immutable record with updated properties
+        if (s_dal.Volunteer.Read(requesterId).CurrentPosition == DO.User.admin) 
+        { 
+            updatedAssignment = assignment with
+            {
+
+                FinishType = DO.CompletionType.canceledAdmin,
+                CompletionTime = DateTime.Now
+            };
+        }
+
+        else
+        {
+            updatedAssignment = assignment with
+            {
+                FinishType = DO.CompletionType.canceledVolunteer,
+                CompletionTime = DateTime.Now
+            };
+        }
+
+
+        s_dal.Assignment.Update(updatedAssignment);
+
+    }
+
+    public void ChooseCallForTreatment(int volunteerId, int callId){
+        var volunteer = s_dal.Volunteer.Read(volunteerId)
+            ?? throw new BO.BlDoesNotExistException($"Volunteer with ID={volunteerId} does Not exist");
+        var call = s_dal.Call.Read(callId)
+            ?? throw new BO.BlDoesNotExistException($"Call with ID={callId} does Not exist");
+        // Check if the call is already assigned to another volunteer
+        if (s_dal.Assignment.ReadAll().FirstOrDefault(a => a.CallId == callId &&
+        // Check if the call is already canceled
+        (a.FinishType != DO.CompletionType.canceledAdmin ||
+        a.FinishType != DO.CompletionType.canceledVolunteer)) != null)
+            throw new BO.BlInMiddlePerformingTaskException("Call already assigned to another volunteer");
+        // Check if the call is already expired
+        if ( CallManager.GetCallState( s_dal.Call.Read(callId))== BO.CallState.expired)
+            throw new BO.NoTimeCompleteTaskException("Call already expired");
+
+        // Use 'With' to create a new immutable record with updated properties
+        var assignment = new DO.Assignment
+        {
+            VolunteerId = volunteerId,
+            CallId = callId,
+            StarCall = DateTime.Now,
+        };
+
+        // Create the assignment in the data layer
+          s_dal.Assignment.Create(assignment);
     }
 }
 

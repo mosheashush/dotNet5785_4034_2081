@@ -3,7 +3,10 @@ namespace BlImplementation;
 
 internal class BI : IBl
 {
-    public IAdmin Admin { get; }
-    public ICall Call { get; }
-    public IVolunteer Volunteer { get; }
+    public IAdmin Admin { get; } = new AdminImplementation();
+
+    public ICall Call { get; } = new CallImplementation();
+    public IVolunteer Volunteer { get; } = new VolunteerImplementation();
+
+
 }

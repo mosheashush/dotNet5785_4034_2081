@@ -123,4 +123,41 @@ internal static class CallManager
         }
         throw new ArgumentException("Invalid boCall state");
     }
-} 
+
+    /// <summary>
+    /// Updates all expired calls that haven't been assigned to a volunteer
+    /// by creating an assignment marked as 'expired'.
+    /// </summary>
+    public static void UpdateExpiredCall()
+    {
+        // Read all existing assignments once to improve performance
+        var existingAssignments = s_dal.Assignment.ReadAll()
+            .Select(a => a.CallId)
+            .ToHashSet();
+
+        // Filter calls whose MaxTimeForCall has passed and are not yet assigned
+        var expiredCalls = s_dal.Call.ReadAll()
+            .Where(c => c.MaxTimeForCall < ClockManager.Now &&
+                        !existingAssignments.Contains(c.Id))
+            .ToList();
+
+        // Create an 'expired' assignment for each unassigned expired call
+        expiredCalls.ForEach(c =>
+            s_dal.Assignment.Create(new DO.Assignment
+            {
+                CallId = c.Id,
+                VolunteerId = 0,
+                StarCall = c.CallStartTime,
+                FinishType = DO.CompletionType.expired,
+                CompletionTime = ClockManager.Now
+            })
+        );
+
+        var assignments = s_dal.Assignment.ReadAll()
+     .Where(a => s_dal.Call.Read(a.CallId).MaxTimeForCall < ClockManager.Now)
+     .Select(a => a with { FinishType = DO.CompletionType.expired, CompletionTime = ClockManager.Now })
+     .ToList();
+
+        assignments.ForEach(s_dal.Assignment.Update);
+    }
+}
