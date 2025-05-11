@@ -20,18 +20,18 @@ internal static class AssignmentManager
         };
     }
 
-    //Get Assignment id and return public class ClosedCallInList implementation
-    public static BO.ClosedCallInList MPIdAssignmentToClosedCall(int id)
+    //Get Assignment idAssignment and return public class ClosedCallInList implementation
+    public static BO.ClosedCallInList MPIdAssignmentToClosedCall(int idAssignment)
     {
         return new BO.ClosedCallInList()
         {
-            IdCall = s_dal.Assignment.Read(id).CallId,
-            Type = (BO.CallType)s_dal.Call.Read(s_dal.Assignment.Read(id).CallId).Type,
-            FullAddress = s_dal.Call.Read(s_dal.Assignment.Read(id).CallId).FullAddress,
-            CallStartTime = s_dal.Call.Read(s_dal.Assignment.Read(id).CallId).CallStartTime,
-            VolunteerTakeCall = s_dal.Assignment.Read(id).StarCall,
-            CompletionTime = s_dal.Assignment.Read(id).CompletionTime,
-            FinishType = (BO.CompletionType)s_dal.Assignment.Read(id).FinishType,
+            IdCall = s_dal.Assignment.Read(idAssignment).CallId,
+            Type = (BO.CallType)s_dal.Call.Read(s_dal.Assignment.Read(idAssignment).CallId).Type,
+            FullAddress = s_dal.Call.Read(s_dal.Assignment.Read(idAssignment).CallId).FullAddress,
+            CallStartTime = s_dal.Call.Read(s_dal.Assignment.Read(idAssignment).CallId).CallStartTime,
+            VolunteerTakeCall = s_dal.Assignment.Read(idAssignment).StarCall,
+            CompletionTime = s_dal.Assignment.Read(idAssignment).CompletionTime,
+            FinishType = (BO.CompletionType)s_dal.Assignment.Read(idAssignment).FinishType,
         };
     }
 }

@@ -3,10 +3,11 @@ using BIApi;
 using Dal;
 using System.Data;
 using BlImplementation;
-using BO;
+//using BO;
 using DO;
 using System.Numerics;
 using System.Threading.Tasks;
+using BO;
 
 namespace Helpers;
 
@@ -46,16 +47,32 @@ internal static class CallManager
             Longitude = call.Longitude
         };
     }
+
+    //MPIdVolunteerToOpenCall implementation\
+    public static BO.OpenCallInList MPIdVolunteerToOpenCallInList(BO.Call call, int idVolunteer)
+    {
+        return new BO.OpenCallInList()
+        {
+            IdCall = call.IdCall,
+            Type = (BO.CallType)call.Type,
+            description = call.description,
+            FullAddress = call.FullAddress,
+            CallStartTime = call.CallStartTime,
+            MaxTimeForCall = call.MaxTimeForCall,
+            DistanceFromVolunteer = VolunteerManager.GetDistanceInKm(call.Latitude, call.Longitude, s_dal.Volunteer.Read(idVolunteer).Latitude , s_dal.Volunteer.Read(idVolunteer).Longitud),
+        };
+    }
+
     //Check Call implementation
     public static void CheckCall(BO.Call boCall)
     {
         //check id
         if (boCall.IdCall < 1000 || boCall.IdCall > 1999)
-            throw new BlInvalidValueException($"Call id ={boCall.IdCall} not have corrent digits");
+            throw new BO.BlInvalidValueException($"Call id ={boCall.IdCall} not have corrent digits");
 
         //check time to complete task
         if (boCall.MaxTimeForCall < boCall.CallStartTime)
-            throw new NoTimeCompleteTaskException("Max time for boCall must be greater than boCall start time");
+            throw new BO.NoTimeCompleteTaskException("Max time for boCall must be greater than boCall start time");
 
         //address check and update coordinates
         (boCall.Latitude, boCall.Longitude)  = VolunteerManager.GetCoordinatesFromAddress(boCall.FullAddress);

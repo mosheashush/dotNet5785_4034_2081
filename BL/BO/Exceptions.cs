@@ -8,24 +8,12 @@ public class BlDoesNotExistException : Exception
 }
 
 [Serializable]
-public class BlNullPropertyException : Exception
-{
-    public BlNullPropertyException(string? message) : base(message) { }
-}
-
-[Serializable]
 public class BlAlreadyExistsException : Exception
 {
     public BlAlreadyExistsException(string? message) : base(message) { }
     public BlAlreadyExistsException(string message, Exception innerException) : base(message, innerException) { }
 }
 
-//blCanNotCreatArgumentNullException
-[Serializable]
-public class blCanNotCreatArgumentNullException : Exception
-{
-    public blCanNotCreatArgumentNullException(string? message) : base(message) { }
-}
 //BlInMiddlePerformingTaskException
 
 [Serializable]
@@ -48,7 +36,14 @@ public class BlInvalidValueException : Exception
     public BlInvalidValueException(string? message) : base(message) { }
 }
 
-//BlCanNotOrderNotExistsFieldException
+//BlDataMismatchExcept
+[Serializable]
+public class BlDataMismatchException : Exception
+{
+    public BlDataMismatchException(string? message) : base(message) { }
+}
+
+//BlCanNotOrderNotExistsFieldException (Maybe unnecessary)
 [Serializable]
 public class BlCanNotOrderNotExistsFieldException : Exception
 {

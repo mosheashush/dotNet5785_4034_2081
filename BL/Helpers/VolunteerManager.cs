@@ -148,9 +148,6 @@ internal static class VolunteerManager
     //Get volunteer and check if the address is valid, if yes update the coordinates 
     internal static (double Latitude, double Longitude) GetCoordinatesFromAddress(string Address)
     {
-        if (string.IsNullOrWhiteSpace(Address))
-            throw new BlNullPropertyException("address is null");
-
         string url = $"https://geocode.maps.co/search?q={Uri.EscapeDataString(Address)}";
 
         HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);

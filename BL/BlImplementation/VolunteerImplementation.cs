@@ -126,6 +126,8 @@ internal class VolunteerImplementation : IVolunteer
                     volunteers = volunteers.OrderBy(v => s_dal.Assignment.ReadAll().FirstOrDefault(c => c.VolunteerId == v.id).CallId);
                     break;
                 case BO.VolunteerInListFields.Type:
+                    if (isActive == false)
+                        throw new BO.BlCanNotOrderNotExistsFieldException($"Volunteer with ID={isActive} can not do this change");
                     volunteers = volunteers.OrderBy(v => s_dal.Call.ReadAll().FirstOrDefault(c => c.Id == s_dal.Assignment.ReadAll().FirstOrDefault(c => c.VolunteerId == v.id).CallId).Type);
                     break;
                 case BO.VolunteerInListFields.SumCallsCompleted:

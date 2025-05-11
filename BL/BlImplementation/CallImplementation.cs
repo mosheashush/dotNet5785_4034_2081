@@ -126,9 +126,52 @@ internal class CallImplementation //: ICall
             orderByField = BO.ClosedCallFields.IdCall;
 
         var orderProp = typeof(BO.ClosedCallInList).GetProperty(orderByField.ToString());
-        allClosedCalls = allClosedCalls.OrderBy(c => orderProp.GetValue(c));
+        allClosedCalls = allClosedCalls.OrderBy(orderProp.GetValue);
 
         return allClosedCalls;
+    }
+
+    //GetOpenCallsForVolunteer implementation
+    public IEnumerable<BO.OpenCallInList> GetOpenCallsForVolunteer(int volunteerId, BO.CallType? filterType, BO.OpenCallFields? orderByField)
+    {
+        var allOpenCalls = s_dal.Call .ReadAll()
+            .Select(CallManager.MapDOToBOCall)
+            .Where(a => a.CallState == BO.CallState.open || a.CallState == BO.CallState.openOnRisk)
+            .Select(a => CallManager.MPIdVolunteerToOpenCallInList(a,volunteerId));
+
+        // filter:
+        if (filterType != null)
+            allOpenCalls = allOpenCalls.Where(c => c.Type == filterType);
+
+        // sort:
+        if (orderByField == null)
+            orderByField = BO.OpenCallFields.IdCall;
+        var orderProp = typeof(BO.OpenCallInList).GetProperty(orderByField.ToString());
+        allOpenCalls = allOpenCalls.OrderBy(orderProp.GetValue);
+
+        return allOpenCalls;
+    }
+
+    // Updated FinishTreatment method to use the 'With' expression for immutable record properties
+    void FinishTreatment(int volunteerId, int assignmentId)
+    {
+        var assignment = s_dal.Assignment.Read(assignmentId)
+            ?? throw new BO.BlDoesNotExistException($"Assignment with ID={assignmentId} does Not exist");
+
+        if (assignment.VolunteerId != volunteerId)
+            throw new BO.BlNotAllowedMakeChangesEaxception($"Assignment with ID={assignmentId} does not belong to Volunteer with ID={volunteerId}");
+
+        if (assignment.FinishType != null)
+            throw new BO.NoTimeCompleteTaskException($"Assignment with ID={assignmentId} already {assignment.FinishType}");
+
+        // Use 'With' to create a new immutable record with updated properties
+        var updatedAssignment = assignment with
+        {
+            FinishType = DO.CompletionType.completed,
+            CompletionTime = DateTime.Now
+        };
+
+        s_dal.Assignment.Update(updatedAssignment);
     }
 }
 
