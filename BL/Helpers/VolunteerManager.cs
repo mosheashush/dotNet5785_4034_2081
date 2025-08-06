@@ -40,8 +40,8 @@ internal static class VolunteerManager
     //MP volunteer to volunteer in progress
     public static BO.CallInProgress? MPIdVolunteerToCallInProgress(int id)
     {
-        DO.Assignment assignment = s_dal.Assignment.ReadAll().FirstOrDefault(c => c.VolunteerId == id && c.FinishType == null); // volunteer can take only one volunteer at a time
-        if (assignment == null)
+        DO.Assignment assignment = s_dal.Assignment.ReadAll().FirstOrDefault(c => c.VolunteerId == id && c.FinishType == null); // volunteer can take only one volunteereion at a one time
+        if (assignment != null)
             return null;
         else
         {
@@ -58,7 +58,7 @@ internal static class VolunteerManager
                 MaxTimeForCall = call.MaxTimeForCall,
                 VolunteerTakeCall = assignment.StarCall,
                 DistanceFromVolunteer = GetDistanceInKm(call.Latitude, call.Longitude, volunteer.Latitude, volunteer.Longitud),
-                CollState = CallManager.GetCallState(call),
+                CallState = CallManager.GetCallState(call),
             };
         }
     }
@@ -180,11 +180,11 @@ internal static class VolunteerManager
             throw new BO.BlInvalidValueException($"Volunteer ID={boVolunteer.id} is not valid");
 
         //CallNumber
-        if (boVolunteer.CallNumber.Length != 10 || boVolunteer.CallNumber[0] != 0 || boVolunteer.CallNumber[1] != 5)
+        if (boVolunteer.CallNumber.Length != 10 || boVolunteer.CallNumber[0] != '0' || boVolunteer.CallNumber[1] != '5')
             throw new BO.BlInvalidValueException($"Call number={boVolunteer.CallNumber} need to be 10 digits valid");
 
         //email
-        if (IsValidEmail(boVolunteer.EmailAddress))
+        if (!IsValidEmail(boVolunteer.EmailAddress))
             throw new BO.BlInvalidValueException($"Email address={boVolunteer.EmailAddress} is not valid");
 
         //password

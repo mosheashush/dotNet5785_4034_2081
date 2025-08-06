@@ -4,6 +4,9 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.IO;
 using BO;
+using DO;
+using System.Xml.Linq;
+//using BIApi;
 
 
 namespace Helpers;
@@ -96,28 +99,54 @@ internal static class CallManager
     //GetCallState implementation
     public static BO.CallState GetCallState(DO.Call call)
     {
+        DO.Assignment assignment = s_dal.Assignment.ReadAll().FirstOrDefault(c => c.CallId == call.Id);
+
+        if (assignment != null && assignment.FinishType == DO.CompletionType.completed)
+            return BO.CallState.completed;
+        else if (assignment != null && assignment.FinishType == DO.CompletionType.expired)
+            return BO.CallState.expired;
+
         if (call.MaxTimeForCall < ClockManager.Now)
         {
-            if (s_dal.Assignment.ReadAll().FirstOrDefault(c => c.CallId == call.Id).FinishType == DO.CompletionType.completed)
+            if (assignment != null && assignment.FinishType == DO.CompletionType.completed)
                 return BO.CallState.completed;
             else
                 return BO.CallState.expired;
         }
-        if (call.MaxTimeForCall - s_dal.Config.RiskRange <= ClockManager.Now)
+        else if (call.MaxTimeForCall - s_dal.Config.RiskRange <= ClockManager.Now)
         {
-            if (s_dal.Assignment.ReadAll().FirstOrDefault(c => c.CallId == call.Id) != null)
+            if (assignment != null && assignment.CompletionTime != null)
                 return BO.CallState.ProcessedOnRisk;
             else
                 return BO.CallState.openOnRisk;
         }
         else if (call.MaxTimeForCall - s_dal.Config.RiskRange > ClockManager.Now)
         {
-            if (s_dal.Assignment.ReadAll().FirstOrDefault(c => c.CallId == call.Id) != null)
+            if (assignment != null && assignment.CompletionTime == null)
                 return BO.CallState.processed;
             else
                 return BO.CallState.open;
         }
         throw new ArgumentException("Invalid boCall state");
+    }
+
+    public static CallInList MPAssignmentToCallInList(BO.Call call)
+    {
+        DO.Assignment assignment = s_dal.Assignment.ReadAll().FirstOrDefault(a => a.CallId == call.IdCall);
+        return new BO.CallInList()
+        {
+            IdAssignment = assignment?.Id ?? null,
+            IdCall = call.IdCall,
+            Type = call.Type,
+            CallStartTime = call.CallStartTime,
+            TimeRemaining = call.MaxTimeForCall - ClockManager.Now,
+            NameFinalVolunteer = s_dal.Assignment.ReadAll().Where(a => a.CallId == call.IdCall).OrderByDescending(a => a.CompletionTime)
+                                                 .Join(s_dal.Volunteer.ReadAll(), a => a.VolunteerId, v => v.id, (a, v) => v.FullName)
+                                                 .FirstOrDefault(),
+            SumTimeProcess = assignment != null && assignment.FinishType == DO.CompletionType.completed ?  ClockManager.Now - call.CallStartTime : null,
+            CallState = call.CallState,
+            SumOfAssignments = s_dal.Assignment.ReadAll().Count(c=> c.CallId == call.IdCall),
+        };
     }
 
     /// <summary>

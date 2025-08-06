@@ -1,4 +1,6 @@
-﻿namespace BO;
+﻿using Helpers;
+
+namespace BO;
 
 public class Volunteer
 {
@@ -21,6 +23,6 @@ public class Volunteer
     public int SumCallsConcluded { get; set; }
     public BO.CallInProgress? CallInProgress { get; set; }
 
-    public override string ToString() => this.ToString();
+    public override string ToString() => this.ToStringProperty();
 
 }

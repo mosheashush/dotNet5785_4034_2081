@@ -1,5 +1,6 @@
 ﻿using BO;
 using DalApi;
+using System.Collections;
 using System.Reflection;
 using System.Text;
 
@@ -11,44 +12,79 @@ internal static class Tools
 
     public static string ToStringProperty<T>(this T obj)
     {
-        //    TODO: implement a better ToStringProperty method
-        /*
-        if (t.GetType.Name == "Volunteer")
-        {
-            Console.WriteLine();
-        }
-        return null;
-        
-        if (obj == null)
-            return "null";
-
-        StringBuilder sb = new StringBuilder();
-        Type type = obj.GetType();
-        sb.AppendLine($"{type.Name} Properties:");
-
-        PropertyInfo[] properties = type.GetProperties();
-        foreach (var prop in properties)
-        {
-            object? value = prop.GetValue(obj);
-            sb.AppendLine($"  {prop.Name}: {value}");
-        }
-
-        return sb.ToString();
-       */
-        if (obj == null)
-            return "null";
-
-        Type type = obj.GetType();
-        var properties = type.GetProperties();
-
-        string propertiesString = string.Join(Environment.NewLine,
-            properties.Select(p =>
-            {
-                object? value = p.GetValue(obj);
-                return $"  {p.Name}: {value}";
-            }));
-
-        return $"{type.Name} Properties:{Environment.NewLine}{propertiesString}";
+        var visited = new HashSet<object>();
+        return ToStringPropertyRecursive(obj, 0, visited);
     }
+
+    private static string ToStringPropertyRecursive(object? obj, int indentLevel, HashSet<object> visited)
+    {
+        if (obj == null)
+            return Indent("null", indentLevel);
+
+        if (visited.Contains(obj))
+            return Indent($"(Already printed {obj.GetType().Name})", indentLevel);
+
+        visited.Add(obj);
+
+        var type = obj.GetType();
+        var sb = new StringBuilder();
+        sb.AppendLine(Indent($"{type.Name} {{", indentLevel));
+
+        // Properties
+        foreach (var prop in type.GetProperties(BindingFlags.Public | BindingFlags.Instance))
+        {
+            object? value;
+            try { value = prop.GetValue(obj); }
+            catch { continue; }
+
+            sb.Append(Indent($"{prop.Name} = ", indentLevel + 1));
+            sb.AppendLine(FormatValue(value, indentLevel + 1, visited));
+        }
+
+        // Fields (אם אתה לא צריך – אפשר להסיר)
+        foreach (var field in type.GetFields(BindingFlags.Public | BindingFlags.Instance))
+        {
+            object? value;
+            try { value = field.GetValue(obj); }
+            catch { continue; }
+
+            sb.Append(Indent($"{field.Name} = ", indentLevel + 1));
+            sb.AppendLine(FormatValue(value, indentLevel + 1, visited));
+        }
+
+        sb.AppendLine(Indent("}", indentLevel));
+        return sb.ToString();
+    }
+
+    private static string FormatValue(object? value, int indentLevel, HashSet<object> visited)
+    {
+        if (value == null)
+            return "null";
+
+        if (value is string s)
+            return $"\"{s}\"";
+
+        if (value is IEnumerable enumerable and not string)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("[");
+            foreach (var item in enumerable)
+                sb.AppendLine(ToStringPropertyRecursive(item!, indentLevel + 1, visited));
+            sb.Append(Indent("]", indentLevel));
+            return sb.ToString();
+        }
+
+        if (IsPrimitive(value.GetType()))
+            return value.ToString()!;
+
+        return ToStringPropertyRecursive(value, indentLevel, visited);
+    }
+
+    private static string Indent(string text, int level) =>
+        new string(' ', level * 2) + text;
+
+    private static bool IsPrimitive(Type type) =>
+        type.IsPrimitive || type.IsEnum || type == typeof(string) || type == typeof(DateTime) || type == typeof(TimeSpan) || type == typeof(decimal);
+
 
 }

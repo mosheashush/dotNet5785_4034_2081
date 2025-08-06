@@ -1,4 +1,6 @@
-﻿namespace BO;
+﻿using Helpers;
+
+namespace BO;
 
 public class OpenCallInList
 {
@@ -10,6 +12,6 @@ public class OpenCallInList
     public DateTime? MaxTimeForCall { get; set; }
     public double DistanceFromVolunteer { get; set; }
 
-    public override string ToString() => this.ToString();
+    public override string ToString() => this.ToStringProperty();
 
 }

@@ -1,4 +1,5 @@
 ﻿
+using Helpers;
 using System.Data;
 
 namespace BO;
@@ -14,8 +15,8 @@ public class CallInList
     public TimeSpan? TimeRemaining { get; set; }
     public string? NameFinalVolunteer { get; set; }
     public TimeSpan? SumTimeProcess { get; set; }
-    public CallState collState { get; set; }
+    public CallState CallState { get; set; }
     public int SumOfAssignments { get; set; }
 
-    public override string ToString() => this.ToString();
+    public override string ToString() => this.ToStringProperty();
 }

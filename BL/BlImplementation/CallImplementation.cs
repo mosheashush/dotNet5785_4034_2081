@@ -86,24 +86,41 @@ internal class CallImplementation : ICall
 
     public IEnumerable<BO.CallInList> GetCallsList(BO.CallInListFields? filterField, object? filterValue, BO.CallInListFields? orderByField)
     {
-        var allCallInList = s_dal.Volunteer.ReadAll()
-            .Select(v => VolunteerManager.MPIdVolunteerToCallInProgress(v.id))
-            .Where(c => c != null) // take just when CallInProgress not was null
-            .Cast<BO.CallInList>();
+        var allCallInList = s_dal.Call.ReadAll()
+            .Select(CallManager.MapDOToBOCall)
+            .Select(CallManager.MPAssignmentToCallInList);
+        
+        // sort:
+        if (orderByField == null)
+            orderByField = BO.CallInListFields.IdCall;
+        var orderProp = typeof(BO.CallInList).GetProperty(orderByField.ToString());
+        allCallInList = allCallInList.OrderBy(c => orderProp.GetValue(c));
 
         // filter:
         if (filterField != null && filterValue != null)
         {
+            Console.WriteLine($"filterField: {filterField}, prop: {filterField?.ToString()}\n");
             var prop = typeof(BO.CallInList).GetProperty(filterField.ToString());
-            allCallInList = allCallInList.Where(c => object.Equals(prop.GetValue(c), filterValue));
+            object convertedValue = filterValue;
+            var propType = prop.PropertyType;
+
+            if (propType.IsEnum)
+                convertedValue = Enum.Parse(propType, filterValue.ToString(), ignoreCase: true);
+            else if (Nullable.GetUnderlyingType(propType)?.IsEnum == true)
+            {
+                var enumType = Nullable.GetUnderlyingType(propType);
+                convertedValue = Enum.Parse(enumType, filterValue.ToString(), ignoreCase: true);
+            }
+            else if (Nullable.GetUnderlyingType(propType) != null)
+            {
+                var underlyingType = Nullable.GetUnderlyingType(propType);
+                convertedValue = Convert.ChangeType(filterValue, underlyingType);
+            }
+            else
+                convertedValue = Convert.ChangeType(filterValue, propType);
+
+            allCallInList = allCallInList.Where(c => object.Equals(prop.GetValue(c), convertedValue));
         }
-
-        // sort:
-        if (orderByField == null)
-            orderByField = BO.CallInListFields.IdCall;
-
-        var orderProp = typeof(BO.CallInList).GetProperty(orderByField.ToString());
-        allCallInList = allCallInList.OrderBy(c => orderProp.GetValue(c));
 
         return allCallInList;
     }

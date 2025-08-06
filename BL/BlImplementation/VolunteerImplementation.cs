@@ -8,10 +8,12 @@ namespace BlImplementation;
 internal class VolunteerImplementation : IVolunteer
 {
     private readonly DalApi.IDal s_dal = DalApi.Factory.Get;
+
+   // public override string ToString() => this.ToStringProperty();
+
     public void Create(BO.Volunteer boVolunteer)
     {
         VolunteerManager.CheckVolunteer(boVolunteer);
-
         try
         {
             s_dal.Volunteer.Create(VolunteerManager.MapBOToDOVolunteer(boVolunteer));
@@ -144,13 +146,14 @@ internal class VolunteerImplementation : IVolunteer
         else
             volunteers = volunteers.OrderBy(v => v.id);
 
-        List<BO.VolunteerInList> converted = volunteers.Select(v => new BO.VolunteerInList
+        List<BO.VolunteerInList> converted = volunteers.Select(v => 
+        new BO.VolunteerInList
         {
             IdVolunteer = v.id,
             FullName = v.FullName,
             Active = v.Active,
-            IdCall = s_dal.Assignment.ReadAll().FirstOrDefault(c => c.VolunteerId == v.id).CallId,
-            Type = (BO.CallType)s_dal.Call.ReadAll().FirstOrDefault(c => c.Id == s_dal.Assignment.ReadAll().FirstOrDefault(c => c.VolunteerId == v.id).CallId).Type,
+            IdCall = s_dal.Assignment.ReadAll().FirstOrDefault(c => c.VolunteerId == v.id)?.CallId,
+            Type = (BO.CallType?)(s_dal.Call.ReadAll().FirstOrDefault(c => c.Id == s_dal.Assignment.ReadAll().FirstOrDefault(a => a.VolunteerId == v.id)?.CallId)?.Type) ?? BO.CallType.None,
             SumCallsCompleted = VolunteerManager.CalculatSumCallsCompleted(v.id),
             SumCallsExpired = VolunteerManager.CalculatSumCallsExpired(v.id),
             SumCallsConcluded = VolunteerManager.CalculatSumCallsConcluded(v.id),

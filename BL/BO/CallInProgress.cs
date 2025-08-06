@@ -1,4 +1,6 @@
-﻿namespace BO;
+﻿using Helpers;
+
+namespace BO;
 
 public class CallInProgress
 {
@@ -13,8 +15,8 @@ public class CallInProgress
 
     //new in BL
     public double DistanceFromVolunteer { get; set; }
-    public CallState CollState { get; set; }
+    public CallState CallState { get; set; }
 
-    public override string ToString() => this.ToString();
+    public override string ToString() => this.ToStringProperty();
 
 }

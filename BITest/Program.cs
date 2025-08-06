@@ -275,9 +275,6 @@ namespace BlTest
                         }
                         foreach (var call in calls)
                             Console.WriteLine(call);
-
-
-                        //Console.WriteLine(calls);
                         break;
 
                     case "2":

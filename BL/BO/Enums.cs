@@ -17,6 +17,7 @@ public enum CallType
 {
     makingfood,
     deliveringfood,
+    None,
 }
 
 public enum CompletionType
@@ -60,7 +61,7 @@ public enum CallInListFields
     TimeRemaining,
     NameFinalVolunteer,
     SumTimeProcess,
-    CollState,
+    CallState,
     SumOfAssignments
 }
 

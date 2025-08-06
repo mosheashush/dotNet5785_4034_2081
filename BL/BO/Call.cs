@@ -1,4 +1,6 @@
-﻿namespace BO;
+﻿using Helpers;
+
+namespace BO;
 
 public class Call
 {
@@ -15,6 +17,6 @@ public class Call
     public CallState CallState { get; set; }
     public List<BO.CallAssignInList>? callAssignInLists { get; set; }
 
-    public override string ToString() => this.ToString();
+    public override string ToString() => this.ToStringProperty();
 
 }

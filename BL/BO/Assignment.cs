@@ -1,4 +1,6 @@
 ﻿
+using Helpers;
+
 namespace BO;
 
 public class Assignment
@@ -10,6 +12,6 @@ public class Assignment
     public DateTime? CompletionTime { get; set; }
     public CompletionType? FinishType { get; set; }
 
-    public override string ToString() => this.ToString();
+    public override string ToString() => this.ToStringProperty();
 
 }
