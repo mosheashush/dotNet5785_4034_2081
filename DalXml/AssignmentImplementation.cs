@@ -1,6 +1,7 @@
 ﻿using Dal;
 using DalApi;
 using DO;
+using System.Diagnostics;
 using System.Xml.Linq;
 
 namespace Dal
@@ -18,20 +19,54 @@ namespace Dal
                 new XElement("FinishType", item.FinishType)
                 );
         }
+        // getAssignment
         static Assignment getAssignment(XElement assignment)
         {
+            XElement? elem(string name) =>
+                assignment.Elements()
+                          .FirstOrDefault(e => string.Equals(e.Name.LocalName, name, StringComparison.OrdinalIgnoreCase));
+
+            int parseInt(string name)
+            {
+                var e = elem(name) ?? throw new ArgumentNullException($"{name} element is missing");
+                if (!int.TryParse(e.Value, out var v)) throw new FormatException($"{name} is not a valid int: '{e.Value}'");
+                return v;
+            }
+
+            DateTime parseDate(string name)
+            {
+                var e = elem(name) ?? throw new ArgumentNullException($"{name} element is missing");
+                if (!DateTime.TryParse(e.Value, out var dt)) throw new FormatException($"{name} is not a valid DateTime: '{e.Value}'");
+                return dt;
+            }
+
+            // parse enum case-insensitive
+            CompletionType? finishType = null;
+            var ftElem = elem("FinishType");
+            if (ftElem != null && !string.IsNullOrWhiteSpace(ftElem.Value))
+            {
+                if (Enum.TryParse<CompletionType>(ftElem.Value, ignoreCase: true, out var parsed))
+                    finishType = parsed;
+                else
+                    Debug.WriteLine($"Warning: unknown FinishType value '{ftElem.Value}'");
+            }
+
             return new DO.Assignment()
             {
-                Id = (int?)assignment.Element("Id") ?? throw new ArgumentNullException("Id element is missing"),
-                CallId = (int?)assignment.Element("CallId") ?? throw new ArgumentNullException("CallId element is missing"),
-                VolunteerId = (int?)assignment.Element("VolunteerId") ?? throw new ArgumentNullException("VolunteerId element is missing"),
-                StarCall =  (DateTime?)assignment.Element("StarCall") ?? throw new ArgumentNullException("StarCall element is missing"),
-                CompletionTime = (DateTime?)assignment.Element("CompletionTime") ?? throw new ArgumentNullException("CompletionTime element is missing"),
-                FinishType = assignment.Element("FinishType") != null ?
-                             Enum.Parse<CompletionType>(assignment.Element("FinishType")?.Value ?? throw new ArgumentNullException("FinishType element is missing")) :
-                             (CompletionType?)null
+                Id = parseInt("Id"),
+                CallId = parseInt("CallId"),
+                VolunteerId = parseInt("VolunteerId"),
+                StarCall = parseDate("StarCall"),
+                CompletionTime = string.IsNullOrWhiteSpace(assignment.Element("CompletionTime")?.Value)
+            ? null
+            : DateTime.Parse(assignment.Element("CompletionTime")!.Value),
+
+                FinishType = string.IsNullOrWhiteSpace(assignment.Element("FinishType")?.Value)
+            ? null
+            : Enum.Parse<CompletionType>(assignment.Element("FinishType")!.Value)
             };
         }
+
         public void Create(Assignment item)
         {
             if (item.Id == 0)
@@ -84,13 +119,35 @@ namespace Dal
             return XMLTools.LoadListFromXMLElement(Config.s_assignments_xml).Elements().Select(a => getAssignment(a)).FirstOrDefault(filter);
         }
 
-        public IEnumerable<Assignment>? ReadAll(Func<Assignment, bool>? filter = null)
+        // ReadAll
+        public IEnumerable<Assignment> ReadAll(Func<Assignment, bool>? filter = null)
         {
-            IEnumerable<Assignment> assignments = XMLTools.LoadListFromXMLElement(Config.s_assignments_xml).Elements().Select(a => getAssignment(a));
-            return assignments == null ? null : assignments.Select(a => a);
+            var root = XMLTools.LoadListFromXMLElement(Config.s_assignments_xml);
+            if (root == null) return Enumerable.Empty<Assignment>();
 
+            // select all Assignment elements, case-insensitive
+            var elems = root.Elements()
+                            .Where(e => string.Equals(e.Name.LocalName, "Assignment", StringComparison.OrdinalIgnoreCase))
+                            .ToList();
+
+            var result = new List<Assignment>();
+            foreach (var el in elems)
+            {
+                try
+                {
+                    var a = getAssignment(el);
+                    if (a != null && (filter == null || filter(a)))
+                        result.Add(a);
+                }
+                catch (Exception ex)
+                {
+                    // if parsing of this element fails, log and skip it
+                    Debug.WriteLine($"Failed parsing assignment element: {ex.Message}\nElement: {el}");
+                }
+            }
+
+            return result;
         }
-
         public void Update(Assignment item)
         {
             XElement assignmentsRootElem = XMLTools.LoadListFromXMLElement(Config.s_assignments_xml);
@@ -99,12 +156,9 @@ namespace Dal
             ?? throw new DO.DalDoesNotExistException($"Assignment with ID={item.Id} does Not exist"))
                     .Remove();
 
-            assignmentsRootElem.Add(new XElement("Assignment", createAssignmentElement(item)));
+            assignmentsRootElem.Add(createAssignmentElement(item));
 
             XMLTools.SaveListToXMLElement(assignmentsRootElem, Config.s_assignments_xml);
         }
     }
 }
-//XElement? assignmentElem = XMLTools.LoadListFromXMLElement(Config.s_assignments_xml).Elements().
-//                                       FirstOrDefault(st => (int?)st.Element("Id") == id);
-//return assignmentElem is null ? null : getAssignment(assignmentElem);

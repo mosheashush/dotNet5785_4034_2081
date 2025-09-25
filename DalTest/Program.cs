@@ -300,16 +300,20 @@ public class Program
         Console.WriteLine("0 - Choose canceled of admin");
         Console.WriteLine("1 - Choose canceled of volunteer");
         Console.WriteLine("2 - Choose completed");
-        Console.WriteLine("3 - expired");
+        Console.WriteLine("3 - Choose expired");
+        Console.WriteLine("4 - Choose not finish (null)");
         int l = int.Parse(Console.ReadLine()!);
-        while (l > 3 || l < 0)
+        while (l > 4 || l < 0)
         {
             Console.WriteLine("ERROR\nEnter number again please");
             l = int.Parse(Console.ReadLine()!);
         }
-        DO.CompletionType completionType = (DO.CompletionType)l;
 
-        DO.Assignment assignment = new Assignment(0, CallId, VolunteerId, EntryTime, CompletionTime, completionType);
+        DO.CompletionType? completionType = null;
+        if (l != 4)
+            completionType = (DO.CompletionType)l;
+
+            DO.Assignment assignment = new Assignment(0, CallId, VolunteerId, EntryTime, CompletionTime, completionType);
 
         s_dal.Assignment!.Create(assignment);
     }

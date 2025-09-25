@@ -1,277 +1,235 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ArrayOfVolunteer xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <Volunteer>
-    <id>32795212</id>
-    <FullName>David Cohen</FullName>
-    <CallNumber>0573177728</CallNumber>
-    <EmailAddress>davidcohen1@gmail.com</EmailAddress>
-    <Password>134349</Password>
-    <FullCurrentAddress>Jerusalem, Havad Haleumi 21</FullCurrentAddress>
-    <Latitude>31.777741</Latitude>
-    <Longitud>35.203321</Longitud>
-    <CurrentPosition>volnteer</CurrentPosition>
-    <Active>false</Active>
-    <MaxDistanceForCall>8</MaxDistanceForCall>
-    <TypeOfDistance>air</TypeOfDistance>
-  </Volunteer>
-  <Volunteer>
-    <id>32779746</id>
+    <id>33352107</id>
     <FullName>Sarah Levy</FullName>
-    <CallNumber>0555246562</CallNumber>
-    <EmailAddress>sarahlevy1@gmail.com</EmailAddress>
-    <Password>889052</Password>
+    <CallNumber>0519226486</CallNumber>
+    <EmailAddress>sarahlevy0@gmail.com</EmailAddress>
+    <Password>455873</Password>
     <FullCurrentAddress>Tel Aviv, Ibn Gabirol 69</FullCurrentAddress>
     <Latitude>32.085299</Latitude>
     <Longitud>34.781768</Longitud>
     <CurrentPosition>admin</CurrentPosition>
     <Active>false</Active>
-    <MaxDistanceForCall>1</MaxDistanceForCall>
+    <MaxDistanceForCall>2</MaxDistanceForCall>
     <TypeOfDistance>walk</TypeOfDistance>
   </Volunteer>
   <Volunteer>
-    <id>24141982</id>
+    <id>20067374</id>
     <FullName>Michael Mizrahi</FullName>
-    <CallNumber>0566314778</CallNumber>
+    <CallNumber>0564032524</CallNumber>
     <EmailAddress>michaelmizrahi1@gmail.com</EmailAddress>
-    <Password>350915</Password>
+    <Password>996580</Password>
     <FullCurrentAddress>Haifa, HaAliya Hashniya 1</FullCurrentAddress>
     <Latitude>32.818437</Latitude>
     <Longitud>34.988504</Longitud>
     <CurrentPosition>admin</CurrentPosition>
     <Active>false</Active>
-    <MaxDistanceForCall>2</MaxDistanceForCall>
+    <MaxDistanceForCall>5</MaxDistanceForCall>
     <TypeOfDistance>drive</TypeOfDistance>
   </Volunteer>
   <Volunteer>
-    <id>34935607</id>
+    <id>35144990</id>
     <FullName>Rachel Shimon</FullName>
-    <CallNumber>0581935784</CallNumber>
-    <EmailAddress>rachelshimon0@gmail.com</EmailAddress>
-    <Password>417813</Password>
+    <CallNumber>0519945530</CallNumber>
+    <EmailAddress>rachelshimon1@gmail.com</EmailAddress>
+    <Password>388207</Password>
     <FullCurrentAddress>Be'er Sheva, Yitzhak Nafha 25</FullCurrentAddress>
     <Latitude>31.24387</Latitude>
     <Longitud>34.792345</Longitud>
     <CurrentPosition>admin</CurrentPosition>
     <Active>false</Active>
-    <MaxDistanceForCall>2</MaxDistanceForCall>
+    <MaxDistanceForCall>7</MaxDistanceForCall>
     <TypeOfDistance>air</TypeOfDistance>
   </Volunteer>
   <Volunteer>
-    <id>21379556</id>
+    <id>35783542</id>
     <FullName>Daniel Kaplan</FullName>
-    <CallNumber>0540537926</CallNumber>
+    <CallNumber>0542115619</CallNumber>
     <EmailAddress>danielkaplan1@gmail.com</EmailAddress>
-    <Password>196904</Password>
+    <Password>791117</Password>
     <FullCurrentAddress>Eilat, Tarshish 7</FullCurrentAddress>
     <Latitude>29.55805</Latitude>
     <Longitud>34.94821</Longitud>
+    <CurrentPosition>admin</CurrentPosition>
+    <Active>false</Active>
+    <MaxDistanceForCall>6</MaxDistanceForCall>
+    <TypeOfDistance>walk</TypeOfDistance>
+  </Volunteer>
+  <Volunteer>
+    <id>28331357</id>
+    <FullName>Leah Abramov</FullName>
+    <CallNumber>0598246917</CallNumber>
+    <EmailAddress>leahabramov0@gmail.com</EmailAddress>
+    <Password>774737</Password>
+    <FullCurrentAddress>Ashdod, HaOrgim 2</FullCurrentAddress>
+    <Latitude>31.804381</Latitude>
+    <Longitud>34.649288</Longitud>
+    <CurrentPosition>admin</CurrentPosition>
+    <Active>false</Active>
+    <MaxDistanceForCall>2</MaxDistanceForCall>
+    <TypeOfDistance>drive</TypeOfDistance>
+  </Volunteer>
+  <Volunteer>
+    <id>36378291</id>
+    <FullName>Jonathan Greenberg</FullName>
+    <CallNumber>0584139424</CallNumber>
+    <EmailAddress>jonathangreenberg0@gmail.com</EmailAddress>
+    <Password>138271</Password>
+    <FullCurrentAddress>Netanya, David Hamelech 15</FullCurrentAddress>
+    <Latitude>32.331759</Latitude>
+    <Longitud>34.852056</Longitud>
+    <CurrentPosition>admin</CurrentPosition>
+    <Active>false</Active>
+    <MaxDistanceForCall>6</MaxDistanceForCall>
+    <TypeOfDistance>air</TypeOfDistance>
+  </Volunteer>
+  <Volunteer>
+    <id>38965044</id>
+    <FullName>Rebecca Rosen</FullName>
+    <CallNumber>0595117601</CallNumber>
+    <EmailAddress>rebeccarosen1@gmail.com</EmailAddress>
+    <Password>160367</Password>
+    <FullCurrentAddress>Petah Tikva, Haim Ozer 25</FullCurrentAddress>
+    <Latitude>32.087439</Latitude>
+    <Longitud>34.887668</Longitud>
     <CurrentPosition>admin</CurrentPosition>
     <Active>false</Active>
     <MaxDistanceForCall>2</MaxDistanceForCall>
     <TypeOfDistance>walk</TypeOfDistance>
   </Volunteer>
   <Volunteer>
-    <id>22553784</id>
-    <FullName>Leah Abramov</FullName>
-    <CallNumber>0557272781</CallNumber>
-    <EmailAddress>leahabramov1@gmail.com</EmailAddress>
-    <Password>797302</Password>
-    <FullCurrentAddress>Ashdod, HaOrgim 2</FullCurrentAddress>
-    <Latitude>31.804381</Latitude>
-    <Longitud>34.649288</Longitud>
+    <id>28287321</id>
+    <FullName>Miriam Weiss</FullName>
+    <CallNumber>0588136245</CallNumber>
+    <EmailAddress>miriamweiss0@gmail.com</EmailAddress>
+    <Password>257929</Password>
+    <FullCurrentAddress>Bat Yam, HaKomemiyut 10</FullCurrentAddress>
+    <Latitude>32.02301</Latitude>
+    <Longitud>34.750772</Longitud>
+    <CurrentPosition>volnteer</CurrentPosition>
+    <Active>false</Active>
+    <MaxDistanceForCall>2</MaxDistanceForCall>
+    <TypeOfDistance>air</TypeOfDistance>
+  </Volunteer>
+  <Volunteer>
+    <id>25413566</id>
+    <FullName>Aaron Gold</FullName>
+    <CallNumber>0509378255</CallNumber>
+    <EmailAddress>aarongold1@gmail.com</EmailAddress>
+    <Password>368760</Password>
+    <FullCurrentAddress>Herzliya, HaShunit 1</FullCurrentAddress>
+    <Latitude>32.1663</Latitude>
+    <Longitud>34.84363</Longitud>
     <CurrentPosition>admin</CurrentPosition>
     <Active>false</Active>
     <MaxDistanceForCall>9</MaxDistanceForCall>
+    <TypeOfDistance>walk</TypeOfDistance>
+  </Volunteer>
+  <Volunteer>
+    <id>32020946</id>
+    <FullName>Esther Rubin</FullName>
+    <CallNumber>0596490261</CallNumber>
+    <EmailAddress>estherrubin1@gmail.com</EmailAddress>
+    <Password>275346</Password>
+    <FullCurrentAddress>Rishon Lezion, Moshe Dayan 15</FullCurrentAddress>
+    <Latitude>31.9648</Latitude>
+    <Longitud>34.8021</Longitud>
+    <CurrentPosition>admin</CurrentPosition>
+    <Active>false</Active>
+    <MaxDistanceForCall>2</MaxDistanceForCall>
     <TypeOfDistance>drive</TypeOfDistance>
   </Volunteer>
   <Volunteer>
-    <id>25763669</id>
-    <FullName>Jonathan Greenberg</FullName>
-    <CallNumber>0596260876</CallNumber>
-    <EmailAddress>jonathangreenberg0@gmail.com</EmailAddress>
-    <Password>104871</Password>
-    <FullCurrentAddress>Netanya, David Hamelech 15</FullCurrentAddress>
-    <Latitude>32.331759</Latitude>
-    <Longitud>34.852056</Longitud>
+    <id>22209249</id>
+    <FullName>Samuel Stern</FullName>
+    <CallNumber>0516127078</CallNumber>
+    <EmailAddress>samuelstern0@gmail.com</EmailAddress>
+    <Password>199540</Password>
+    <FullCurrentAddress>Kfar Saba, Weizmann 112</FullCurrentAddress>
+    <Latitude>32.175</Latitude>
+    <Longitud>34.9066</Longitud>
+    <CurrentPosition>admin</CurrentPosition>
+    <Active>false</Active>
+    <MaxDistanceForCall>1</MaxDistanceForCall>
+    <TypeOfDistance>air</TypeOfDistance>
+  </Volunteer>
+  <Volunteer>
+    <id>38488696</id>
+    <FullName>Deborah Azulay</FullName>
+    <CallNumber>0529398011</CallNumber>
+    <EmailAddress>deborahazulay1@gmail.com</EmailAddress>
+    <Password>187305</Password>
+    <FullCurrentAddress>Ra'anana, HaPark 5</FullCurrentAddress>
+    <Latitude>32.1848</Latitude>
+    <Longitud>34.8713</Longitud>
+    <CurrentPosition>admin</CurrentPosition>
+    <Active>false</Active>
+    <MaxDistanceForCall>3</MaxDistanceForCall>
+    <TypeOfDistance>walk</TypeOfDistance>
+  </Volunteer>
+  <Volunteer>
+    <id>34939771</id>
+    <FullName>Jacob Friedman</FullName>
+    <CallNumber>0546319904</CallNumber>
+    <EmailAddress>jacobfriedman0@gmail.com</EmailAddress>
+    <Password>767157</Password>
+    <FullCurrentAddress>Modi'in, Emek Hachula 10</FullCurrentAddress>
+    <Latitude>31.8996</Latitude>
+    <Longitud>35.0133</Longitud>
+    <CurrentPosition>admin</CurrentPosition>
+    <Active>false</Active>
+    <MaxDistanceForCall>7</MaxDistanceForCall>
+    <TypeOfDistance>drive</TypeOfDistance>
+  </Volunteer>
+  <Volunteer>
+    <id>28882214</id>
+    <FullName>Naomi Blum</FullName>
+    <CallNumber>0555415147</CallNumber>
+    <EmailAddress>naomiblum1@gmail.com</EmailAddress>
+    <Password>231026</Password>
+    <FullCurrentAddress>Ramat Gan, Abba Hillel 16</FullCurrentAddress>
+    <Latitude>32.0684</Latitude>
+    <Longitud>34.8248</Longitud>
     <CurrentPosition>admin</CurrentPosition>
     <Active>false</Active>
     <MaxDistanceForCall>4</MaxDistanceForCall>
     <TypeOfDistance>air</TypeOfDistance>
   </Volunteer>
   <Volunteer>
-    <id>27486395</id>
-    <FullName>Rebecca Rosen</FullName>
-    <CallNumber>0542090552</CallNumber>
-    <EmailAddress>rebeccarosen0@gmail.com</EmailAddress>
-    <Password>790061</Password>
-    <FullCurrentAddress>Petah Tikva, Haim Ozer 25</FullCurrentAddress>
-    <Latitude>32.087439</Latitude>
-    <Longitud>34.887668</Longitud>
-    <CurrentPosition>admin</CurrentPosition>
-    <Active>false</Active>
-    <MaxDistanceForCall>5</MaxDistanceForCall>
-    <TypeOfDistance>walk</TypeOfDistance>
-  </Volunteer>
-  <Volunteer>
-    <id>33874759</id>
-    <FullName>Joshua Katz</FullName>
-    <CallNumber>0505232507</CallNumber>
-    <EmailAddress>joshuakatz0@gmail.com</EmailAddress>
-    <Password>572316</Password>
-    <FullCurrentAddress>Holon, Mota Gur 6</FullCurrentAddress>
-    <Latitude>32.01154</Latitude>
-    <Longitud>34.77221</Longitud>
-    <CurrentPosition>admin</CurrentPosition>
-    <Active>true</Active>
-    <MaxDistanceForCall>7</MaxDistanceForCall>
-    <TypeOfDistance>drive</TypeOfDistance>
-  </Volunteer>
-  <Volunteer>
-    <id>27030896</id>
-    <FullName>Miriam Weiss</FullName>
-    <CallNumber>0549955563</CallNumber>
-    <EmailAddress>miriamweiss1@gmail.com</EmailAddress>
-    <Password>141040</Password>
-    <FullCurrentAddress>Bat Yam, HaKomemiyut 10</FullCurrentAddress>
-    <Latitude>32.02301</Latitude>
-    <Longitud>34.750772</Longitud>
-    <CurrentPosition>volnteer</CurrentPosition>
-    <Active>false</Active>
-    <MaxDistanceForCall>6</MaxDistanceForCall>
-    <TypeOfDistance>air</TypeOfDistance>
-  </Volunteer>
-  <Volunteer>
-    <id>37662933</id>
-    <FullName>Aaron Gold</FullName>
-    <CallNumber>0534776773</CallNumber>
-    <EmailAddress>aarongold0@gmail.com</EmailAddress>
-    <Password>703335</Password>
-    <FullCurrentAddress>Herzliya, HaShunit 1</FullCurrentAddress>
-    <Latitude>32.1663</Latitude>
-    <Longitud>34.84363</Longitud>
-    <CurrentPosition>admin</CurrentPosition>
-    <Active>false</Active>
-    <MaxDistanceForCall>7</MaxDistanceForCall>
-    <TypeOfDistance>walk</TypeOfDistance>
-  </Volunteer>
-  <Volunteer>
-    <id>34086511</id>
-    <FullName>Esther Rubin</FullName>
-    <CallNumber>0509723760</CallNumber>
-    <EmailAddress>estherrubin0@gmail.com</EmailAddress>
-    <Password>296077</Password>
-    <FullCurrentAddress>Rishon Lezion, Moshe Dayan 15</FullCurrentAddress>
-    <Latitude>31.9648</Latitude>
-    <Longitud>34.8021</Longitud>
-    <CurrentPosition>admin</CurrentPosition>
-    <Active>false</Active>
-    <MaxDistanceForCall>9</MaxDistanceForCall>
-    <TypeOfDistance>drive</TypeOfDistance>
-  </Volunteer>
-  <Volunteer>
-    <id>27341333</id>
-    <FullName>Samuel Stern</FullName>
-    <CallNumber>0594298403</CallNumber>
-    <EmailAddress>samuelstern0@gmail.com</EmailAddress>
-    <Password>593577</Password>
-    <FullCurrentAddress>Kfar Saba, Weizmann 112</FullCurrentAddress>
-    <Latitude>32.175</Latitude>
-    <Longitud>34.9066</Longitud>
-    <CurrentPosition>admin</CurrentPosition>
-    <Active>false</Active>
-    <MaxDistanceForCall>6</MaxDistanceForCall>
-    <TypeOfDistance>air</TypeOfDistance>
-  </Volunteer>
-  <Volunteer>
-    <id>23990297</id>
-    <FullName>Deborah Azulay</FullName>
-    <CallNumber>0571059754</CallNumber>
-    <EmailAddress>deborahazulay0@gmail.com</EmailAddress>
-    <Password>989795</Password>
-    <FullCurrentAddress>Ra'anana, HaPark 5</FullCurrentAddress>
-    <Latitude>32.1848</Latitude>
-    <Longitud>34.8713</Longitud>
-    <CurrentPosition>admin</CurrentPosition>
-    <Active>false</Active>
-    <MaxDistanceForCall>1</MaxDistanceForCall>
-    <TypeOfDistance>walk</TypeOfDistance>
-  </Volunteer>
-  <Volunteer>
-    <id>39919790</id>
-    <FullName>Jacob Friedman</FullName>
-    <CallNumber>0528585924</CallNumber>
-    <EmailAddress>jacobfriedman1@gmail.com</EmailAddress>
-    <Password>339268</Password>
-    <FullCurrentAddress>Modi'in, Emek Hachula 10</FullCurrentAddress>
-    <Latitude>31.8996</Latitude>
-    <Longitud>35.0133</Longitud>
-    <CurrentPosition>admin</CurrentPosition>
-    <Active>false</Active>
-    <MaxDistanceForCall>3</MaxDistanceForCall>
-    <TypeOfDistance>drive</TypeOfDistance>
-  </Volunteer>
-  <Volunteer>
-    <id>22887561</id>
-    <FullName>Naomi Blum</FullName>
-    <CallNumber>0599217526</CallNumber>
-    <EmailAddress>naomiblum0@gmail.com</EmailAddress>
-    <Password>606187</Password>
-    <FullCurrentAddress>Ramat Gan, Abba Hillel 16</FullCurrentAddress>
-    <Latitude>32.0684</Latitude>
-    <Longitud>34.8248</Longitud>
-    <CurrentPosition>admin</CurrentPosition>
-    <Active>false</Active>
-    <MaxDistanceForCall>2</MaxDistanceForCall>
-    <TypeOfDistance>air</TypeOfDistance>
-  </Volunteer>
-  <Volunteer>
-    <id>25480823</id>
+    <id>25024228</id>
     <FullName>Eli Shwartz</FullName>
-    <CallNumber>0566765726</CallNumber>
-    <EmailAddress>elishwartz0@gmail.com</EmailAddress>
-    <Password>800348</Password>
+    <CallNumber>0581591030</CallNumber>
+    <EmailAddress>elishwartz1@gmail.com</EmailAddress>
+    <Password>651762</Password>
     <FullCurrentAddress>Givatayim, Katznelson 3</FullCurrentAddress>
     <Latitude>32.0698</Latitude>
     <Longitud>34.8117</Longitud>
     <CurrentPosition>admin</CurrentPosition>
     <Active>false</Active>
-    <MaxDistanceForCall>9</MaxDistanceForCall>
+    <MaxDistanceForCall>2</MaxDistanceForCall>
     <TypeOfDistance>walk</TypeOfDistance>
   </Volunteer>
   <Volunteer>
-    <id>32464656</id>
-    <FullName>Hannah Berger</FullName>
-    <CallNumber>0524057866</CallNumber>
-    <EmailAddress>hannahberger1@gmail.com</EmailAddress>
-    <Password>700021</Password>
-    <FullCurrentAddress>Lod, Herzl 12</FullCurrentAddress>
-    <Latitude>31.9513</Latitude>
-    <Longitud>34.8951</Longitud>
-    <CurrentPosition>admin</CurrentPosition>
-    <Active>true</Active>
-    <MaxDistanceForCall>2</MaxDistanceForCall>
-    <TypeOfDistance>drive</TypeOfDistance>
-  </Volunteer>
-  <Volunteer>
-    <id>37728273</id>
+    <id>28746157</id>
     <FullName>Joseph Peretz</FullName>
-    <CallNumber>0506459677</CallNumber>
+    <CallNumber>0571654946</CallNumber>
     <EmailAddress>josephperetz0@gmail.com</EmailAddress>
-    <Password>697770</Password>
+    <Password>443763</Password>
     <FullCurrentAddress>Bnei Brak, Jabotinsky 20</FullCurrentAddress>
     <Latitude>32.085</Latitude>
     <Longitud>34.839</Longitud>
     <CurrentPosition>volnteer</CurrentPosition>
     <Active>false</Active>
-    <MaxDistanceForCall>6</MaxDistanceForCall>
+    <MaxDistanceForCall>7</MaxDistanceForCall>
     <TypeOfDistance>air</TypeOfDistance>
   </Volunteer>
   <Volunteer>
-    <id>29279595</id>
+    <id>34990258</id>
     <FullName>Tamar Halevi</FullName>
-    <CallNumber>0588876283</CallNumber>
-    <EmailAddress>tamarhalevi0@gmail.com</EmailAddress>
-    <Password>534730</Password>
+    <CallNumber>0586480459</CallNumber>
+    <EmailAddress>tamarhalevi1@gmail.com</EmailAddress>
+    <Password>735296</Password>
     <FullCurrentAddress>Ashkelon, Bar Kokhba 18</FullCurrentAddress>
     <Latitude>31.6688</Latitude>
     <Longitud>34.5743</Longitud>
@@ -279,5 +237,33 @@
     <Active>false</Active>
     <MaxDistanceForCall>7</MaxDistanceForCall>
     <TypeOfDistance>walk</TypeOfDistance>
+  </Volunteer>
+  <Volunteer>
+    <id>25076293</id>
+    <FullName>Joshua Katz</FullName>
+    <CallNumber>0531534131</CallNumber>
+    <EmailAddress>joshuakatz0@gmail.com</EmailAddress>
+    <Password>221537</Password>
+    <FullCurrentAddress>Holon, Mota Gur 6</FullCurrentAddress>
+    <Latitude>32.01154</Latitude>
+    <Longitud>34.77221</Longitud>
+    <CurrentPosition>admin</CurrentPosition>
+    <Active>false</Active>
+    <MaxDistanceForCall>7</MaxDistanceForCall>
+    <TypeOfDistance>drive</TypeOfDistance>
+  </Volunteer>
+  <Volunteer>
+    <id>22359812</id>
+    <FullName>Hannah Berger</FullName>
+    <CallNumber>0526294404</CallNumber>
+    <EmailAddress>hannahberger1@gmail.com</EmailAddress>
+    <Password>586405</Password>
+    <FullCurrentAddress>Lod, Herzl 12</FullCurrentAddress>
+    <Latitude>31.9513</Latitude>
+    <Longitud>34.8951</Longitud>
+    <CurrentPosition>admin</CurrentPosition>
+    <Active>false</Active>
+    <MaxDistanceForCall>7</MaxDistanceForCall>
+    <TypeOfDistance>drive</TypeOfDistance>
   </Volunteer>
 </ArrayOfVolunteer>

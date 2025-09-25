@@ -105,6 +105,8 @@ internal class VolunteerImplementation : IVolunteer
     {
 
         var volunteers = s_dal.Volunteer.ReadAll();
+        
+        var assignments = s_dal.Assignment.ReadAll();
         if (isActive != null)
             volunteers = volunteers.Where(v => v.Active == isActive);
 
@@ -121,16 +123,15 @@ internal class VolunteerImplementation : IVolunteer
                 case BO.VolunteerInListFields.Active:
                     volunteers = volunteers.OrderBy(v => v.Active);
                     break;
-
                 case BO.VolunteerInListFields.IdCall:
                     if (isActive == false)
                         throw new BO.BlCanNotOrderNotExistsFieldException($"Volunteer with ID={isActive} can not do this change");
-                    volunteers = volunteers.OrderBy(v => s_dal.Assignment.ReadAll().FirstOrDefault(c => c.VolunteerId == v.id).CallId);
+                    volunteers = volunteers.OrderBy(v => assignments.FirstOrDefault(c => c.VolunteerId == v.id).CallId);
                     break;
                 case BO.VolunteerInListFields.Type:
                     if (isActive == false)
                         throw new BO.BlCanNotOrderNotExistsFieldException($"Volunteer with ID={isActive} can not do this change");
-                    volunteers = volunteers.OrderBy(v => s_dal.Call.ReadAll().FirstOrDefault(c => c.Id == s_dal.Assignment.ReadAll().FirstOrDefault(c => c.VolunteerId == v.id).CallId).Type);
+                    volunteers = volunteers.OrderBy(v => s_dal.Call.ReadAll().FirstOrDefault(c => c.Id == assignments.FirstOrDefault(c => c.VolunteerId == v.id).CallId).Type);
                     break;
                 case BO.VolunteerInListFields.SumCallsCompleted:
                     volunteers = volunteers.OrderBy(v => VolunteerManager.CalculatSumCallsCompleted(v.id));
@@ -152,8 +153,8 @@ internal class VolunteerImplementation : IVolunteer
             IdVolunteer = v.id,
             FullName = v.FullName,
             Active = v.Active,
-            IdCall = s_dal.Assignment.ReadAll().FirstOrDefault(c => c.VolunteerId == v.id)?.CallId,
-            Type = (BO.CallType?)(s_dal.Call.ReadAll().FirstOrDefault(c => c.Id == s_dal.Assignment.ReadAll().FirstOrDefault(a => a.VolunteerId == v.id)?.CallId)?.Type) ?? BO.CallType.None,
+            IdCall = (assignments.FirstOrDefault(c => c.VolunteerId == v.id) != null && assignments.FirstOrDefault(c => c.VolunteerId == v.id).CompletionTime == null) ? assignments.FirstOrDefault(c => c.VolunteerId == v.id).CallId : null,
+            Type = (assignments.FirstOrDefault(c => c.VolunteerId == v.id) != null && assignments.FirstOrDefault(c => c.VolunteerId == v.id).CompletionTime == null) ? (BO.CallType)(s_dal.Call.ReadAll().FirstOrDefault(c => c.Id == assignments.FirstOrDefault(a => a.VolunteerId == v.id).CallId).Type) : BO.CallType.None,
             SumCallsCompleted = VolunteerManager.CalculatSumCallsCompleted(v.id),
             SumCallsExpired = VolunteerManager.CalculatSumCallsExpired(v.id),
             SumCallsConcluded = VolunteerManager.CalculatSumCallsConcluded(v.id),

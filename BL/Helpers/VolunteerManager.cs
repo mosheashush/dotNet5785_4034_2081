@@ -34,7 +34,7 @@ internal static class VolunteerManager
     {
         if (s_dal.Assignment.ReadAll() == null) return 0;
 
-        return s_dal.Assignment.ReadAll().Where(c => c.VolunteerId == id && c.FinishType == DO.CompletionType.canceledVolunteer).Count();
+        return s_dal.Assignment.ReadAll().Where(c => c.VolunteerId == id && (c.FinishType == DO.CompletionType.canceledVolunteer || c.FinishType == DO.CompletionType.canceledAdmin)).Count();
     }
 
     //MP volunteer to volunteer in progress

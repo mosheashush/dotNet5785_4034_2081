@@ -38,7 +38,7 @@ public static class Initialization
     private static void createVolunteer()
     {
         // Create 20 volunteers with random data
-        for (int i = 0; i < 20; i++)
+        for (int i = 1; i < 20; i++)
         {
             int id, numberphone, password;
             do
@@ -84,7 +84,7 @@ public static class Initialization
     private static void createCall()
     {
         // Create 20 calls with random data
-        for (int i = 1; i <= 15; i++)
+        for (int i = 1; i < 20; i++)
         {
             int type = s_rand.Next(0, 1);
 
@@ -107,42 +107,44 @@ public static class Initialization
         
         List<int> list = s_dal.Volunteer!.ReadAll().Select(v => v.id).ToList();
         List<int> callList = s_dal.Call!.ReadAll().Select(c => c.Id).ToList();
-        for (int i = 1; i < 15; i++)
+        for (int i = 1; i < 20; i++)
         {
             int idcall, id_volunteer, finishtype;
-            CompletionType type = 0;
-            finishtype = s_rand.Next(0, 4);
+            CompletionType? type = 0;
+            
+            
             idcall = callList[s_rand.Next(0, callList.Count)];
             id_volunteer = list[s_rand.Next(0, list.Count)];
-            DateTime CompletionTimeNew;
-            switch (finishtype)
+            DateTime? CompletionTimeNew = null;
+            if (s_dal.Volunteer!.ReadAll().FirstOrDefault(v => v.id == id_volunteer).Active == true)
             {
-                case 0:
-                    type = CompletionType.canceledAdmin;
-                    break;
-                case 1:
-                    type = CompletionType.canceledVolunteer;
-                    break;
-                case 2:
-                    type = CompletionType.completed;
-                    break;
-                case 3:
-                    type = CompletionType.expired;
-                    break;
+                type = null;
+                CompletionTimeNew = null;
+            }
+            else
+            {
+                finishtype = s_rand.Next(0, 4);
+                switch (finishtype)
+                {
+                    case 0:
+                        type = CompletionType.canceledAdmin;
+                        CompletionTimeNew = s_dal.Config.Clock + new TimeSpan(5, s_rand.Next(0, 25), s_rand.Next(0, 24), 0, 0);
+                        break;
+                    case 1:
+                        type = CompletionType.canceledVolunteer;
+                        CompletionTimeNew = s_dal.Config.Clock + new TimeSpan(5, s_rand.Next(0, 25), s_rand.Next(0, 24), 0, 0);
+                        break;
+                    case 2:
+                        type = CompletionType.completed;
+                        CompletionTimeNew = s_dal.Config.Clock + new TimeSpan(5, s_rand.Next(0, 25), s_rand.Next(0, 24), 0, 0);
+                        break;
+                    case 3:
+                        type = CompletionType.expired;
+                        CompletionTimeNew = s_dal.Config.Clock + new TimeSpan(9, s_rand.Next(0, 25), s_rand.Next(0, 24), 0, 0);
+                        break;
+                }
             }
 
-            switch (finishtype)
-            {
-                case 0:
-                case 1:
-                case 2:
-                    CompletionTimeNew = s_dal.Config.Clock + new TimeSpan(5, s_rand.Next(0, 25), s_rand.Next(0, 24), 0, 0);
-                    break;
-                default:
-                    CompletionTimeNew = s_dal.Config.Clock + new TimeSpan(9, s_rand.Next(0, 25), s_rand.Next(0, 24), 0, 0);
-                    break;
-            }
-            
             Assignment assignment = new Assignment
             {
                 CallId = idcall,

@@ -10,6 +10,7 @@ static class XMLTools
 {
     const string s_xmlDir = @"C:\Users\PC\source\repos\dotNet5785_4034_2081\xml\";
     // const string s_xmlDir = "..\\..\\..\\..\\xml\\";
+    //for nerya: @"C:\Users\PC\source\repos\dotNet5785_4034_2081\xml\";
     static XMLTools()
     {
         if (!Directory.Exists(s_xmlDir))
@@ -54,40 +55,6 @@ static class XMLTools
             throw new DalXMLFileLoadCreateException($"fail to load xml file: {filePath}, {ex.Message}");
         }
     }
-    //public static List<T> LoadListFromXMLSerializer<T>(string filePath)
-    //{
-    //    try
-    //    {
-    //        string fullPath = s_xmlDir + filePath;
-    //        if (File.Exists(fullPath))
-    //        {
-    //            // בדוק אם הקובץ ריק
-    //            if (new FileInfo(fullPath).Length == 0)
-    //            {
-    //                return new List<T>();
-    //            }
-
-    //            XmlSerializer x = new XmlSerializer(typeof(List<T>));
-    //            using FileStream file = new FileStream(fullPath, FileMode.Open, FileAccess.Read, FileShare.None);
-    //            List<T> list = (List<T>)x.Deserialize(file)!;
-    //            file.Close();
-    //            return list;
-    //        }
-    //        else
-    //        {
-    //            return new List<T>();
-    //        }
-    //    }
-    //    catch (XmlException xmlEx)
-    //    {
-    //        throw new DalXMLFileLoadCreateException($"Invalid XML file: {filePath}. Error: {xmlEx.Message}");
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        throw new DalXMLFileLoadCreateException($"Fail to load xml file: {filePath}. Error: {ex.Message}");
-    //    }
-    //}
-
     #endregion
 
     #region SaveLoadWithXElement

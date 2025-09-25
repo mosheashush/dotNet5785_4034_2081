@@ -197,7 +197,7 @@ internal class CallImplementation : ICall
            ?? throw new BO.BlDoesNotExistException($"Assignment with ID={assignmentId} does Not exist");
         DO.Assignment updatedAssignment;
 
-        if (assignment.VolunteerId != requesterId ||
+        if (assignment.VolunteerId != requesterId &&
             s_dal.Volunteer.Read(requesterId).CurrentPosition == DO.User.admin)
             throw new BO.BlNotAllowedMakeChangesException($"Assignment with ID={assignmentId} does not belong to Volunteer with ID={requesterId}");
         if (assignment.FinishType != null)
@@ -207,12 +207,10 @@ internal class CallImplementation : ICall
         { 
             updatedAssignment = assignment with
             {
-
                 FinishType = DO.CompletionType.canceledAdmin,
                 CompletionTime = DateTime.Now
             };
         }
-
         else
         {
             updatedAssignment = assignment with
@@ -222,9 +220,17 @@ internal class CallImplementation : ICall
             };
         }
 
+        var volunteer = s_dal.Volunteer.Read(assignment.VolunteerId)
+                        ?? throw new BO.BlDoesNotExistException($"Volunteer with ID={assignment.VolunteerId} does Not exist");
+        DO.Volunteer updatedVolunteer;
+
+        updatedVolunteer = volunteer with
+        {
+            Active = false
+        };
 
         s_dal.Assignment.Update(updatedAssignment);
-
+        s_dal.Volunteer.Update(updatedVolunteer);
     }
 
     public void ChooseCallForTreatment(int volunteerId, int callId){

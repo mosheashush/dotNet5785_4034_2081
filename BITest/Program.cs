@@ -380,7 +380,7 @@ namespace BlTest
                             if (!int.TryParse(Console.ReadLine(), out int volunteerIdToClosed))
                                 throw new BO.BlInvalidValueException("invalid ID");
 
-                            Console.Write("Enter call type 0: FoodTransport, 1: FoodPreparation:");
+                            Console.Write("Enter call type  0:makingfood, 1:deliveringfood: ");
                             BO.CallType? callType = Enum.TryParse(Console.ReadLine(), true, out BO.CallType type)
                                 ? type : (BO.CallType?)null;//Can be null
 
@@ -416,7 +416,7 @@ namespace BlTest
                             if (!int.TryParse(Console.ReadLine(), out int volunteerIdToOpen))
                                 throw new BO.BlInvalidValueException("invalid ID");
 
-                            Console.Write("Enter call type 0: FoodTransport, 1: FoodPreparation:");
+                            Console.Write("Enter call type 0:makingfood, 1:deliveringfood: ");
                             BO.CallType? callType = Enum.TryParse(Console.ReadLine(), true, out BO.CallType type)
                                 ? type : (BO.CallType?)null;//Can be null
 
@@ -446,8 +446,9 @@ namespace BlTest
                         break;
 
                     case "9":
+                        try
+                        {
                         // End treatment on a call
-                        // עדכון סיום טיפול בקריאה
                         Console.WriteLine("Enter volunteer ID:");
                         if (!int.TryParse(Console.ReadLine(), out int volunteerId))
                             throw new BO.BlInvalidValueException("invalid ID");
@@ -456,8 +457,6 @@ namespace BlTest
                         if (!int.TryParse(Console.ReadLine(), out int assignmentId))
                             throw new BO.BlInvalidValueException("invalid ID");
 
-                        try
-                        {
                             s_dal.Call.CancelTreatment(volunteerId, assignmentId);
                             Console.WriteLine("Treatment completion updated successfully.");
                         }
@@ -469,8 +468,6 @@ namespace BlTest
 
                     case "10":
                         // Cancel treatment on a call
-                        // ביטול טיפול בקריאה
-
                         Console.WriteLine("Enter volunteer ID:");
                         if (!int.TryParse(Console.ReadLine(), out int volunteerIdCancel))
                             throw new BO.BlInvalidValueException("invalid ID");
@@ -491,7 +488,6 @@ namespace BlTest
 
                     case "11":
                         // Select a call for treatment
-                        // בחירת קריאה לטיפול
                         Console.WriteLine("Enter volunteer ID:");
                         if (!int.TryParse(Console.ReadLine(), out int volunteerIdChoose))
                             throw new BO.BlInvalidValueException("invalid volunteer ID");
@@ -694,7 +690,7 @@ namespace BlTest
         private static BO.Call CreateCall()
         {
 
-            Console.Write("Enter Type (0 - FoodPreparation,1 - FoodTransport): ");
+            Console.Write("Enter Type (0:makingfood, 1:deliveringfood): ");
             if (!Enum.TryParse(Console.ReadLine(), true, out BO.CallType type))
                 throw new BO.BlInvalidValueException("type is invalid!");
 
