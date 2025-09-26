@@ -51,7 +51,6 @@ internal class AdminImplementation : IAdmin
 
     public void InitializeDatabase()
     {
-
         s_dal.ResetDB();
         Initialization.Do();
         ClockManager.UpdateClock(ClockManager.Now);
@@ -59,8 +58,8 @@ internal class AdminImplementation : IAdmin
 
     public void ResetDatabase()
     {
-       Initialization.Do();
-       ClockManager.UpdateClock(ClockManager.Now);
+        s_dal.ResetDB();
+        ClockManager.UpdateClock(ClockManager.Now);
     }
 
     public void SetRiskTimeSpan(TimeSpan newRiskRange)

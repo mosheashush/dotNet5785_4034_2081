@@ -457,7 +457,7 @@ namespace BlTest
                         if (!int.TryParse(Console.ReadLine(), out int assignmentId))
                             throw new BO.BlInvalidValueException("invalid ID");
 
-                            s_dal.Call.CancelTreatment(volunteerId, assignmentId);
+                            s_dal.Call.FinishTreatment(volunteerId, assignmentId);
                             Console.WriteLine("Treatment completion updated successfully.");
                         }
                         catch (Exception ex)

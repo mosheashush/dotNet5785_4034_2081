@@ -16,7 +16,7 @@ internal static class AssignmentManager
             VolunteerId = assignment.VolunteerId,
             StarCall = assignment.StarCall,
             CompletionTime = assignment.CompletionTime,
-            FinishType = (BO.CompletionType)assignment.FinishType
+            FinishType = (BO.CompletionType?)assignment.FinishType
         };
     }
 
@@ -31,7 +31,7 @@ internal static class AssignmentManager
             CallStartTime = s_dal.Call.Read(s_dal.Assignment.Read(idAssignment).CallId).CallStartTime,
             VolunteerTakeCall = s_dal.Assignment.Read(idAssignment).StarCall,
             CompletionTime = s_dal.Assignment.Read(idAssignment).CompletionTime,
-            FinishType = (BO.CompletionType)s_dal.Assignment.Read(idAssignment).FinishType,
+            FinishType = (BO.CompletionType?)s_dal.Assignment.Read(idAssignment).FinishType,
         };
     }
 }

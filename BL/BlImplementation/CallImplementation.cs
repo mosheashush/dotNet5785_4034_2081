@@ -240,13 +240,15 @@ internal class CallImplementation : ICall
             ?? throw new BO.BlDoesNotExistException($"Call with ID={callId} does Not exist");
         // Check if the call is already assigned to another volunteer
         if (s_dal.Assignment.ReadAll().FirstOrDefault(a => a.CallId == callId &&
-        // Check if the call is already canceled
-        (a.FinishType != DO.CompletionType.canceledAdmin ||
-        a.FinishType != DO.CompletionType.canceledVolunteer)) != null)
+        // Check if the call is already processed for this volunteer
+        (a.FinishType == null)) != null)
             throw new BO.BlInMiddlePerformingTaskException("Call already assigned to another volunteer");
         // Check if the call is already expired
-        if ( CallManager.GetCallState( s_dal.Call.Read(callId))== BO.CallState.expired)
-            throw new BO.NoTimeCompleteTaskException("Call already expired");
+        if (CallManager.GetCallState( s_dal.Call.Read(callId))== BO.CallState.expired || CallManager.GetCallState(s_dal.Call.Read(callId)) == BO.CallState.completed)
+            throw new BO.NoTimeCompleteTaskException($"Call already {CallManager.GetCallState( s_dal.Call.Read(callId))}");
+        // Check if the volunteer is already assigned to another call
+        if (s_dal.Assignment.ReadAll().Any(a=> a.VolunteerId == volunteer.id && a.FinishType == null))
+            throw new BO.BlInMiddlePerformingTaskException("Volunteer already assigned to another call");
 
         // Use 'With' to create a new immutable record with updated properties
         var assignment = new DO.Assignment
@@ -257,7 +259,7 @@ internal class CallImplementation : ICall
         };
 
         // Create the assignment in the data layer
-          s_dal.Assignment.Create(assignment);
+        s_dal.Assignment.Create(assignment);
     }
 }
 

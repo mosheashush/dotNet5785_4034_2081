@@ -90,7 +90,7 @@ internal static class CallManager
             FullName = s_dal.Volunteer.Read(a.VolunteerId).FullName,
             CallStartTime = a.StarCall,
             CompletionTime = a.CompletionTime,
-            FinishType = (BO.CompletionType)a.FinishType,
+            FinishType = (BO.CompletionType?)a.FinishType,
         }).ToList();
 
         return list;
@@ -99,30 +99,25 @@ internal static class CallManager
     //GetCallState implementation
     public static BO.CallState GetCallState(DO.Call call)
     {
-        DO.Assignment assignment = s_dal.Assignment.ReadAll().FirstOrDefault(c => c.CallId == call.Id);
+        var assignments = s_dal.Assignment.ReadAll().Where(c => c.CallId == call.Id);
 
-        if (assignment != null && assignment.FinishType == DO.CompletionType.completed)
+        if (assignments != null && assignments.Any(a=> a.FinishType == DO.CompletionType.completed))
             return BO.CallState.completed;
-        else if (assignment != null && assignment.FinishType == DO.CompletionType.expired)
+        else if (assignments != null && assignments.Any(a => a.FinishType == DO.CompletionType.expired))
             return BO.CallState.expired;
 
         if (call.MaxTimeForCall < ClockManager.Now)
-        {
-            if (assignment != null && assignment.FinishType == DO.CompletionType.completed)
-                return BO.CallState.completed;
-            else
-                return BO.CallState.expired;
-        }
+            return BO.CallState.expired;
         else if (call.MaxTimeForCall - s_dal.Config.RiskRange <= ClockManager.Now)
         {
-            if (assignment != null && assignment.CompletionTime != null)
+            if (assignments != null && assignments.Any(a => a.FinishType == null))
                 return BO.CallState.ProcessedOnRisk;
             else
                 return BO.CallState.openOnRisk;
         }
         else if (call.MaxTimeForCall - s_dal.Config.RiskRange > ClockManager.Now)
         {
-            if (assignment != null && assignment.CompletionTime == null)
+            if (assignments != null && assignments.Any(a => a.FinishType == null))
                 return BO.CallState.processed;
             else
                 return BO.CallState.open;
@@ -151,7 +146,7 @@ internal static class CallManager
 
     /// <summary>
     /// Updates all expired calls that haven't been assigned to a volunteer
-    /// by creating an assignment marked as 'expired'.
+    /// by creating an assignments marked as 'expired'.
     /// </summary>
     public static void UpdateExpiredCall()
     {
@@ -166,7 +161,7 @@ internal static class CallManager
                         !existingAssignments.Contains(c.Id))
             .ToList();
 
-        // Create an 'expired' assignment for each unassigned expired call
+        // Create an 'expired' assignments for each unassigned expired call
         expiredCalls.ForEach(c =>
             s_dal.Assignment.Create(new DO.Assignment
             {
