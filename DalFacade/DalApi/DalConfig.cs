@@ -17,11 +17,11 @@ static class DalConfig
 
     static DalConfig()
     {
-        XElement dalConfig = XElement.Load(@"C:\Users\PC\source\repos\dotNet5785_4034_2081\xml\dal-config.xml") ??
-  throw new DalConfigException("dal-config.xml file is not found");
+        XElement dalConfig = XElement.Load(@"..\xml\dal-config.xml") ??
+                             throw new DalConfigException("dal-config.xml file is not found");
 
-        s_dalName =
-           dalConfig.Element("dal")?.Value ?? throw new DalConfigException("<dal> element is missing");
+        s_dalName = dalConfig.Element("dal")?.Value ??
+                    throw new DalConfigException("<dal> element is missing");
 
         var packages = dalConfig.Element("dal-packages")?.Elements() ??
   throw new DalConfigException("<dal-packages> element is missing");
@@ -29,8 +29,8 @@ static class DalConfig
                          let pkg = item.Value
                          let ns = item.Attribute("namespace")?.Value ?? "Dal"
                          let cls = item.Attribute("class")?.Value ?? pkg
-                         select (item.Name, new DalImplementation(pkg, ns, cls))
-                        ).ToDictionary(p => "" + p.Name, p => p.Item2);
+                         select (item.Name, new DalImplementation(pkg, ns, cls)))
+                        .ToDictionary(p => "" + p.Name, p => p.Item2);
     }
 }
 

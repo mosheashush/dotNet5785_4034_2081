@@ -24,6 +24,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BL", "BL\BL.csproj", "{26E4
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BITest", "BITest\BITest.csproj", "{DF8642F4-A938-46CF-AFA0-F2CD3A2550F9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PL", "PL\PL.csproj", "{69C25ACF-1EEC-4695-B9A6-D2B48A9034BC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -54,6 +56,10 @@ Global
 		{DF8642F4-A938-46CF-AFA0-F2CD3A2550F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DF8642F4-A938-46CF-AFA0-F2CD3A2550F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DF8642F4-A938-46CF-AFA0-F2CD3A2550F9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{69C25ACF-1EEC-4695-B9A6-D2B48A9034BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69C25ACF-1EEC-4695-B9A6-D2B48A9034BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{69C25ACF-1EEC-4695-B9A6-D2B48A9034BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{69C25ACF-1EEC-4695-B9A6-D2B48A9034BC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
