@@ -2,154 +2,154 @@
 <ArrayOfAssignment>
   <Assignment>
     <Id>2000</Id>
-    <CallId>1006</CallId>
-    <VolunteerId>30064654</VolunteerId>
+    <CallId>1007</CallId>
+    <VolunteerId>28931696</VolunteerId>
     <StarCall>2023-01-01T08:00:00</StarCall>
-    <CompletionTime>2023-01-10T13:17:00</CompletionTime>
-    <FinishType>expired</FinishType>
+    <CompletionTime>2023-01-06T20:17:00</CompletionTime>
+    <FinishType>canceledAdmin</FinishType>
   </Assignment>
   <Assignment>
     <Id>2001</Id>
-    <CallId>1001</CallId>
-    <VolunteerId>35121233</VolunteerId>
+    <CallId>1011</CallId>
+    <VolunteerId>26733502</VolunteerId>
     <StarCall>2023-01-01T08:00:00</StarCall>
-    <CompletionTime>2023-01-07T06:16:00</CompletionTime>
-    <FinishType>completed</FinishType>
-  </Assignment>
-  <Assignment>
-    <Id>2002</Id>
-    <CallId>1009</CallId>
-    <VolunteerId>33253817</VolunteerId>
-    <StarCall>2023-01-01T08:00:00</StarCall>
-    <CompletionTime />
-    <FinishType />
-  </Assignment>
-  <Assignment>
-    <Id>2003</Id>
-    <CallId>1012</CallId>
-    <VolunteerId>32149418</VolunteerId>
-    <StarCall>2023-01-01T08:00:00</StarCall>
-    <CompletionTime>2023-01-07T01:18:00</CompletionTime>
+    <CompletionTime>2023-01-06T20:07:00</CompletionTime>
     <FinishType>canceledVolunteer</FinishType>
   </Assignment>
   <Assignment>
-    <Id>2004</Id>
-    <CallId>1000</CallId>
-    <VolunteerId>32867661</VolunteerId>
+    <Id>2002</Id>
+    <CallId>1010</CallId>
+    <VolunteerId>38747516</VolunteerId>
     <StarCall>2023-01-01T08:00:00</StarCall>
-    <CompletionTime>2023-01-06T14:00:00</CompletionTime>
+    <CompletionTime>2023-01-11T00:11:00</CompletionTime>
+    <FinishType>expired</FinishType>
+  </Assignment>
+  <Assignment>
+    <Id>2003</Id>
+    <CallId>1018</CallId>
+    <VolunteerId>34031452</VolunteerId>
+    <StarCall>2023-01-01T08:00:00</StarCall>
+    <CompletionTime>2023-01-10T21:02:00</CompletionTime>
+    <FinishType>expired</FinishType>
+  </Assignment>
+  <Assignment>
+    <Id>2004</Id>
+    <CallId>1014</CallId>
+    <VolunteerId>36254779</VolunteerId>
+    <StarCall>2023-01-01T08:00:00</StarCall>
+    <CompletionTime>2023-01-06T10:10:00</CompletionTime>
     <FinishType>completed</FinishType>
   </Assignment>
   <Assignment>
     <Id>2005</Id>
-    <CallId>1018</CallId>
-    <VolunteerId>20529399</VolunteerId>
-    <StarCall>2023-01-01T08:00:00</StarCall>
-    <CompletionTime>2023-01-06T16:11:00</CompletionTime>
-    <FinishType>canceledVolunteer</FinishType>
-  </Assignment>
-  <Assignment>
-    <Id>2006</Id>
-    <CallId>1011</CallId>
-    <VolunteerId>39000552</VolunteerId>
-    <StarCall>2023-01-01T08:00:00</StarCall>
-    <CompletionTime>2023-01-07T01:15:00</CompletionTime>
-    <FinishType>completed</FinishType>
-  </Assignment>
-  <Assignment>
-    <Id>2007</Id>
-    <CallId>1016</CallId>
-    <VolunteerId>22906363</VolunteerId>
-    <StarCall>2023-01-01T08:00:00</StarCall>
-    <CompletionTime>2023-01-06T22:18:00</CompletionTime>
-    <FinishType>completed</FinishType>
-  </Assignment>
-  <Assignment>
-    <Id>2008</Id>
-    <CallId>1017</CallId>
-    <VolunteerId>39012512</VolunteerId>
-    <StarCall>2023-01-01T08:00:00</StarCall>
-    <CompletionTime>2023-01-06T16:06:00</CompletionTime>
-    <FinishType>canceledVolunteer</FinishType>
-  </Assignment>
-  <Assignment>
-    <Id>2009</Id>
-    <CallId>1002</CallId>
-    <VolunteerId>22504862</VolunteerId>
+    <CallId>1003</CallId>
+    <VolunteerId>34250119</VolunteerId>
     <StarCall>2023-01-01T08:00:00</StarCall>
     <CompletionTime />
     <FinishType />
   </Assignment>
   <Assignment>
-    <Id>2010</Id>
-    <CallId>1013</CallId>
-    <VolunteerId>39583695</VolunteerId>
+    <Id>2006</Id>
+    <CallId>1008</CallId>
+    <VolunteerId>34179815</VolunteerId>
     <StarCall>2023-01-01T08:00:00</StarCall>
-    <CompletionTime>2023-01-07T02:22:00</CompletionTime>
+    <CompletionTime>2023-01-06T15:18:00</CompletionTime>
     <FinishType>completed</FinishType>
   </Assignment>
   <Assignment>
-    <Id>2011</Id>
-    <CallId>1003</CallId>
-    <VolunteerId>28004993</VolunteerId>
+    <Id>2007</Id>
+    <CallId>1005</CallId>
+    <VolunteerId>36561773</VolunteerId>
     <StarCall>2023-01-01T08:00:00</StarCall>
-    <CompletionTime>2023-01-06T09:04:00</CompletionTime>
-    <FinishType>completed</FinishType>
-  </Assignment>
-  <Assignment>
-    <Id>2012</Id>
-    <CallId>1015</CallId>
-    <VolunteerId>33076468</VolunteerId>
-    <StarCall>2023-01-01T08:00:00</StarCall>
-    <CompletionTime>2023-01-11T04:15:00</CompletionTime>
-    <FinishType>expired</FinishType>
-  </Assignment>
-  <Assignment>
-    <Id>2013</Id>
-    <CallId>1010</CallId>
-    <VolunteerId>34978371</VolunteerId>
-    <StarCall>2023-01-01T08:00:00</StarCall>
-    <CompletionTime>2023-01-06T14:00:00</CompletionTime>
+    <CompletionTime>2023-01-06T20:03:00</CompletionTime>
     <FinishType>canceledVolunteer</FinishType>
   </Assignment>
   <Assignment>
-    <Id>2014</Id>
-    <CallId>1005</CallId>
-    <VolunteerId>29918761</VolunteerId>
+    <Id>2008</Id>
+    <CallId>1006</CallId>
+    <VolunteerId>21750979</VolunteerId>
     <StarCall>2023-01-01T08:00:00</StarCall>
-    <CompletionTime>2023-01-06T22:12:00</CompletionTime>
+    <CompletionTime>2023-01-06T12:07:00</CompletionTime>
+    <FinishType>completed</FinishType>
+  </Assignment>
+  <Assignment>
+    <Id>2009</Id>
+    <CallId>1015</CallId>
+    <VolunteerId>33955042</VolunteerId>
+    <StarCall>2023-01-01T08:00:00</StarCall>
+    <CompletionTime>2023-01-06T11:06:00</CompletionTime>
+    <FinishType>canceledVolunteer</FinishType>
+  </Assignment>
+  <Assignment>
+    <Id>2010</Id>
+    <CallId>1004</CallId>
+    <VolunteerId>27757970</VolunteerId>
+    <StarCall>2023-01-01T08:00:00</StarCall>
+    <CompletionTime>2023-01-07T06:15:00</CompletionTime>
     <FinishType>canceledAdmin</FinishType>
   </Assignment>
   <Assignment>
-    <Id>2015</Id>
-    <CallId>1014</CallId>
-    <VolunteerId>21414198</VolunteerId>
+    <Id>2011</Id>
+    <CallId>1016</CallId>
+    <VolunteerId>28447010</VolunteerId>
     <StarCall>2023-01-01T08:00:00</StarCall>
-    <CompletionTime>2023-01-07T05:01:00</CompletionTime>
-    <FinishType>completed</FinishType>
+    <CompletionTime>2023-01-06T11:20:00</CompletionTime>
+    <FinishType>canceledVolunteer</FinishType>
   </Assignment>
   <Assignment>
-    <Id>2016</Id>
-    <CallId>1004</CallId>
-    <VolunteerId>21075898</VolunteerId>
+    <Id>2012</Id>
+    <CallId>1001</CallId>
+    <VolunteerId>35600044</VolunteerId>
     <StarCall>2023-01-01T08:00:00</StarCall>
-    <CompletionTime>2023-01-06T19:17:00</CompletionTime>
-    <FinishType>completed</FinishType>
+    <CompletionTime>2023-01-07T08:12:00</CompletionTime>
+    <FinishType>canceledAdmin</FinishType>
   </Assignment>
   <Assignment>
-    <Id>2017</Id>
-    <CallId>1008</CallId>
-    <VolunteerId>26869801</VolunteerId>
+    <Id>2013</Id>
+    <CallId>1017</CallId>
+    <VolunteerId>20742767</VolunteerId>
     <StarCall>2023-01-01T08:00:00</StarCall>
-    <CompletionTime>2023-01-10T13:02:00</CompletionTime>
+    <CompletionTime>2023-01-06T13:06:00</CompletionTime>
+    <FinishType>canceledAdmin</FinishType>
+  </Assignment>
+  <Assignment>
+    <Id>2014</Id>
+    <CallId>1013</CallId>
+    <VolunteerId>34313388</VolunteerId>
+    <StarCall>2023-01-01T08:00:00</StarCall>
+    <CompletionTime>2023-01-10T18:01:00</CompletionTime>
     <FinishType>expired</FinishType>
   </Assignment>
   <Assignment>
-    <Id>2018</Id>
-    <CallId>1007</CallId>
-    <VolunteerId>27264647</VolunteerId>
+    <Id>2015</Id>
+    <CallId>1000</CallId>
+    <VolunteerId>22479664</VolunteerId>
     <StarCall>2023-01-01T08:00:00</StarCall>
-    <CompletionTime>2023-01-06T12:17:00</CompletionTime>
+    <CompletionTime>2023-01-06T21:06:00</CompletionTime>
+    <FinishType>canceledVolunteer</FinishType>
+  </Assignment>
+  <Assignment>
+    <Id>2016</Id>
+    <CallId>1002</CallId>
+    <VolunteerId>28212186</VolunteerId>
+    <StarCall>2023-01-01T08:00:00</StarCall>
+    <CompletionTime />
+    <FinishType />
+  </Assignment>
+  <Assignment>
+    <Id>2017</Id>
+    <CallId>1012</CallId>
+    <VolunteerId>20253455</VolunteerId>
+    <StarCall>2023-01-01T08:00:00</StarCall>
+    <CompletionTime>2023-01-07T05:00:00</CompletionTime>
     <FinishType>canceledAdmin</FinishType>
+  </Assignment>
+  <Assignment>
+    <Id>2018</Id>
+    <CallId>1009</CallId>
+    <VolunteerId>30061373</VolunteerId>
+    <StarCall>2023-01-01T08:00:00</StarCall>
+    <CompletionTime>2023-01-10T14:06:00</CompletionTime>
+    <FinishType>expired</FinishType>
   </Assignment>
 </ArrayOfAssignment>

@@ -1,11 +1,9 @@
-﻿using DalApi;
-using System.Net;
-using System.Text.Json;
-using System.Text.RegularExpressions;
-using System.IO;
+﻿//using DalApi;
 using BO;
+using DalApi;
 using DO;
 using System.Xml.Linq;
+//using BIApi;
 //using BIApi;
 
 
@@ -13,7 +11,12 @@ namespace Helpers;
 
 internal static class CallManager
 {
-    private static IDal s_dal = Factory.Get;
+    private static DalApi.IDal s_dal = DalApi.Factory.Get;
+
+    internal static ObserverManager Observers = new(); //stage 5 
+
+   
+
     //MapDOToBOCall implementation
     public static BO.Call MapDOToBOCall(DO.Call call)
     {
@@ -75,14 +78,12 @@ internal static class CallManager
 
         //address check and update coordinates
         (boCall.Latitude, boCall.Longitude)  = VolunteerManager.GetCoordinatesFromAddress(boCall.FullAddress);
-
     }
 
     //CreatAssignInList implementation
     public static List<BO.CallAssignInList> CreatAssignInList(int callId)
     {
         if (s_dal.Assignment.ReadAll().Where(c => c.CallId == callId)==null) return null;
-
         
         List<BO.CallAssignInList> list = s_dal.Assignment.ReadAll().Where(a => a.CallId == callId).Select(a=> new BO.CallAssignInList
         {
@@ -106,16 +107,32 @@ internal static class CallManager
         else if (assignments != null && assignments.Any(a => a.FinishType == DO.CompletionType.expired))
             return BO.CallState.expired;
 
-        if (call.MaxTimeForCall < ClockManager.Now)
-            return BO.CallState.expired;
-        else if (call.MaxTimeForCall - s_dal.Config.RiskRange <= ClockManager.Now)
+        if (call.MaxTimeForCall < AdminManager.Now)
+        {
+            if (assignments != null && assignments.Any(a => a.FinishType == null))
+            {
+                DO.Assignment assignment = assignments.FirstOrDefault(a => a.FinishType == null);
+                DO.Assignment UpdateAssignment = assignment with
+                         {
+                            FinishType = DO.CompletionType.expired,
+                            CompletionTime = AdminManager.Now
+                          };
+                s_dal.Assignment.Update(UpdateAssignment);
+                Observers.NotifyItemUpdated(call.Id);  //stage 5
+                Observers.NotifyListUpdated();  //stage 5}
+                return BO.CallState.expired;
+            }
+            else
+                return BO.CallState.expired;
+        }
+        else if (call.MaxTimeForCall - s_dal.Config.RiskRange <= AdminManager.Now)
         {
             if (assignments != null && assignments.Any(a => a.FinishType == null))
                 return BO.CallState.ProcessedOnRisk;
             else
                 return BO.CallState.openOnRisk;
         }
-        else if (call.MaxTimeForCall - s_dal.Config.RiskRange > ClockManager.Now)
+        else if (call.MaxTimeForCall - s_dal.Config.RiskRange > AdminManager.Now)
         {
             if (assignments != null && assignments.Any(a => a.FinishType == null))
                 return BO.CallState.processed;
@@ -134,11 +151,11 @@ internal static class CallManager
             IdCall = call.IdCall,
             Type = call.Type,
             CallStartTime = call.CallStartTime,
-            TimeRemaining = call.MaxTimeForCall - ClockManager.Now,
+            TimeRemaining = call.MaxTimeForCall - AdminManager.Now,
             NameFinalVolunteer = s_dal.Assignment.ReadAll().Where(a => a.CallId == call.IdCall).OrderByDescending(a => a.CompletionTime)
                                                  .Join(s_dal.Volunteer.ReadAll(), a => a.VolunteerId, v => v.id, (a, v) => v.FullName)
                                                  .FirstOrDefault(),
-            SumTimeProcess = assignment != null && assignment.FinishType == DO.CompletionType.completed ?  ClockManager.Now - call.CallStartTime : null,
+            SumTimeProcess = assignment != null && assignment.FinishType == DO.CompletionType.completed ? AdminManager.Now - call.CallStartTime : null,
             CallState = call.CallState,
             SumOfAssignments = s_dal.Assignment.ReadAll().Count(c=> c.CallId == call.IdCall),
         };
@@ -157,7 +174,7 @@ internal static class CallManager
 
         // Filter calls whose MaxTimeForCall has passed and are not yet assigned
         var expiredCalls = s_dal.Call.ReadAll()
-            .Where(c => c.MaxTimeForCall < ClockManager.Now &&
+            .Where(c => c.MaxTimeForCall < AdminManager.Now &&
                         !existingAssignments.Contains(c.Id))
             .ToList();
 
@@ -169,13 +186,13 @@ internal static class CallManager
                 VolunteerId = 0,
                 StarCall = c.CallStartTime,
                 FinishType = DO.CompletionType.expired,
-                CompletionTime = ClockManager.Now
+                CompletionTime = AdminManager.Now
             })
         );
 
         var assignments = s_dal.Assignment.ReadAll()
-     .Where(a => s_dal.Call.Read(a.CallId).MaxTimeForCall < ClockManager.Now)
-     .Select(a => a with { FinishType = DO.CompletionType.expired, CompletionTime = ClockManager.Now })
+     .Where(a => s_dal.Call.Read(a.CallId).MaxTimeForCall < AdminManager.Now)
+     .Select(a => a with { FinishType = DO.CompletionType.expired, CompletionTime = AdminManager.Now })
      .ToList();
 
         assignments.ForEach(s_dal.Assignment.Update);

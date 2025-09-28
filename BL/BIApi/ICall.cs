@@ -1,6 +1,8 @@
-﻿namespace BIApi;
+﻿using BlApi;
 
-public interface ICall
+namespace BIApi;
+
+public interface ICall : IObservable
 {
     int[] GetCallsAmountByStatus();
     IEnumerable<BO.CallInList> GetCallsList(BO.CallInListFields? filterField, object? filterValue, BO.CallInListFields? orderByField);
@@ -13,5 +15,4 @@ public interface ICall
     void FinishTreatment(int volunteerId, int assignmentId);
     void CancelTreatment(int requesterId, int assignmentId);
     void ChooseCallForTreatment(int volunteerId, int callId);
-
 }

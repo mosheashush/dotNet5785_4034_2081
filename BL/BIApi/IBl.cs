@@ -1,6 +1,8 @@
-﻿namespace BIApi;
+﻿using BIApi;
 
-public interface IBl
+namespace BIApi;
+
+public interface IBl //: IObservable
 {
     IAdmin Admin { get; }
     ICall Call { get; }

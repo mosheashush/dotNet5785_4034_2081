@@ -1,4 +1,6 @@
 ﻿using BIApi;
+using BO;
+
 //using DalApi;
 using Helpers;
 using System.Collections.Generic;
@@ -9,6 +11,18 @@ internal class CallImplementation : ICall
 {
     private readonly DalApi.IDal s_dal = DalApi.Factory.Get;
 
+    #region Stage 5
+    public void AddObserver(Action listObserver) =>
+    CallManager.Observers.AddListObserver(listObserver); //stage 5
+    public void AddObserver(int id, Action observer) =>
+    CallManager.Observers.AddObserver(id, observer); //stage 5
+    public void RemoveObserver(Action listObserver) =>
+    CallManager.Observers.RemoveListObserver(listObserver); //stage 5
+    public void RemoveObserver(int id, Action observer) =>
+    CallManager.Observers.RemoveObserver(id, observer); //stage 5
+    #endregion Stage 5
+
+
     //Creat implementation
     public void Create(BO.Call boCall)
     {
@@ -17,6 +31,7 @@ internal class CallImplementation : ICall
         try
         {
             s_dal.Call.Create(CallManager.MapBOToDOCall(boCall));
+            CallManager.Observers.NotifyListUpdated(); //stage 5
         }
         catch (DO.DalAlreadyExistsException ex)
         {
@@ -40,6 +55,8 @@ internal class CallImplementation : ICall
         try
         {
             s_dal.Call.Update(CallManager.MapBOToDOCall(boCall));
+            CallManager.Observers.NotifyItemUpdated(boCall.IdCall);  //stage 5
+            CallManager.Observers.NotifyListUpdated();  //stage 5
         }
         catch (DO.DalDoesNotExistException ex)
         {
@@ -58,6 +75,7 @@ internal class CallImplementation : ICall
         try
         {
             s_dal.Call.Delete(id);
+            CallManager.Observers.NotifyListUpdated(); //stage 5
         }
         catch (DO.DalDoesNotExistException ex)
         {
@@ -187,9 +205,23 @@ internal class CallImplementation : ICall
             CompletionTime = DateTime.Now
         };
 
-        s_dal.Assignment.Update(updatedAssignment);
-    }
+        var volunteer = s_dal.Volunteer.Read(assignment.VolunteerId)
+                        ?? throw new BO.BlDoesNotExistException($"Volunteer with ID={assignment.VolunteerId} does Not exist");
+        DO.Volunteer updatedVolunteer;
 
+        updatedVolunteer = volunteer with
+        {
+            Active = false
+        };
+
+        s_dal.Volunteer.Update(updatedVolunteer);
+        VolunteerManager.Observers.NotifyItemUpdated(updatedVolunteer.id);
+        VolunteerManager.Observers.NotifyListUpdated(); //stage 5
+        
+        s_dal.Assignment.Update(updatedAssignment);
+        AssignmentManager.Observers.NotifyItemUpdated(updatedAssignment.Id);
+        AssignmentManager.Observers.NotifyListUpdated(); //stage 5
+    }
 
     public void CancelTreatment(int requesterId, int assignmentId)
     {
@@ -229,8 +261,13 @@ internal class CallImplementation : ICall
             Active = false
         };
 
-        s_dal.Assignment.Update(updatedAssignment);
         s_dal.Volunteer.Update(updatedVolunteer);
+        VolunteerManager.Observers.NotifyItemUpdated(updatedVolunteer.id);
+        VolunteerManager.Observers.NotifyListUpdated(); //stage 5
+
+        s_dal.Assignment.Update(updatedAssignment);
+        AssignmentManager.Observers.NotifyItemUpdated(updatedAssignment.Id);
+        AssignmentManager.Observers.NotifyListUpdated(); //stage 5
     }
 
     public void ChooseCallForTreatment(int volunteerId, int callId){
@@ -260,6 +297,18 @@ internal class CallImplementation : ICall
 
         // Create the assignment in the data layer
         s_dal.Assignment.Create(assignment);
+
+        AssignmentManager.Observers.NotifyListUpdated(); //stage 5
+
+        DO.Volunteer updatedVolunteer;
+        updatedVolunteer = volunteer with
+        {
+            Active = false
+        };
+
+        s_dal.Volunteer.Update(updatedVolunteer);
+        VolunteerManager.Observers.NotifyItemUpdated(updatedVolunteer.id);
+        VolunteerManager.Observers.NotifyListUpdated(); //stage 5
     }
 }
 

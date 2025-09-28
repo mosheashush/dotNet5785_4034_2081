@@ -12,7 +12,7 @@ internal class AdminImplementation : IAdmin
 
     public void AdvanceClock(TimeUnit timeUnit)
     {
-        DateTime newTime = ClockManager.Now;
+        DateTime newTime = AdminManager.Now;
 
         // Calculate the new time based on the selected time unit
         switch (timeUnit)
@@ -35,35 +35,48 @@ internal class AdminImplementation : IAdmin
         }
 
         // Update the clock manager with the new time 
-        ClockManager.UpdateClock(newTime);
+        AdminManager.UpdateClock(newTime);
     }
 
     public DateTime GetClock()
     {
-        return ClockManager.Now;
+        return AdminManager.Now;
     }
 
     //GetRiskTimeSpan implementation
     public TimeSpan GetRiskTimeSpan()
     {
-        return s_dal.Config.RiskRange;
+        return AdminManager.RiskRange;
     }
 
     public void InitializeDatabase()
     {
-        s_dal.ResetDB();
-        Initialization.Do();
-        ClockManager.UpdateClock(ClockManager.Now);
-    }
+        Dal.Initialization.Do();
+        AdminManager.UpdateClock(AdminManager.Now);
+        AdminManager.RiskRange
+            = AdminManager.RiskRange;
+    } 
 
     public void ResetDatabase()
     {
         s_dal.ResetDB();
-        ClockManager.UpdateClock(ClockManager.Now);
+        AdminManager.UpdateClock(AdminManager.Now);
     }
 
     public void SetRiskTimeSpan(TimeSpan newRiskRange)
     {
         s_dal.Config.RiskRange = newRiskRange;
     }
+
+    #region Stage 5
+    public void AddClockObserver(Action clockObserver) =>
+    AdminManager.ClockUpdatedObservers += clockObserver;
+    public void RemoveClockObserver(Action clockObserver) =>
+    AdminManager.ClockUpdatedObservers -= clockObserver;
+    public void AddConfigObserver(Action configObserver) =>
+   AdminManager.ConfigUpdatedObservers += configObserver;
+    public void RemoveConfigObserver(Action configObserver) =>
+    AdminManager.ConfigUpdatedObservers -= configObserver;
+    #endregion Stage 5
+
 }

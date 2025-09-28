@@ -8,13 +8,30 @@ using System.Xml.Serialization;
 
 static class XMLTools
 {
-    const string s_xmlDir = @"C:\Users\PC\source\repos\dotNet5785_4034_2081\xml\";
-    // const string s_xmlDir = "..\\..\\..\\..\\xml\\";
-    //for nerya: @"C:\Users\PC\source\repos\dotNet5785_4034_2081\xml\";
-    static XMLTools()
+    static readonly string s_xmlDir = GetXmlDirectory();
+    // added by me to find or create the "xml" directory dynamically
+    private static string GetXmlDirectory()
     {
-        if (!Directory.Exists(s_xmlDir))
-            Directory.CreateDirectory(s_xmlDir);
+        // from current directory and up find the "xml" folder
+        string currentDir = Directory.GetCurrentDirectory();
+
+        while (currentDir != null)
+        {
+            string xmlPath = Path.Combine(currentDir, "xml");
+            if (Directory.Exists(xmlPath))
+            {
+                return xmlPath + Path.DirectorySeparatorChar;
+            }
+
+            // Go up one directory level
+            DirectoryInfo parent = Directory.GetParent(currentDir);
+            currentDir = parent?.FullName;
+        }
+
+        // if not found, create in the current directory
+        string defaultPath = Path.Combine(Directory.GetCurrentDirectory(), "xml");
+        Directory.CreateDirectory(defaultPath);
+        return defaultPath + Path.DirectorySeparatorChar;
     }
 
 

@@ -9,7 +9,18 @@ internal class VolunteerImplementation : IVolunteer
 {
     private readonly DalApi.IDal s_dal = DalApi.Factory.Get;
 
-   // public override string ToString() => this.ToStringProperty();
+    #region Stage 5 
+    public void AddObserver(Action listObserver) =>
+    VolunteerManager.Observers.AddListObserver(listObserver); //stage 5 
+    public void AddObserver(int id, Action observer) =>
+    VolunteerManager.Observers.AddObserver(id, observer); //stage 5 
+    public void RemoveObserver(Action listObserver) =>
+    VolunteerManager.Observers.RemoveListObserver(listObserver); //stage 5 
+    public void RemoveObserver(int id, Action observer) =>
+    VolunteerManager.Observers.RemoveObserver(id, observer); //stage 5 
+    #endregion Stage 5
+
+    // public override string ToString() => this.ToStringProperty();
 
     public void Create(BO.Volunteer boVolunteer)
     {
@@ -17,6 +28,7 @@ internal class VolunteerImplementation : IVolunteer
         try
         {
             s_dal.Volunteer.Create(VolunteerManager.MapBOToDOVolunteer(boVolunteer));
+            VolunteerManager.Observers.NotifyListUpdated(); //stage 5 
         }
         catch (DO.DalAlreadyExistsException ex)
         {
@@ -65,6 +77,8 @@ internal class VolunteerImplementation : IVolunteer
         try
         {
             s_dal.Volunteer.Update(VolunteerManager.MapBOToDOVolunteer(boVolunteer));
+            VolunteerManager.Observers.NotifyItemUpdated(boVolunteer.id);  //stage 5 
+            VolunteerManager.Observers.NotifyListUpdated();  //stage 5 
         }
         catch (DO.DalDoesNotExistException ex)
         {
@@ -79,6 +93,7 @@ internal class VolunteerImplementation : IVolunteer
         try
         {
             s_dal.Volunteer.Delete(id);
+            VolunteerManager.Observers.NotifyListUpdated(); //stage 5
         }
         catch (DO.DalDoesNotExistException ex)
         {

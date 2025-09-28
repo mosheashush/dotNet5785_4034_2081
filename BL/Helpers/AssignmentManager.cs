@@ -1,10 +1,15 @@
-﻿using DalApi;
+﻿
+using DalApi;
 
 namespace Helpers;
 
 internal static class AssignmentManager
 {
     private static IDal s_dal = Factory.Get; //stage 4
+
+    internal static ObserverManager Observers = new(); //stage 5 
+                                                       //...
+
 
     //MapDOToBOAssignment implementation
     public static BO.Assignment MapDOToBOAssignment(DO.Assignment assignment)
