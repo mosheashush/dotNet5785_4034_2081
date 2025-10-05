@@ -206,6 +206,26 @@ namespace PL.Volunteer
         }
 
         /// <summary>
+        /// לחיצה על כפתור הוספה - פתיחת מסך הוספת מתנדב חדש
+        /// </summary>
+        private void btnUpdate_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                // פתיחת מסך הוספה (ללא ID)
+                new VolunteerWindow().ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"שגיאה בפתיחת מסך הוספה:\n{ex.Message}",
+                    "שגיאה",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
+        }
+
+
+        /// <summary>
         /// לחיצה על כפתור מחיקה בשורה
         /// </summary>
         private void btnDelete_Click(object sender, RoutedEventArgs e)

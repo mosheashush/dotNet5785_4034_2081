@@ -7,25 +7,25 @@ namespace PL
 {
     public partial class MainWindow : Window
     {
-        // === BL Access (בטל הערה כשקיים אצלך) ===
+        // === BL Access (Uncomment when you have it) ===
         // static readonly BlApi.IBl s_bl = BlApi.Factory.Get();
 
         public MainWindow()
         {
             InitializeComponent();
 
-            // ברירות מחדל לתצוגה
+            // Default values for display
             CurrentTime = DateTime.Now;
             RiskRange = TimeSpan.FromMinutes(30);
 
-            // אם יש לך אירועים מה-BL (Observer/Events) אפשר להירשם כאן:
+            // Ability to update the UI when the clock or config changes in the BL
             // s_bl.ClockChanged  += (s, e) => CurrentTime = s_bl.GetClock();
             // s_bl.ConfigChanged += (s, e) => RiskRange  = s_bl.GetRiskRange();
         }
 
-        #region Dependency Properties – שעון ותצורה
+        #region Dependency Properties – Clock and Configuration
 
-        // CurrentTime (DateTime) + נגזרת לתצוגה (string)
+        // CurrentTime (DateTime) + derived for display (string)
         public static readonly DependencyProperty CurrentTimeProperty =
             DependencyProperty.Register(nameof(CurrentTime), typeof(DateTime), typeof(MainWindow),
                 new PropertyMetadata(DateTime.Now, (d, e) =>
@@ -50,13 +50,13 @@ namespace PL
             set => SetValue(CurrentTimeStringProperty, value);
         }
 
-        // RiskRange (TimeSpan) + נגזרת לתצוגה/קלט (string)
+        // RiskRange (TimeSpan) + derived for display/input (string)
         public static readonly DependencyProperty RiskRangeProperty =
             DependencyProperty.Register(nameof(RiskRange), typeof(TimeSpan), typeof(MainWindow),
                 new PropertyMetadata(TimeSpan.Zero, (d, e) =>
                 {
                     var win = (MainWindow)d;
-                    win.RiskRangeString = ((TimeSpan)e.NewValue).ToString(); // פורמט סטנדרטי: hh:mm:ss
+                    win.RiskRangeString = ((TimeSpan)e.NewValue).ToString(); // Standard format: hh:mm:ss
                 }));
 
         public TimeSpan RiskRange
@@ -71,7 +71,7 @@ namespace PL
                 {
                     var win = (MainWindow)d;
                     if (TimeSpan.TryParse((string)e.NewValue, CultureInfo.InvariantCulture, out var ts))
-                        win.RiskRange = ts; // Two-way binding על ה-TextBox
+                        win.RiskRange = ts; // Two-way binding on the TextBox
                 }));
 
         public string RiskRangeString
@@ -82,28 +82,28 @@ namespace PL
 
         #endregion
 
-        #region Clock – קידום/רענון/איפוס
+        #region Clock – Advance/Refresh/Reset
 
         private void AdvanceBy(TimeSpan delta)
         {
-            // מימוש מלא דרך ה-BL:
+            // Full implementation via BL:
             // s_bl.AdvanceClock(delta);
             // CurrentTime = s_bl.GetClock();
 
-            // מימוש זמני מקומי (יעבוד גם בלי BL):
+            // Temporary local implementation (works even without BL):
             CurrentTime = CurrentTime.Add(delta);
         }
 
         private void AdvanceMinute_Click(object sender, RoutedEventArgs e) => AdvanceBy(TimeSpan.FromMinutes(1));
         private void AdvanceHour_Click(object sender, RoutedEventArgs e) => AdvanceBy(TimeSpan.FromHours(1));
         private void AdvanceDay_Click(object sender, RoutedEventArgs e) => AdvanceBy(TimeSpan.FromDays(1));
-        private void AdvanceMonth_Click(object sender, RoutedEventArgs e) => AdvanceBy(TimeSpan.FromDays(30));  // פשטות
-        private void AdvanceYear_Click(object sender, RoutedEventArgs e) => AdvanceBy(TimeSpan.FromDays(365)); // פשטות
+        private void AdvanceMonth_Click(object sender, RoutedEventArgs e) => AdvanceBy(TimeSpan.FromDays(30));  // Simplicity
+        private void AdvanceYear_Click(object sender, RoutedEventArgs e) => AdvanceBy(TimeSpan.FromDays(365)); // Simplicity
 
         private void RefreshFromBlClock_Click(object sender, RoutedEventArgs e)
         {
             // CurrentTime = s_bl.GetClock();
-            CurrentTime = DateTime.Now; // זמני
+            CurrentTime = DateTime.Now; // Temporary
         }
 
         private void ResetClockToNow_Click(object sender, RoutedEventArgs e)
@@ -114,18 +114,18 @@ namespace PL
 
         #endregion
 
-        #region Config – שמירה/טעינה
+        #region Config – Save/Load
 
         private void SaveConfigToBl_Click(object sender, RoutedEventArgs e)
         {
             try
             {
                 // s_bl.SetRiskRange(RiskRange);
-                MessageBox.Show("ההגדרות נשמרו (דמו).", "תצורה", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("(ההגדרות נשמרו (דמו.", "תצורה", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"שמירת תצורה נכשלה:\n{ex.Message}", "שגיאה", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"שמירת ההגדרות נכשלה:\n{ex.Message}", "שגיאה", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -134,48 +134,49 @@ namespace PL
             try
             {
                 // RiskRange = s_bl.GetRiskRange();
-                MessageBox.Show("ההגדרות נטענו (דמו).", "תצורה", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("שומר ההגדרות (דמו).", "תצורה", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"טעינת תצורה נכשלה:\n{ex.Message}", "שגיאה", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"טעינת ההגדרות נכשלה:\n{ex.Message}", "שגיאה", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
         #endregion
 
-        #region DB – איפוס/אתחול
+        #region DB – Reset/Initialize
 
         private void ResetDb_Click(object sender, RoutedEventArgs e)
         {
-            if (MessageBox.Show("לאפס את בסיס הנתונים? הפעולה תמחק נתונים ותשיב הגדרות לברירת־מחדל.",
-                                "אישור פעולה", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes)
+             if (MessageBox.Show("איפוס מסד הנתונים? פעולה זו תמחק נתונים ותשחזר הגדרות ברירת מחדל.",
+                                  "אישור פעולה", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes)
+
                 return;
 
             try
             {
                 // s_bl.ResetDatabase();
-                MessageBox.Show("בוצע איפוס (דמו).", "בסיס נתונים", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("(האתחול בוצע (דמו.", "מסד נתונים", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"האיפוס נכשל:\n{ex.Message}", "שגיאה", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"האתחול נכשל:\n{ex.Message}", "שגיאה", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
         private void InitDb_Click(object sender, RoutedEventArgs e)
         {
-            if (MessageBox.Show("לאתחל את בסיס הנתונים בנתוני התחלה?",
+            if (MessageBox.Show("אתחול מסד הנתונים עם נתונים התחלתיים?",
                                 "אישור פעולה", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
                 return;
 
             try
             {
-                // דוגמה לזרימה טיפוסית:
+                // Example of typical flow:
                 // s_bl.ResetDatabase();
                 // s_bl.InitializeDatabase();
 
-                MessageBox.Show("בוצע אתחול (דמו).", "בסיס נתונים", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("(האתחול בוצע (דמו.", "מסד נתונים", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex)
             {
@@ -185,19 +186,19 @@ namespace PL
 
         #endregion
 
-        #region Navigation – פתיחת חלונות ניהול
+        #region Navigation – Open Management Windows
 
         private void OpenVolunteers_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                // צור מופע של חלון ניהול מתנדבים
+                // Create an instance of the volunteer management window
                 var window = new VolunteerListWindow();
                 window.Show();
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"פתיחת מסך מתנדבים נכשלה:\n{ex.Message}", "שגיאה", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"פתיחת מסך המתנדבים נכשלה:\n{ex.Message}", "שגיאה", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -205,15 +206,14 @@ namespace PL
         {
             try
             {
-                // החלף לשם החלון בפועל, לדוגמה:
+                // Replace with the actual window name, for example:
                 // new Calls.CallsWindow().Show();
-
-                MessageBox.Show("כאן ייפתח חלון ניהול קריאות (התאם Namespace לפי הפרויקט).",
+                MessageBox.Show("כאן ייפתח מסך ניהול הקריאות (התאם את ה-Namespace לפי הפרויקט).",
                                 "ניווט", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"פתיחת מסך קריאות נכשלה:\n{ex.Message}", "שגיאה", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"פתיחת מסך הקריאות נכשלה:\n{ex.Message}", "שגיאה", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 

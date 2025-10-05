@@ -71,20 +71,6 @@
     <TypeOfDistance>drive</TypeOfDistance>
   </Volunteer>
   <Volunteer>
-    <id>21097995</id>
-    <FullName>Jonathan Greenberg</FullName>
-    <CallNumber>0559933147</CallNumber>
-    <EmailAddress>jonathangreenberg0@gmail.com</EmailAddress>
-    <Password>788432</Password>
-    <FullCurrentAddress>Netanya, David Hamelech 15</FullCurrentAddress>
-    <Latitude>32.331759</Latitude>
-    <Longitud>34.852056</Longitud>
-    <CurrentPosition>admin</CurrentPosition>
-    <Active>false</Active>
-    <MaxDistanceForCall>7</MaxDistanceForCall>
-    <TypeOfDistance>air</TypeOfDistance>
-  </Volunteer>
-  <Volunteer>
     <id>29319845</id>
     <FullName>Rebecca Rosen</FullName>
     <CallNumber>0505150829</CallNumber>
@@ -139,34 +125,6 @@
     <Active>false</Active>
     <MaxDistanceForCall>7</MaxDistanceForCall>
     <TypeOfDistance>walk</TypeOfDistance>
-  </Volunteer>
-  <Volunteer>
-    <id>35330143</id>
-    <FullName>Esther Rubin</FullName>
-    <CallNumber>0514255803</CallNumber>
-    <EmailAddress>estherrubin0@gmail.com</EmailAddress>
-    <Password>316172</Password>
-    <FullCurrentAddress>Rishon Lezion, Moshe Dayan 15</FullCurrentAddress>
-    <Latitude>31.9648</Latitude>
-    <Longitud>34.8021</Longitud>
-    <CurrentPosition>admin</CurrentPosition>
-    <Active>false</Active>
-    <MaxDistanceForCall>8</MaxDistanceForCall>
-    <TypeOfDistance>drive</TypeOfDistance>
-  </Volunteer>
-  <Volunteer>
-    <id>21393896</id>
-    <FullName>Samuel Stern</FullName>
-    <CallNumber>0564708088</CallNumber>
-    <EmailAddress>samuelstern1@gmail.com</EmailAddress>
-    <Password>261098</Password>
-    <FullCurrentAddress>Kfar Saba, Weizmann 112</FullCurrentAddress>
-    <Latitude>32.175</Latitude>
-    <Longitud>34.9066</Longitud>
-    <CurrentPosition>admin</CurrentPosition>
-    <Active>false</Active>
-    <MaxDistanceForCall>4</MaxDistanceForCall>
-    <TypeOfDistance>air</TypeOfDistance>
   </Volunteer>
   <Volunteer>
     <id>22010204</id>

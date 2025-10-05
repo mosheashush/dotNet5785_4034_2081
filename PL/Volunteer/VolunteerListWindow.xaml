@@ -11,145 +11,6 @@
         Background="#F5F7FA"
         DataContext="{Binding RelativeSource={RelativeSource Self}}">
 
-    <Window.Resources>
-        <!-- Modern Card Style -->
-        <Style x:Key="ModernCard" TargetType="Border">
-            <Setter Property="Background" Value="White"/>
-            <Setter Property="CornerRadius" Value="12"/>
-            <Setter Property="Padding" Value="20"/>
-            <Setter Property="Effect">
-                <Setter.Value>
-                    <DropShadowEffect Color="#000000" 
-                                    Opacity="0.1" 
-                                    BlurRadius="20" 
-                                    ShadowDepth="0"/>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <!-- Modern Button Style -->
-        <Style x:Key="ModernButton" TargetType="Button">
-            <Setter Property="Background" Value="#4A90E2"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Padding" Value="20,12"/>
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}"
-                                CornerRadius="8"
-                                Padding="{TemplateBinding Padding}">
-                            <ContentPresenter HorizontalAlignment="Center" 
-                                            VerticalAlignment="Center"/>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#357ABD"/>
-                </Trigger>
-                <Trigger Property="IsPressed" Value="True">
-                    <Setter Property="Background" Value="#2868A6"/>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-
-        <!-- Add Button Style (Green) -->
-        <Style x:Key="AddButton" TargetType="Button" BasedOn="{StaticResource ModernButton}">
-            <Setter Property="Background" Value="#5CB85C"/>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#4CAE4C"/>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-
-        <!-- Delete Button Style (Red) -->
-        <Style x:Key="DeleteButton" TargetType="Button" BasedOn="{StaticResource ModernButton}">
-            <Setter Property="Background" Value="#E74C3C"/>
-            <Setter Property="Padding" Value="8,6"/>
-            <Setter Property="FontSize" Value="12"/>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#C0392B"/>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-
-        <!-- Modern ComboBox Style -->
-        <Style x:Key="ModernComboBox" TargetType="ComboBox">
-            <Setter Property="Height" Value="40"/>
-            <Setter Property="Padding" Value="12,8"/>
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="Background" Value="White"/>
-            <Setter Property="BorderBrush" Value="#DFE6E9"/>
-            <Setter Property="BorderThickness" Value="2"/>
-        </Style>
-
-        <!-- DataGrid Style -->
-        <Style TargetType="DataGrid">
-            <Setter Property="Background" Value="White"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="GridLinesVisibility" Value="None"/>
-            <Setter Property="HeadersVisibility" Value="Column"/>
-            <Setter Property="AutoGenerateColumns" Value="False"/>
-            <Setter Property="CanUserAddRows" Value="False"/>
-            <Setter Property="CanUserDeleteRows" Value="False"/>
-            <Setter Property="SelectionMode" Value="Single"/>
-            <Setter Property="AlternationCount" Value="2"/>
-            <Setter Property="RowHeight" Value="50"/>
-        </Style>
-
-        <!-- DataGrid Header Style -->
-        <Style TargetType="DataGridColumnHeader">
-            <Setter Property="Background" Value="#F8F9FA"/>
-            <Setter Property="Foreground" Value="#2C3E50"/>
-            <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="FontSize" Value="13"/>
-            <Setter Property="Padding" Value="15,12"/>
-            <Setter Property="BorderThickness" Value="0,0,0,2"/>
-            <Setter Property="BorderBrush" Value="#E9ECEF"/>
-            <Setter Property="HorizontalContentAlignment" Value="Center"/>
-        </Style>
-
-        <!-- DataGrid Row Style -->
-        <Style TargetType="DataGridRow">
-            <Setter Property="Background" Value="White"/>
-            <Style.Triggers>
-                <Trigger Property="AlternationIndex" Value="1">
-                    <Setter Property="Background" Value="#F8F9FA"/>
-                </Trigger>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#E3F2FD"/>
-                </Trigger>
-                <Trigger Property="IsSelected" Value="True">
-                    <Setter Property="Background" Value="#BBDEFB"/>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-
-        <!-- DataGrid Cell Style -->
-        <Style TargetType="DataGridCell">
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Padding" Value="15,0"/>
-            <Setter Property="VerticalAlignment" Value="Center"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="DataGridCell">
-                        <Border Background="{TemplateBinding Background}"
-                                Padding="{TemplateBinding Padding}">
-                            <ContentPresenter VerticalAlignment="Center"/>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-    </Window.Resources>
-
     <Grid Margin="25">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -222,33 +83,35 @@
                 </Grid.ColumnDefinitions>
 
                 <!-- Filter Icon & Label -->
-                <StackPanel Grid.Column="0" 
+                <StackPanel Grid.Column="2" 
                             Orientation="Horizontal" 
                             VerticalAlignment="Center"
-                            Margin="0,0,20,0">
-                    <Path Data="M14,12V19.88C14.04,20.18 13.94,20.5 13.71,20.71C13.32,21.1 12.69,21.1 12.3,20.71L10.29,18.7C10.06,18.47 9.96,18.16 10,17.87V12H9.97L4.21,4.62C3.87,4.19 3.95,3.56 4.38,3.22C4.57,3.08 4.78,3 5,3V3H19V3C19.22,3 19.43,3.08 19.62,3.22C20.05,3.56 20.13,4.19 19.79,4.62L14.03,12H14Z"
-                          Fill="#4A90E2" 
-                          Width="20" 
-                          Height="20"
-                          Stretch="Uniform"
-                          Margin="0,0,10,0"/>
-                    <TextBlock Text="סינון לפי:" 
+                            Margin="20,0,20,0">
+                    <TextBlock Text=":סינון לפי" 
                                FontSize="14" 
                                FontWeight="SemiBold" 
                                Foreground="#2C3E50"
-                               VerticalAlignment="Center"/>
+                               VerticalAlignment="Center"
+                               Margin="-150,0,0,0"/>
                 </StackPanel>
 
                 <!-- Filter ComboBox -->
                 <ComboBox Grid.Column="1" 
                           Style="{StaticResource ModernComboBox}"
                           SelectionChanged="Status_SelectionChanged"
-                          SelectedIndex="0">
-                    <ComboBoxItem Content="🔹 הכל - All Volunteers"/>
-                    <ComboBoxItem Content="✅ פעילים - Active Only"/>
-                    <ComboBoxItem Content="❌ לא פעילים - Inactive Only"/>
+                          SelectedIndex="0" Margin="0,1,150,2">
+                    <ComboBoxItem Content="🔹              הכל"/>
+                    <ComboBoxItem Content="✅          פעילים"/>
+                    <ComboBoxItem Content="❌     לא פעילים"/>
                 </ComboBox>
                 
+                <Path Data="M14,12V19.88C14.04,20.18 13.94,20.5 13.71,20.71C13.32,21.1 12.69,21.1 12.3,20.71L10.29,18.7C10.06,18.47 9.96,18.16 10,17.87V12H9.97L4.21,4.62C3.87,4.19 3.95,3.56 4.38,3.22C4.57,3.08 4.78,3 5,3V3H19V3C19.22,3 19.43,3.08 19.62,3.22C20.05,3.56 20.13,4.19 19.79,4.62L14.03,12H14Z"
+                          Fill="#4A90E2" 
+                          Width="20" 
+                          Height="20"
+                          Stretch="Uniform"
+                          Margin="10,0,10,0"/>
+
 
                 <!-- Add Button -->
                 <Button Grid.Column="3" 
@@ -273,11 +136,15 @@
                 Style="{StaticResource ModernCard}">
             <DataGrid ItemsSource="{Binding VolunteersList}"
                       SelectedItem="{Binding SelectedVolunteer, Mode=TwoWay}"
-                      MouseDoubleClick="DataGrid_MouseDoubleClick" SelectionChanged="DataGrid_SelectionChanged">
+                      MouseDoubleClick="DataGrid_MouseDoubleClick" SelectionChanged="DataGrid_SelectionChanged"
+                      CanUserAddRows="False"
+                      CanUserDeleteRows="False"
+                      IsReadOnly="True">
+
 
                 <DataGrid.Columns>
                     <!-- ID Column -->
-                    <DataGridTextColumn Header="ת.ז | ID" 
+                    <DataGridTextColumn Header="ת.ז" 
                                         Binding="{Binding IdVolunteer}" 
                                         Width="120">
                         <DataGridTextColumn.ElementStyle>
@@ -285,41 +152,46 @@
                                 <Setter Property="HorizontalAlignment" Value="Center"/>
                                 <Setter Property="FontWeight" Value="SemiBold"/>
                                 <Setter Property="Foreground" Value="#34495E"/>
+                                <Setter Property="Margin" Value="10,10,0,10"/>
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
 
                     <!-- Name Column -->
-                    <DataGridTextColumn Header="שם מלא | Full Name" 
-                                        Binding="{Binding NameVolunteer}" 
+                    <DataGridTextColumn Header="שם מלא" 
+                                        Binding="{Binding FullName}" 
                                         Width="*"
-                                        MinWidth="200">
+                                        MinWidth="100">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
                                 <Setter Property="HorizontalAlignment" Value="Right"/>
                                 <Setter Property="FontSize" Value="14"/>
                                 <Setter Property="FontWeight" Value="SemiBold"/>
                                 <Setter Property="Foreground" Value="#2C3E50"/>
+                                <Setter Property="HorizontalAlignment" Value ="Left"/>
+                                <Setter Property="Margin" Value="10,10,0,10"/>
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
 
                     <!-- Phone Column -->
-                    <DataGridTextColumn Header="טלפון | Phone" 
-                                        Binding="{Binding PhoneVolunteer}" 
-                                        Width="140">
-                        <DataGridTextColumn.ElementStyle>
-                            <Style TargetType="TextBlock">
+                    <DataGridCheckBoxColumn Header="בפעילות"
+                        Binding="{Binding Active}"
+                        Width="140"
+                        IsReadOnly="True">
+                        <DataGridCheckBoxColumn.ElementStyle>
+                            <Style TargetType="CheckBox">
                                 <Setter Property="HorizontalAlignment" Value="Center"/>
-                                <Setter Property="FontFamily" Value="Consolas"/>
-                                <Setter Property="Foreground" Value="#5D6D7E"/>
+                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                <Setter Property="IsHitTestVisible" Value="False"/>
                             </Style>
-                        </DataGridTextColumn.ElementStyle>
-                    </DataGridTextColumn>
+                        </DataGridCheckBoxColumn.ElementStyle>
+                    </DataGridCheckBoxColumn>
+
 
                     <!-- Email Column -->
-                    <DataGridTextColumn Header="אימייל | Email" 
-                                        Binding="{Binding EmailVolunteer}" 
+                    <DataGridTextColumn Header="סוג הקריאה" 
+                                        Binding="{Binding Type}" 
                                         Width="*"
                                         MinWidth="180">
                         <DataGridTextColumn.ElementStyle>
@@ -327,61 +199,76 @@
                                 <Setter Property="HorizontalAlignment" Value="Left"/>
                                 <Setter Property="Foreground" Value="#5D6D7E"/>
                                 <Setter Property="FontStyle" Value="Italic"/>
-                            </Style>
-                        </DataGridTextColumn.ElementStyle>
-                    </DataGridTextColumn>
-
-                    <!-- Role Column -->
-                    <DataGridTextColumn Header="תפקיד | Role" 
-                                        Binding="{Binding RoleVolunteer}" 
-                                        Width="120">
-                        <DataGridTextColumn.ElementStyle>
-                            <Style TargetType="TextBlock">
                                 <Setter Property="HorizontalAlignment" Value="Center"/>
-                                <Setter Property="Padding" Value="8,4"/>
-                                <Setter Property="FontWeight" Value="SemiBold"/>
+                                <Setter Property="Margin" Value="0,10,0,10"/>
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
 
-                    <!-- Status Column -->
-                    <DataGridTemplateColumn Header="סטטוס | Status" Width="100">
+                    <!-- Statistics Column -->
+                    <DataGridTemplateColumn Header="סטטיסטיקה" Width="250">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <Border Background="{Binding ActiveVolunteer, Converter={StaticResource ActiveToColorKey}}"
-                                        CornerRadius="12"
-                                        Padding="8,4"
-                                        HorizontalAlignment="Center">
-                                    <TextBlock Text="{Binding ActiveVolunteer, Converter={StaticResource ActiveToTextKey}}" 
-                                               Foreground="White"
-                                               FontSize="11"
-                                               FontWeight="Bold"
-                                               HorizontalAlignment="Center"/>
-                                </Border>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <Border Background="#E8F5E9" CornerRadius="5" Padding="5,2">
+                                        <TextBlock Text="{Binding SumCallsCompleted, StringFormat='✅ {0}'}" 
+                               Foreground="#2E7D32" FontWeight="SemiBold"/>
+                                    </Border>
+                                    <Border Background="#FFEBEE" CornerRadius="5" Padding="5,2">
+                                        <TextBlock Text="{Binding SumCallsConcluded, StringFormat='❌ {0}'}"
+                               Foreground="#F57C00"  FontWeight="SemiBold"/>
+                                    </Border>
+                                    <Border Background="#FFF3E0" CornerRadius="5" Padding="5,2">
+                                        <TextBlock Text="{Binding SumCallsExpired, StringFormat='⌛ {0}'}"
+                               Foreground="#C62828" FontWeight="SemiBold"/>
+                                    </Border>
+                                </StackPanel>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
+
+
 
                     <!-- Actions Column -->
-                    <DataGridTemplateColumn Header="פעולות | Actions" Width="100">
+                    <DataGridTemplateColumn Header="פעולות" Width="150">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <Button Style="{StaticResource DeleteButton}"
-                                        Click="btnDelete_Click"
-                                        ToolTip="מחק מתנדב">
-                                    <StackPanel Orientation="Horizontal">
-                                        <Path Data="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" 
-                                              Fill="White" 
-                                              Width="14" 
-                                              Height="14"
-                                              Stretch="Uniform"
-                                              Margin="0,0,5,0"/>
-                                        <TextBlock Text="מחק"/>
-                                    </StackPanel>
-                                </Button>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >
+                                    <!-- כפתור עדכון -->
+                                    <Button Style="{StaticResource ModernButton}"
+                        Click="btnUpdate_Click">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Path Data="M3,17.25V21H6.75L17.81,9.94L14.06,6.19L3,17.25M20.71,7.04
+                                    C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29
+                                    C18,2.9 17.35,2.9 16.96,3.29L15.13,5.12L18.88,8.87L20.71,7.04Z"
+                              Fill="White"
+                              Width="14"
+                              Height="14"
+                              Stretch="Uniform"
+                              Margin="0,0,5,0"/>
+                                            <TextBlock Text="עדכן"/>
+                                        </StackPanel>
+                                    </Button>
+
+                                    <!-- כפתור מחיקה -->
+                                    <Button Style="{StaticResource DeleteButton}"
+                        Click="btnDelete_Click">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Path Data="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19
+                                    M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z"
+                              Fill="White"
+                              Width="14"
+                              Height="14"
+                              Stretch="Uniform"
+                              Margin="0,0,5,0"/>
+                                            <TextBlock Text="מחק"/>
+                                        </StackPanel>
+                                    </Button>
+                                </StackPanel>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
+
                 </DataGrid.Columns>
             </DataGrid>
         </Border>

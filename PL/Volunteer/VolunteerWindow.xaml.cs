@@ -6,19 +6,19 @@ using BO;
 namespace PL.Volunteer
 {
     /// <summary>
-    /// מסך הוספה/עריכה של מתנדב
+    /// Volunteer Add/Edit Screen
     /// </summary>
     public partial class VolunteerWindow : Window
     {
         // תלות עם BL
         static readonly BIApi.IBl s_dal = BIApi.Factory.Get();
 
-        private readonly int? _volunteerId; // null = מצב הוספה, יש ערך = מצב עדכון
+        private readonly int? _volunteerId; // null = add mode, has value = update mode
 
         #region Dependency Properties
 
         /// <summary>
-        /// המתנדב הנוכחי שמוצג/נערך
+        /// The current volunteer being displayed/edited
         /// </summary>
         public BO.Volunteer CurrentVolunteer
         {
@@ -31,7 +31,7 @@ namespace PL.Volunteer
                 typeof(VolunteerWindow));
 
         /// <summary>
-        /// טקסט הכפתור (Add/Update)
+        /// Button text (Add/Update)
         /// </summary>
         public string ButtonText
         {
@@ -43,10 +43,8 @@ namespace PL.Volunteer
                 typeof(string),
                 typeof(VolunteerWindow));
 
-        #endregion
-
         /// <summary>
-        /// בנאי למצב הוספה (ללא פרמטרים)
+        /// Constructor for add mode (no parameters)
         /// </summary>
         public VolunteerWindow()
         {
@@ -56,7 +54,7 @@ namespace PL.Volunteer
             {
                 _volunteerId = null;
 
-                // אתחול מתנדב חדש
+                // initialize a new volunteer
                 CurrentVolunteer = new BO.Volunteer
                 {
                     id = 0,
@@ -67,23 +65,23 @@ namespace PL.Volunteer
                     FullCurrentAddress = null,
                     Latitude = null,
                     Longitude = null,
-                    CurrentPosition = User.volunteer, // ברירת מחדל
+                    CurrentPosition = User.volunteer, // default
                     Active = true,
                     MaxDistanceForCall = null,
-                    TypeOfDistance = Distance.air, // ברירת מחדל
+                    TypeOfDistance = Distance.air, // default
                     SumCallsCompleted = 0,
                     SumCallsExpired = 0,
                     SumCallsConcluded = 0,
                     CallInProgress = null
                 };
 
-                ButtonText = "Add";
-                Title = "הוספת מתנדב חדש";
+                ButtonText = "הוסף";
+                Title = "הוסף מתנדב חדש";
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"שגיאה באתחול המסך:\n{ex.Message}",
-                    "שגיאה",
+                MessageBox.Show($"שגיאה בעת איתחול החלון:\n{ex.Message}",
+                    "Error",
                     MessageBoxButton.OK,
                     MessageBoxImage.Error);
                 Close();
@@ -91,32 +89,32 @@ namespace PL.Volunteer
         }
 
         /// <summary>
-        /// בנאי למצב עריכה (עם ID)
+        /// Constructor for edit mode (with ID)
         /// </summary>
-        /// <param name="volunteerId">מזהה המתנדב (ת.ז) לעריכה</param>
+        /// <param name="volunteerId">Volunteer ID for editing</param>
         public VolunteerWindow(int volunteerId) : this()
         {
             _volunteerId = volunteerId;
 
             try
             {
-                // טעינת המתנדב הקיים
+                // Load existing volunteer
                 CurrentVolunteer = s_dal.Volunteer.Read(volunteerId)
                     ?? throw new Exception("המתנדב לא נמצא במערכת.");
 
-                // טעינת הסיסמה ל-PasswordBox (אם קיימת)
+                // Load password to PasswordBox (if exists)
                 if (!string.IsNullOrEmpty(CurrentVolunteer.Password))
                 {
                     passwordBox.Password = CurrentVolunteer.Password;
                 }
 
-                ButtonText = "Update";
-                Title = $"עריכת מתנדב: {CurrentVolunteer.FullName}";
+                ButtonText = "ערוך";
+                Title = $"ערוך מתנדב: {CurrentVolunteer.FullName}";
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"שגיאה בטעינת המתנדב:\n{ex.Message}",
-                    "שגיאה",
+                    "Error",
                     MessageBoxButton.OK,
                     MessageBoxImage.Error);
                 Close();
@@ -124,66 +122,66 @@ namespace PL.Volunteer
         }
 
         /// <summary>
-        /// אירוע טעינת החלון
+        /// Window loaded event
         /// </summary>
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            // ניתן להוסיף כאן לוגיקה נוספת בעת טעינת החלון
+            // Additional logic can be added here when the window loads
         }
 
         /// <summary>
-        /// לחיצה על כפתור הוסף/עדכן
+        /// Add/Update button click
         /// </summary>
         private void btnAddUpdate_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                // עדכון הסיסמה מה-PasswordBox לפני השמירה
+                // Update password from PasswordBox before saving
                 CurrentVolunteer.Password = passwordBox.Password;
 
-                // ולידציה בסיסית
+                // Basic validation
                 if (!ValidateInput())
                     return;
 
-                // ביצוע הפעולה
-                if (_volunteerId == null) // מצב הוספה
+                // Perform action
+                if (_volunteerId == null) // Add mode
                 {
                     s_dal.Volunteer.Create(CurrentVolunteer);
-                    MessageBox.Show($"המתנדב נוסף בהצלחה!\nת.ז: {CurrentVolunteer.id}",
-                        "הצלחה",
+                    MessageBox.Show($"המתנדב נוסף בהצלחה!\nID: {CurrentVolunteer.id}",
+                        "Success",
                         MessageBoxButton.OK,
                         MessageBoxImage.Information);
                 }
-                else // מצב עדכון
+                else // Update mode
                 {
-                    // בעדכון, צריך לשלוח גם את ת.ז של המבקש
-                    // במקרה שלנו נניח שזה מנהל (0) - תצטרך להתאים לפי הלוגיקה שלך
+                    // In update, also send the requester's ID
+                    // In our case, assume it's admin (0) - adjust according to your logic
                     s_dal.Volunteer.Update(0, CurrentVolunteer);
-                    MessageBox.Show("המתנדב עודכן בהצלחה!",
-                        "הצלחה",
+                    MessageBox.Show("המתנדב התעדכן בהצלחה!",
+                        "Success",
                         MessageBoxButton.OK,
                         MessageBoxImage.Information);
                 }
 
-                // סגירת המסך אוטומטית
+                // Automatically close the window
                 DialogResult = true;
                 Close();
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"שגיאה בשמירת המתנדב:\n{ex.Message}",
-                    "שגיאה",
+                MessageBox.Show($"שגיאה בשמירת המתנדב\n{ex.Message}",
+                    "Error",
                     MessageBoxButton.OK,
                     MessageBoxImage.Error);
             }
         }
 
         /// <summary>
-        /// ולידציה בסיסית של הקלט
+        /// Basic input validation
         /// </summary>
         private bool ValidateInput()
         {
-            // בדיקת ת.ז (רק במצב הוספה)
+            // Check ID (only in add mode)
             if (_volunteerId == null)
             {
                 if (CurrentVolunteer.id <= 0 || CurrentVolunteer.id.ToString().Length != 9)
@@ -196,7 +194,7 @@ namespace PL.Volunteer
                 }
             }
 
-            // בדיקת שם מלא
+            // Check full name
             if (string.IsNullOrWhiteSpace(CurrentVolunteer.FullName))
             {
                 MessageBox.Show("שם מלא הוא שדה חובה!",
@@ -206,7 +204,7 @@ namespace PL.Volunteer
                 return false;
             }
 
-            // בדיקת טלפון
+            // Check phone number
             if (string.IsNullOrWhiteSpace(CurrentVolunteer.CallNumber))
             {
                 MessageBox.Show("מספר טלפון הוא שדה חובה!",
@@ -216,7 +214,7 @@ namespace PL.Volunteer
                 return false;
             }
 
-            // בדיקת אימייל
+            // Check email
             if (string.IsNullOrWhiteSpace(CurrentVolunteer.EmailAddress))
             {
                 MessageBox.Show("כתובת אימייל היא שדה חובה!",
@@ -226,7 +224,7 @@ namespace PL.Volunteer
                 return false;
             }
 
-            // בדיקה בסיסית של פורמט אימייל
+            // Basic email format check
             if (!CurrentVolunteer.EmailAddress.Contains("@") ||
                 !CurrentVolunteer.EmailAddress.Contains("."))
             {
@@ -237,7 +235,7 @@ namespace PL.Volunteer
                 return false;
             }
 
-            // בדיקת סיסמה (רק במצב הוספה)
+            // Check password (only in add mode)
             if (_volunteerId == null && string.IsNullOrWhiteSpace(passwordBox.Password))
             {
                 MessageBox.Show("סיסמה היא שדה חובה עבור מתנדב חדש!",
@@ -247,7 +245,7 @@ namespace PL.Volunteer
                 return false;
             }
 
-            // בדיקת מרחק מקסימלי (אם הוזן)
+            // Check max distance (if entered)
             if (CurrentVolunteer.MaxDistanceForCall.HasValue &&
                 CurrentVolunteer.MaxDistanceForCall.Value <= 0)
             {
@@ -262,11 +260,11 @@ namespace PL.Volunteer
         }
 
         /// <summary>
-        /// לחיצה על כפתור ביטול
+        /// Cancel button click
         /// </summary>
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
-            // שאלת אישור לפני סגירה
+            // Confirmation before closing
             var result = MessageBox.Show(
                 "האם אתה בטוח שברצונך לבטל? כל השינויים יאבדו.",
                 "אישור ביטול",
@@ -281,11 +279,12 @@ namespace PL.Volunteer
         }
 
         /// <summary>
-        /// סגירת החלון
+        /// Window closed
         /// </summary>
         private void Window_Closed(object sender, EventArgs e)
         {
-            // ניתן להוסיף כאן לוגיקה נוספת בעת סגירת החלון
+            // Additional logic can be added here when the window closes
         }
     }
+    #endregion Dependency Properties
 }
