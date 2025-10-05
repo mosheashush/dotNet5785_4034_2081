@@ -40,29 +40,65 @@ internal static class VolunteerManager
     }
 
     //MP volunteer to volunteer in progress
+    //public static BO.CallInProgress? MPIdVolunteerToCallInProgress(int id)
+    //{
+    //    DO.Assignment assignment = s_dal.Assignment.ReadAll().FirstOrDefault(c => c.VolunteerId == id && c.FinishType == null); // volunteer can take only one volunteereion at a one time
+    //    if (assignment != null)
+    //        return null;
+    //    else
+    //    {
+    //        DO.Call call = s_dal.Call.ReadAll().Where(c => c.Id == assignment.CallId).FirstOrDefault();
+    //        DO.Volunteer volunteer = s_dal.Volunteer.Read(id);
+    //        return new BO.CallInProgress()
+    //        {
+    //            IdCall = assignment.CallId,
+    //            IdAssignment = assignment.Id,
+    //            Type = (BO.CallType)call.Type,
+    //            description = call.description,
+    //            FullAddress = call.FullAddress,
+    //            CallStartTime = call.CallStartTime,
+    //            MaxTimeForCall = call.MaxTimeForCall,
+    //            VolunteerTakeCall = assignment.StarCall,
+    //            DistanceFromVolunteer = GetDistanceInKm(call.Latitude, call.Longitude, volunteer.Latitude, volunteer.Longitud),
+    //            CallState = CallManager.GetCallState(call),
+    //        };
+    //    }
+    //}
+
     public static BO.CallInProgress? MPIdVolunteerToCallInProgress(int id)
     {
-        DO.Assignment assignment = s_dal.Assignment.ReadAll().FirstOrDefault(c => c.VolunteerId == id && c.FinishType == null); // volunteer can take only one volunteereion at a one time
-        if (assignment != null)
+        DO.Assignment assignment = s_dal.Assignment.ReadAll()
+            .FirstOrDefault(c => c.VolunteerId == id && c.FinishType == null);
+
+        // תיקון: אם assignment הוא NULL - אין קריאה בטיפול
+        if (assignment == null)
             return null;
-        else
+
+        // רק אם assignment קיים - ממשיכים
+        DO.Call call = s_dal.Call.ReadAll()
+            .Where(c => c.Id == assignment.CallId)
+            .FirstOrDefault();
+
+        DO.Volunteer volunteer = s_dal.Volunteer.Read(id);
+
+        return new BO.CallInProgress()
         {
-            DO.Call call = s_dal.Call.ReadAll().Where(c => c.Id == assignment.CallId).FirstOrDefault();
-            DO.Volunteer volunteer = s_dal.Volunteer.Read(id);
-            return new BO.CallInProgress()
-            {
-                IdCall = assignment.CallId,
-                IdAssignment = assignment.Id,
-                Type = (BO.CallType)call.Type,
-                description = call.description,
-                FullAddress = call.FullAddress,
-                CallStartTime = call.CallStartTime,
-                MaxTimeForCall = call.MaxTimeForCall,
-                VolunteerTakeCall = assignment.StarCall,
-                DistanceFromVolunteer = GetDistanceInKm(call.Latitude, call.Longitude, volunteer.Latitude, volunteer.Longitud),
-                CallState = CallManager.GetCallState(call),
-            };
-        }
+            IdCall = assignment.CallId,
+            IdAssignment = assignment.Id,
+            Type = (BO.CallType)call.Type,
+            description = call.description,
+            FullAddress = call.FullAddress,
+            CallStartTime = call.CallStartTime,
+            MaxTimeForCall = call.MaxTimeForCall,
+            VolunteerTakeCall = assignment.StarCall,
+            DistanceFromVolunteer = GetDistanceInKm(
+                call.Latitude,
+                call.Longitude,
+                volunteer.Latitude,
+                volunteer.Longitud
+            ),
+            CallState = CallManager.GetCallState(call),
+        };
     }
 
     //MapDOToBOVolunteer implementation

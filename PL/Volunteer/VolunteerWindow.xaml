@@ -7,177 +7,109 @@
         mc:Ignorable="d"
         Title="Volunteer Details" Height="650" Width="500"
         DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}"
-        Loaded="Window_Loaded" Closed="Window_Closed">
+        Closed="Window_Closed">
 
-    <Grid Margin="15">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="150"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid Margin="15">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="150"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
 
-        <!-- Header -->
-        <TextBlock Grid.Row="0" Grid.ColumnSpan="2" 
-                   Text="Volunteer Information" 
-                   FontSize="18" FontWeight="Bold" 
-                   HorizontalAlignment="Center" 
-                   Margin="0,0,0,20"/>
+            <!-- Header -->
+            <TextBlock Grid.Row="0" Grid.ColumnSpan="2" 
+                       Text="Volunteer Information" 
+                       FontSize="18" FontWeight="Bold" 
+                       HorizontalAlignment="Center" 
+                       Margin="0,0,0,20"/>
 
-        <!-- ID Field -->
-        <Label Grid.Row="1" Grid.Column="0" Content="ID:" 
-               VerticalAlignment="Center" Margin="5" FontWeight="Bold"/>
-        <TextBox Grid.Row="1" Grid.Column="1" 
-                 Text="{Binding CurrentVolunteer.id, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" 
-                 IsReadOnly="True"
-                 Background="LightGray"
-                 VerticalAlignment="Center" Margin="5" Height="25"/>
+            <!-- ID -->
+            <Label Grid.Row="1" Grid.Column="0" Content="ID:" FontWeight="Bold" Margin="5"/>
+            <TextBox Grid.Row="1" Grid.Column="1" 
+                     Text="{Binding CurrentVolunteer.id}" 
+                     IsReadOnly="True" Background="LightGray" Margin="5" Height="25"/>
 
-        <!-- Full Name Field -->
-        <Label Grid.Row="2" Grid.Column="0" Content="Full Name:" 
-               VerticalAlignment="Center" Margin="5" FontWeight="Bold"/>
-        <TextBox Grid.Row="2" Grid.Column="1" 
-                 Text="{Binding CurrentVolunteer.FullName, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" 
-                 VerticalAlignment="Center" Margin="5" Height="25"/>
+            <!-- Name -->
+            <Label Grid.Row="2" Grid.Column="0" Content="Full Name:" FontWeight="Bold" Margin="5"/>
+            <TextBox Grid.Row="2" Grid.Column="1" 
+                     Text="{Binding CurrentVolunteer.FullName, Mode=TwoWay}" Margin="5" Height="25"/>
 
-        <!-- Phone Number Field -->
-        <Label Grid.Row="3" Grid.Column="0" Content="Phone Number:" 
-               VerticalAlignment="Center" Margin="5" FontWeight="Bold"/>
-        <TextBox Grid.Row="3" Grid.Column="1" 
-                 Text="{Binding CurrentVolunteer.CallNumber, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" 
-                 VerticalAlignment="Center" Margin="5" Height="25"/>
+            <!-- Phone -->
+            <Label Grid.Row="3" Grid.Column="0" Content="Phone:" FontWeight="Bold" Margin="5"/>
+            <TextBox Grid.Row="3" Grid.Column="1" 
+                     Text="{Binding CurrentVolunteer.CallNumber, Mode=TwoWay}" Margin="5" Height="25"/>
 
-        <!-- Email Field -->
-        <Label Grid.Row="4" Grid.Column="0" Content="Email Address:" 
-               VerticalAlignment="Center" Margin="5" FontWeight="Bold"/>
-        <TextBox Grid.Row="4" Grid.Column="1" 
-                 Text="{Binding CurrentVolunteer.EmailAddress, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" 
-                 VerticalAlignment="Center" Margin="5" Height="25"/>
+            <!-- Email -->
+            <Label Grid.Row="4" Grid.Column="0" Content="Email:" FontWeight="Bold" Margin="5"/>
+            <TextBox Grid.Row="4" Grid.Column="1" 
+                     Text="{Binding CurrentVolunteer.EmailAddress, Mode=TwoWay}" Margin="5" Height="25"/>
 
-        <!-- Password Field -->
-        <Label Grid.Row="5" Grid.Column="0" Content="Password:" 
-               VerticalAlignment="Center" Margin="5" FontWeight="Bold"/>
-        <PasswordBox Grid.Row="5" Grid.Column="1" 
-                     Name="passwordBox"
-                     VerticalAlignment="Center" Margin="5" Height="25"/>
+            <!-- Password -->
+            <Label Grid.Row="5" Grid.Column="0" Content="Password:" FontWeight="Bold" Margin="5"/>
+            <PasswordBox Grid.Row="5" Grid.Column="1" 
+                         Name="passwordBox" Margin="5" Height="25"/>
 
-        <!-- Address Field -->
-        <Label Grid.Row="6" Grid.Column="0" Content="Full Address:" 
-               VerticalAlignment="Center" Margin="5" FontWeight="Bold"/>
-        <TextBox Grid.Row="6" Grid.Column="1" 
-                 Text="{Binding CurrentVolunteer.FullCurrentAddress, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" 
-                 VerticalAlignment="Center" Margin="5" Height="40" 
-                 TextWrapping="Wrap" AcceptsReturn="True"/>
+            <!-- Address -->
+            <Label Grid.Row="6" Grid.Column="0" Content="Address:" FontWeight="Bold" Margin="5"/>
+            <TextBox Grid.Row="6" Grid.Column="1" 
+                     Text="{Binding CurrentVolunteer.FullCurrentAddress, Mode=TwoWay}" 
+                     TextWrapping="Wrap" Height="40" Margin="5"/>
 
-        <!-- Latitude Field -->
-        <Label Grid.Row="7" Grid.Column="0" Content="Latitude:" 
-               VerticalAlignment="Center" Margin="5" FontWeight="Bold"/>
-        <TextBox Grid.Row="7" Grid.Column="1" 
-                 Text="{Binding CurrentVolunteer.Latitude, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" 
-                 VerticalAlignment="Center" Margin="5" Height="25"/>
+            <!-- Latitude -->
+            <Label Grid.Row="7" Grid.Column="0" Content="Latitude:" FontWeight="Bold" Margin="5"/>
+            <TextBox Grid.Row="7" Grid.Column="1" 
+                     Text="{Binding CurrentVolunteer.Latitude}" 
+                     IsReadOnly="True" Background="LightGray" Margin="5" Height="25"/>
 
-        <!-- Longitude Field -->
-        <Label Grid.Row="8" Grid.Column="0" Content="Longitude:" 
-               VerticalAlignment="Center" Margin="5" FontWeight="Bold"/>
-        <TextBox Grid.Row="8" Grid.Column="1" 
-                 Text="{Binding CurrentVolunteer.Longitude, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" 
-                 VerticalAlignment="Center" Margin="5" Height="25"/>
+            <!-- Longitude -->
+            <Label Grid.Row="8" Grid.Column="0" Content="Longitude:" FontWeight="Bold" Margin="5"/>
+            <TextBox Grid.Row="8" Grid.Column="1" 
+                     Text="{Binding CurrentVolunteer.Longitude}" 
+                     IsReadOnly="True" Background="LightGray" Margin="5" Height="25"/>
 
-        <!-- User Type Field -->
-        <Label Grid.Row="9" Grid.Column="0" Content="User Type:" 
-               VerticalAlignment="Center" Margin="5" FontWeight="Bold"/>
-        <ComboBox Grid.Row="9" Grid.Column="1" 
-                  ItemsSource="{Binding Source={StaticResource UserTypesCollectionKey}}"
-                  SelectedValue="{Binding CurrentVolunteer.CurrentPosition, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" 
-                  VerticalAlignment="Center" Margin="5" Height="25"/>
+            <!-- User Type -->
+            <Label Grid.Row="9" Grid.Column="0" Content="User Type:" FontWeight="Bold" Margin="5"/>
+            <ComboBox Grid.Row="9" Grid.Column="1" 
+                      SelectedValue="{Binding CurrentVolunteer.CurrentPosition, Mode=TwoWay}" 
+                      Margin="5" Height="25">
+                <ComboBox.Items>
+                    <ComboBoxItem Content="Volunteer" Tag="0"/>
+                    <ComboBoxItem Content="Manager" Tag="1"/>
+                </ComboBox.Items>
+            </ComboBox>
 
-        <!-- Active Status Field -->
-        <Label Grid.Row="10" Grid.Column="0" Content="Active Status:" 
-               VerticalAlignment="Center" Margin="5" FontWeight="Bold"/>
-        <CheckBox Grid.Row="10" Grid.Column="1" 
-                  IsChecked="{Binding CurrentVolunteer.Active, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" 
-                  Content="Is Active"
-                  VerticalAlignment="Center" Margin="5"/>
+            <!-- Active -->
+            <Label Grid.Row="10" Grid.Column="0" Content="Active:" FontWeight="Bold" Margin="5"/>
+            <CheckBox Grid.Row="10" Grid.Column="1" 
+                      IsChecked="{Binding CurrentVolunteer.Active, Mode=TwoWay}" 
+                      Content="Is Active" Margin="5"/>
 
-        <!-- Max Distance Field -->
-        <Label Grid.Row="11" Grid.Column="0" Content="Max Distance (km):" 
-               VerticalAlignment="Center" Margin="5" FontWeight="Bold"/>
-        <TextBox Grid.Row="11" Grid.Column="1" 
-                 Text="{Binding CurrentVolunteer.MaxDistanceForCall, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" 
-                 VerticalAlignment="Center" Margin="5" Height="25"/>
+            <!-- Distance -->
+            <Label Grid.Row="11" Grid.Column="0" Content="Max Distance:" FontWeight="Bold" Margin="5"/>
+            <TextBox Grid.Row="11" Grid.Column="1" 
+                     Text="{Binding CurrentVolunteer.MaxDistanceForCall, Mode=TwoWay}" Margin="5" Height="25"/>
 
-        <!-- Distance Type Field -->
-        <Label Grid.Row="12" Grid.Column="0" Content="Distance Type:" 
-               VerticalAlignment="Center" Margin="5" FontWeight="Bold"/>
-        <ComboBox Grid.Row="12" Grid.Column="1" 
-                  ItemsSource="{Binding Source={StaticResource DistanceTypesCollectionKey}}"
-                  SelectedValue="{Binding CurrentVolunteer.TypeOfDistance, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" 
-                  VerticalAlignment="Center" Margin="5" Height="25"/>
-
-        <!-- Statistics Section (Read-only for existing volunteers) -->
-        <GroupBox Grid.Row="13" Grid.ColumnSpan="2" Header="Statistics" 
-                  Margin="5" Padding="10"
-                  Visibility="{Binding ButtonText, Converter={StaticResource ConvertUpdateToVisibleKey}}">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-
-                <TextBlock Grid.Row="0" Grid.Column="0" 
-                           Text="Completed Calls:" FontWeight="Bold" Margin="5"/>
-                <TextBlock Grid.Row="1" Grid.Column="0" 
-                           Text="{Binding CurrentVolunteer.SumCallsCompleted}" 
-                           FontSize="16" HorizontalAlignment="Center" Margin="5"/>
-
-                <TextBlock Grid.Row="0" Grid.Column="1" 
-                           Text="Expired Calls:" FontWeight="Bold" Margin="5"/>
-                <TextBlock Grid.Row="1" Grid.Column="1" 
-                           Text="{Binding CurrentVolunteer.SumCallsExpired}" 
-                           FontSize="16" HorizontalAlignment="Center" Margin="5"/>
-
-                <TextBlock Grid.Row="0" Grid.Column="2" 
-                           Text="Concluded Calls:" FontWeight="Bold" Margin="5"/>
-                <TextBlock Grid.Row="1" Grid.Column="2" 
-                           Text="{Binding CurrentVolunteer.SumCallsConcluded}" 
-                           FontSize="16" HorizontalAlignment="Center" Margin="5"/>
-            </Grid>
-        </GroupBox>
-
-        <!-- Button Section -->
-        <StackPanel Grid.Row="15" Grid.ColumnSpan="2" 
-                    Orientation="Horizontal" 
-                    HorizontalAlignment="Center" 
-                    Margin="10">
-            
-            <!-- Add/Update Button -->
-            <Button Content="{Binding ButtonText}" 
+            <!-- Button -->
+            <Button Grid.Row="12" Grid.ColumnSpan="2"
+                    Content="{Binding ButtonText}" 
                     Click="btnAddUpdate_Click"
-                    Width="100" Height="40"
-                    Margin="10,0"
-                    FontSize="14">
+                    Width="150" Height="40" Margin="10"
+                    FontSize="14" FontWeight="Bold">
                 <Button.Style>
                     <Style TargetType="Button">
                         <Style.Triggers>
@@ -191,14 +123,6 @@
                     </Style>
                 </Button.Style>
             </Button>
-
-            <!-- Cancel Button -->
-            <Button Content="Cancel" 
-                    Click="btnCancel_Click"
-                    Width="100" Height="40"
-                    Margin="10,0"
-                    Background="LightGray"
-                    FontSize="14"/>
-        </StackPanel>
-    </Grid>
+        </Grid>
+    </ScrollViewer>
 </Window>

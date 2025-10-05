@@ -3,10 +3,224 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:PL"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        Title="מסך ניהול ראשי"
+        Height="700" Width="1200"
+        WindowStartupLocation="CenterScreen"
+        Background="#F5F7FA"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}">
 
+    <!-- === משאבים תואמי-Volunteer === -->
+    <Window.Resources>
+        <!-- Card לבן עם צל (ModernCard) -->
+        <Style x:Key="ModernCard" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="Padding" Value="20"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect Color="#000000"
+                                      Opacity="0.1"
+                                      BlurRadius="20"
+                                      ShadowDepth="0"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- כפתור ראשי כחול (ModernButton) -->
+        <Style x:Key="ModernButton" TargetType="Button">
+            <Setter Property="Background" Value="#4A90E2"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="20,12"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="8"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#357ABD"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="#2868A6"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- וריאציות Add/Delete כמו במסך מתנדבים -->
+        <Style x:Key="AddButton" TargetType="Button" BasedOn="{StaticResource ModernButton}">
+            <Setter Property="Background" Value="#5CB85C"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#4CAE4C"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="DeleteButton" TargetType="Button" BasedOn="{StaticResource ModernButton}">
+            <Setter Property="Background" Value="#E74C3C"/>
+            <Setter Property="Padding" Value="16,10"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#C0392B"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- ComboBox בסגנון Volunteer -->
+        <Style x:Key="ModernComboBox" TargetType="ComboBox">
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#DFE6E9"/>
+            <Setter Property="BorderThickness" Value="2"/>
+        </Style>
+
+        <!-- טקסט כותרת פנימי אחיד -->
+        <Style x:Key="CardTitle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Margin" Value="0,0,0,8"/>
+            <Setter Property="Foreground" Value="#2C3E50"/>
+        </Style>
+    </Window.Resources>
+
+    <!-- === פריסה ראשית === -->
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header Card תואם קו עיצוב -->
+        <Border Grid.Row="0" Style="{StaticResource ModernCard}" Padding="16">
+            <DockPanel>
+                <TextBlock Text="מסך ניהול ראשי"
+                           FontSize="24" FontWeight="Bold"
+                           Foreground="#2C3E50" />
+                <TextBlock Text="  •  שעון מערכת / תצורה / אתחול-איפוס / ניווט"
+                           Foreground="#7F8C8D"
+                           FontSize="13"
+                           Margin="8,0,0,0"/>
+            </DockPanel>
+        </Border>
+
+        <!-- גוף -->
+        <Grid Grid.Row="1" Margin="0,12,0,12">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- A. שעון מערכת -->
+            <Border Grid.Row="0" Grid.Column="0" Style="{StaticResource ModernCard}">
+                <StackPanel>
+                    <TextBlock Text="שעון המערכת" Style="{StaticResource CardTitle}"/>
+                    <TextBlock Text="{Binding CurrentTimeString}"
+                               FontSize="28" FontWeight="SemiBold"
+                               Foreground="#1B5E20"/>
+
+                    <WrapPanel Margin="0,12,0,0">
+                        <Button Content="+ דקה" Style="{StaticResource ModernButton}" Click="AdvanceMinute_Click" Margin="4"/>
+                        <Button Content="+ שעה" Style="{StaticResource ModernButton}" Click="AdvanceHour_Click" Margin="4"/>
+                        <Button Content="+ יום"  Style="{StaticResource ModernButton}" Click="AdvanceDay_Click"  Margin="4"/>
+                        <Button Content="+ חודש" Style="{StaticResource ModernButton}" Click="AdvanceMonth_Click" Margin="4"/>
+                        <Button Content="+ שנה"  Style="{StaticResource ModernButton}" Click="AdvanceYear_Click"  Margin="4"/>
+                    </WrapPanel>
+
+                    <WrapPanel Margin="0,6,0,0">
+                        <Button Content="רענון מה־BL" Style="{StaticResource AddButton}" Click="RefreshFromBlClock_Click" Margin="4"/>
+                        <Button Content="אפס לשעה נוכחית" Style="{StaticResource DeleteButton}" Click="ResetClockToNow_Click" Margin="4"/>
+                    </WrapPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- B. משתני תצורה -->
+            <Border Grid.Row="0" Grid.Column="1" Style="{StaticResource ModernCard}">
+                <StackPanel>
+                    <TextBlock Text="משתני תצורה" Style="{StaticResource CardTitle}"/>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock Text="טווח סיכון (TimeSpan):" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                        <TextBox Text="{Binding RiskRangeString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 Width="150" ToolTip="דוגמה: 00:30:00" />
+                    </StackPanel>
+                    <WrapPanel Margin="0,12,0,0">
+                        <Button Content="שמור תצורה ל־BL" Style="{StaticResource ModernButton}" Click="SaveConfigToBl_Click" Margin="4"/>
+                        <Button Content="טען תצורה מה־BL" Style="{StaticResource ModernButton}" Click="LoadConfigFromBl_Click" Margin="4"/>
+                    </WrapPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- C. בסיס נתונים -->
+            <Border Grid.Row="1" Grid.ColumnSpan="2" Style="{StaticResource ModernCard}">
+                <StackPanel>
+                    <TextBlock Text="בסיס נתונים" Style="{StaticResource CardTitle}"/>
+                    <TextBlock Text="איפוס יחזיר ערכי תצורה להתחלתיים וינקה ישויות; אתחול ימלא נתוני התחלה."
+                               Foreground="#7F8C8D" Margin="0,0,0,8"/>
+                    <WrapPanel>
+                        <Button Content="איפוס DB" Style="{StaticResource DeleteButton}" Click="ResetDb_Click" Margin="4"/>
+                        <Button Content="אתחול DB" Style="{StaticResource AddButton}"    Click="InitDb_Click"  Margin="4"/>
+                    </WrapPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- D. ניווט למסכים -->
+            <Border Grid.Row="2" Grid.Column="0" Style="{StaticResource ModernCard}">
+                <StackPanel>
+                    <TextBlock Text="ניהול מתנדבים" Style="{StaticResource CardTitle}"/>
+                    <TextBlock Text="פתיחת מסך רשימת מתנדבים (כמו VolunteerListWindow)"
+                               Foreground="#7F8C8D" Margin="0,0,0,8"/>
+                    <Button Content="פתח ניהול מתנדבים" Style="{StaticResource ModernButton}" Click="OpenVolunteers_Click" />
+                </StackPanel>
+            </Border>
+
+            <Border Grid.Row="2" Grid.Column="1" Style="{StaticResource ModernCard}">
+                <StackPanel>
+                    <TextBlock Text="ניהול קריאות" Style="{StaticResource CardTitle}"/>
+                    <TextBlock Text="פתיחת מסך ניהול קריאות"
+                               Foreground="#7F8C8D" Margin="0,0,0,8"/>
+                    <Button Content="פתח ניהול קריאות" Style="{StaticResource ModernButton}" Click="OpenCalls_Click" />
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <!-- Footer תואם קו עיצוב -->
+        <Border Grid.Row="2" Style="{StaticResource ModernCard}" Padding="12">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0"
+                           Text="💡 טיפ: השעון וההגדרות כאן משפיעים על ההתנהגות העסקית"
+                           FontSize="12" Foreground="#7F8C8D"
+                           VerticalAlignment="Center"/>
+
+                <TextBlock Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <Run Text="נבנה באהבה ❤️ | Built with " FontSize="11" Foreground="#95A5A6"/>
+                    <Run Text="WPF" FontSize="11" FontWeight="Bold" Foreground="#4A90E2"/>
+                </TextBlock>
+            </Grid>
+        </Border>
     </Grid>
 </Window>

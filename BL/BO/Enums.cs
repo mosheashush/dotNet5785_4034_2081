@@ -2,7 +2,7 @@
 
 public enum User
 {
-    volnteer,
+    volunteer,
     admin
 }
 
