@@ -136,10 +136,7 @@
                 Style="{StaticResource ModernCard}">
             <DataGrid ItemsSource="{Binding VolunteersList}"
                       SelectedItem="{Binding SelectedVolunteer, Mode=TwoWay}"
-                      MouseDoubleClick="DataGrid_MouseDoubleClick" SelectionChanged="DataGrid_SelectionChanged"
-                      CanUserAddRows="False"
-                      CanUserDeleteRows="False"
-                      IsReadOnly="True">
+                      MouseDoubleClick="DataGrid_MouseDoubleClick" SelectionChanged="DataGrid_SelectionChanged">
 
 
                 <DataGrid.Columns>
@@ -174,7 +171,7 @@
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
 
-                    <!-- Phone Column -->
+                    <!-- Active Column -->
                     <DataGridCheckBoxColumn Header="בפעילות"
                         Binding="{Binding Active}"
                         Width="140"
@@ -189,7 +186,7 @@
                     </DataGridCheckBoxColumn>
 
 
-                    <!-- Email Column -->
+                    <!-- Type Call Column -->
                     <DataGridTextColumn Header="סוג הקריאה" 
                                         Binding="{Binding Type}" 
                                         Width="*"
@@ -227,14 +224,12 @@
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
 
-
-
                     <!-- Actions Column -->
                     <DataGridTemplateColumn Header="פעולות" Width="150">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >
-                                    <!-- כפתור עדכון -->
+                                    <!-- Update Button-->
                                     <Button Style="{StaticResource ModernButton}"
                         Click="btnUpdate_Click">
                                         <StackPanel Orientation="Horizontal">
@@ -250,7 +245,7 @@
                                         </StackPanel>
                                     </Button>
 
-                                    <!-- כפתור מחיקה -->
+                                    <!-- Delete Button-->
                                     <Button Style="{StaticResource DeleteButton}"
                         Click="btnDelete_Click">
                                         <StackPanel Orientation="Horizontal">

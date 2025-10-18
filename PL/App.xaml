@@ -10,6 +10,10 @@
             <!-- We will not represent those not selected from the logical entity in the graphic code.-->
             <Setter Property="AutoGenerateColumns" Value="False"/>
 
+            <Setter Property="CanUserAddRows" Value="False"/>
+            <Setter Property="CanUserDeleteRows" Value="False"/>
+            <Setter Property="IsReadOnly" Value="True"/>
+
             <!-- Beautiful design for DataGrid-->
             <Setter Property="AutoGenerateColumns" Value="False"/>
             <Setter Property="GridLinesVisibility" Value="All"/>
@@ -39,8 +43,10 @@
                     </Style>
                 </Setter.Value>
             </Setter>
+            <!--<Setter Property="IsEnabled"  Value="False" />-->
         </Style>
 
+        
         <!-- Card לבן עם צל (ModernCard) -->
         <Style x:Key="ModernCard" TargetType="Border">
             <Setter Property="Background" Value="White"/>

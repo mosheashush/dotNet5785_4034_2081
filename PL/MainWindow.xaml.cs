@@ -1,4 +1,5 @@
-﻿using PL.Volunteer;
+﻿using BIApi;
+using PL.Volunteer;
 using System;
 using System.Globalization;
 using System.Windows;
@@ -7,78 +8,36 @@ namespace PL
 {
     public partial class MainWindow : Window
     {
-        // === BL Access (Uncomment when you have it) ===
-        // static readonly BlApi.IBl s_bl = BlApi.Factory.Get();
-
-        public MainWindow()
+        static readonly IBl s_bl = Factory.Get();
+public MainWindow()
         {
             InitializeComponent();
 
             // Default values for display
-            CurrentTime = DateTime.Now;
-            RiskRange = TimeSpan.FromMinutes(30);
+            CurrentTime = s_bl.Admin.GetClock();
+            RiskRange = s_bl.Admin.GetRiskTimeSpan();
 
-            // Ability to update the UI when the clock or config changes in the BL
-            // s_bl.ClockChanged  += (s, e) => CurrentTime = s_bl.GetClock();
-            // s_bl.ConfigChanged += (s, e) => RiskRange  = s_bl.GetRiskRange();
         }
 
         #region Dependency Properties – Clock and Configuration
 
-        // CurrentTime (DateTime) + derived for display (string)
-        public static readonly DependencyProperty CurrentTimeProperty =
-            DependencyProperty.Register(nameof(CurrentTime), typeof(DateTime), typeof(MainWindow),
-                new PropertyMetadata(DateTime.Now, (d, e) =>
-                {
-                    var win = (MainWindow)d;
-                    win.CurrentTimeString = ((DateTime)e.NewValue).ToString("dd/MM/yyyy HH:mm:ss");
-                }));
-
+        // CurrentTime (DateTime) 
         public DateTime CurrentTime
         {
-            get => (DateTime)GetValue(CurrentTimeProperty);
-            set => SetValue(CurrentTimeProperty, value);
+            get { return (DateTime)GetValue(CurrentTimeProperty); }
+            set { SetValue(CurrentTimeProperty, value); }
         }
+        public static readonly DependencyProperty CurrentTimeProperty =
+            DependencyProperty.Register("CurrentTime", typeof(DateTime), typeof(MainWindow));
 
-        public static readonly DependencyProperty CurrentTimeStringProperty =
-            DependencyProperty.Register(nameof(CurrentTimeString), typeof(string), typeof(MainWindow),
-                new PropertyMetadata(""));
-
-        public string CurrentTimeString
-        {
-            get => (string)GetValue(CurrentTimeStringProperty);
-            set => SetValue(CurrentTimeStringProperty, value);
-        }
-
-        // RiskRange (TimeSpan) + derived for display/input (string)
-        public static readonly DependencyProperty RiskRangeProperty =
-            DependencyProperty.Register(nameof(RiskRange), typeof(TimeSpan), typeof(MainWindow),
-                new PropertyMetadata(TimeSpan.Zero, (d, e) =>
-                {
-                    var win = (MainWindow)d;
-                    win.RiskRangeString = ((TimeSpan)e.NewValue).ToString(); // Standard format: hh:mm:ss
-                }));
-
+        // RiskRange (TimeSpan)
         public TimeSpan RiskRange
         {
-            get => (TimeSpan)GetValue(RiskRangeProperty);
-            set => SetValue(RiskRangeProperty, value);
+            get { return (TimeSpan)GetValue(RiskRangeProperty); }
+            set { SetValue(RiskRangeProperty, value); }
         }
-
-        public static readonly DependencyProperty RiskRangeStringProperty =
-            DependencyProperty.Register(nameof(RiskRangeString), typeof(string), typeof(MainWindow),
-                new PropertyMetadata("", (d, e) =>
-                {
-                    var win = (MainWindow)d;
-                    if (TimeSpan.TryParse((string)e.NewValue, CultureInfo.InvariantCulture, out var ts))
-                        win.RiskRange = ts; // Two-way binding on the TextBox
-                }));
-
-        public string RiskRangeString
-        {
-            get => (string)GetValue(RiskRangeStringProperty);
-            set => SetValue(RiskRangeStringProperty, value);
-        }
+        public static readonly DependencyProperty RiskRangeProperty =
+            DependencyProperty.Register("CurrentTime", typeof(TimeSpan), typeof(MainWindow));
 
         #endregion
 
