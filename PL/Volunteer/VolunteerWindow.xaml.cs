@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Windows;
 using BlApi;
 using BO;
@@ -14,6 +15,25 @@ namespace PL.Volunteer
         static readonly BIApi.IBl s_dal = BIApi.Factory.Get();
 
         private readonly int? _volunteerId; // null = add mode, has value = update mode
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        private void OnPropertyChanged(string propertyName)
+            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
+        private BO.User? _typeUser;
+        public BO.User? TypeUser
+        {
+            get => _typeUser;
+            set
+            {
+                if (_typeUser != value)
+                {
+                    _typeUser = value;
+                    OnPropertyChanged(nameof(TypeUser));
+                }
+            }
+        }
 
         #region Dependency Properties
 
@@ -66,7 +86,7 @@ namespace PL.Volunteer
                     Latitude = null,
                     Longitude = null,
                     CurrentPosition = User.volunteer, // default
-                    Active = true,
+                    Active = false,
                     MaxDistanceForCall = null,
                     TypeOfDistance = Distance.air, // default
                     SumCallsCompleted = 0,

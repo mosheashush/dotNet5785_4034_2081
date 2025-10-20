@@ -45,7 +45,7 @@ public static class Initialization
             {
                 id = s_rand.Next(20000000, 40000000); // 8 digits
                 numberphone = s_rand.Next(500000000, 599999999); // 9 digits
-                password = s_rand.Next(100000, 999999); // 6 digits
+                password = s_rand.Next(10000000, 99999999); // 8 digits
             }
             while (s_dal.Volunteer!.Read(id) != null);
 

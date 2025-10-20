@@ -6,6 +6,8 @@
     <Application.Resources>
         <!-- Filters -->
         <local:VolunteerFilterCollection x:Key="CallTypeKey"/>
+        <local:UserCollection x:Key="UserKey"/>
+        <local:DistanceCollection x:Key="DistanceKey"/>
 
         <!-- Style לכל DataGrid בפרויקט -->
         <Style TargetType="DataGrid">

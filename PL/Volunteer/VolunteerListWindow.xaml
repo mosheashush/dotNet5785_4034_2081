@@ -16,8 +16,6 @@
 
     <Window.Resources>
         <conv:CallTypeToHebrewConverter x:Key="CallTypeToHebrewConverter"/>
-        <conv:ActiveToColorConverter x:Key="ActiveToColorConverter"/>
-        <conv:ActiveToTextConverter x:Key="ActiveToTextConverter"/>
     </Window.Resources>
     
     <Grid Margin="25">
@@ -121,11 +119,10 @@
                                 <Setter.Value>
                                     <ControlTemplate TargetType="ComboBoxItem">
                                         <Border Background="Transparent">
-                                            <ContentPresenter
-                                HorizontalAlignment="Right"
-                                TextBlock.TextAlignment="Right"
-                                Margin="5,0,10,0"
-                                RecognizesAccessKey="True"/>
+                                            <ContentPresenter HorizontalAlignment="Right"
+                                                              TextBlock.TextAlignment="Right"
+                                                              Margin="5,0,10,0"
+                                                              RecognizesAccessKey="True"/>
                                         </Border>
                                     </ControlTemplate>
                                 </Setter.Value>
@@ -136,9 +133,9 @@
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding Converter={StaticResource CallTypeToHebrewConverter}}"
-                       TextAlignment="Right"
-                       HorizontalAlignment="Right"
-                       Margin="5,0,10,0"/>
+                                       TextAlignment="Right"
+                                       HorizontalAlignment="Right"
+                                       Margin="5,0,10,0"/>
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
@@ -272,13 +269,13 @@
                         Click="btnUpdate_Click">
                                         <StackPanel Orientation="Horizontal">
                                             <Path Data="M3,17.25V21H6.75L17.81,9.94L14.06,6.19L3,17.25M20.71,7.04
-                                    C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29
-                                    C18,2.9 17.35,2.9 16.96,3.29L15.13,5.12L18.88,8.87L20.71,7.04Z"
-                              Fill="White"
-                              Width="14"
-                              Height="14"
-                              Stretch="Uniform"
-                              Margin="0,0,5,0"/>
+                                                        C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29
+                                                        C18,2.9 17.35,2.9 16.96,3.29L15.13,5.12L18.88,8.87L20.71,7.04Z"
+                                                  Fill="White"
+                                                  Width="14"
+                                                  Height="14"
+                                                  Stretch="Uniform"
+                                                  Margin="0,0,5,0"/>
                                             <TextBlock Text="עדכן"/>
                                         </StackPanel>
                                     </Button>
@@ -288,12 +285,12 @@
                         Click="btnDelete_Click">
                                         <StackPanel Orientation="Horizontal">
                                             <Path Data="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19
-                                    M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z"
-                              Fill="White"
-                              Width="14"
-                              Height="14"
-                              Stretch="Uniform"
-                              Margin="0,0,5,0"/>
+                                                        M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z"
+                                                  Fill="White"
+                                                  Width="14"
+                                                  Height="14"
+                                                  Stretch="Uniform"
+                                                  Margin="0,0,5,0"/>
                                             <TextBlock Text="מחק"/>
                                         </StackPanel>
                                     </Button>

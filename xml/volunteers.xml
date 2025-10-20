@@ -43,20 +43,6 @@
     <TypeOfDistance>air</TypeOfDistance>
   </Volunteer>
   <Volunteer>
-    <id>20115690</id>
-    <FullName>Daniel Kaplan</FullName>
-    <CallNumber>0577593956</CallNumber>
-    <EmailAddress>danielkaplan1@gmail.com</EmailAddress>
-    <Password>909548</Password>
-    <FullCurrentAddress>Eilat, Tarshish 7</FullCurrentAddress>
-    <Latitude>29.55805</Latitude>
-    <Longitud>34.94821</Longitud>
-    <CurrentPosition>admin</CurrentPosition>
-    <Active>false</Active>
-    <MaxDistanceForCall>4</MaxDistanceForCall>
-    <TypeOfDistance>walk</TypeOfDistance>
-  </Volunteer>
-  <Volunteer>
     <id>38355894</id>
     <FullName>Leah Abramov</FullName>
     <CallNumber>0564018864</CallNumber>
@@ -99,20 +85,6 @@
     <TypeOfDistance>walk</TypeOfDistance>
   </Volunteer>
   <Volunteer>
-    <id>25833978</id>
-    <FullName>Joshua Katz</FullName>
-    <CallNumber>0591048103</CallNumber>
-    <EmailAddress>joshuakatz1@gmail.com</EmailAddress>
-    <Password>287673</Password>
-    <FullCurrentAddress>Holon, Mota Gur 6</FullCurrentAddress>
-    <Latitude>32.01154</Latitude>
-    <Longitud>34.77221</Longitud>
-    <CurrentPosition>admin</CurrentPosition>
-    <Active>true</Active>
-    <MaxDistanceForCall>3</MaxDistanceForCall>
-    <TypeOfDistance>drive</TypeOfDistance>
-  </Volunteer>
-  <Volunteer>
     <id>29629360</id>
     <FullName>Miriam Weiss</FullName>
     <CallNumber>0561982853</CallNumber>
@@ -125,20 +97,6 @@
     <Active>false</Active>
     <MaxDistanceForCall>9</MaxDistanceForCall>
     <TypeOfDistance>air</TypeOfDistance>
-  </Volunteer>
-  <Volunteer>
-    <id>26850331</id>
-    <FullName>Aaron Gold</FullName>
-    <CallNumber>0501715969</CallNumber>
-    <EmailAddress>aarongold0@gmail.com</EmailAddress>
-    <Password>738194</Password>
-    <FullCurrentAddress>Herzliya, HaShunit 1</FullCurrentAddress>
-    <Latitude>32.1663</Latitude>
-    <Longitud>34.84363</Longitud>
-    <CurrentPosition>admin</CurrentPosition>
-    <Active>false</Active>
-    <MaxDistanceForCall>5</MaxDistanceForCall>
-    <TypeOfDistance>walk</TypeOfDistance>
   </Volunteer>
   <Volunteer>
     <id>33510778</id>
@@ -225,20 +183,6 @@
     <TypeOfDistance>walk</TypeOfDistance>
   </Volunteer>
   <Volunteer>
-    <id>26044078</id>
-    <FullName>Hannah Berger</FullName>
-    <CallNumber>0546861545</CallNumber>
-    <EmailAddress>hannahberger1@gmail.com</EmailAddress>
-    <Password>160614</Password>
-    <FullCurrentAddress>Lod, Herzl 12</FullCurrentAddress>
-    <Latitude>31.9513</Latitude>
-    <Longitud>34.8951</Longitud>
-    <CurrentPosition>admin</CurrentPosition>
-    <Active>true</Active>
-    <MaxDistanceForCall>2</MaxDistanceForCall>
-    <TypeOfDistance>drive</TypeOfDistance>
-  </Volunteer>
-  <Volunteer>
     <id>31476198</id>
     <FullName>Joseph Peretz</FullName>
     <CallNumber>0575622201</CallNumber>
@@ -265,5 +209,61 @@
     <Active>false</Active>
     <MaxDistanceForCall>2</MaxDistanceForCall>
     <TypeOfDistance>walk</TypeOfDistance>
+  </Volunteer>
+  <Volunteer>
+    <id>25833978</id>
+    <FullName>Joshua Katz</FullName>
+    <CallNumber>0591048103</CallNumber>
+    <EmailAddress>joshuakatz1@gmail.com</EmailAddress>
+    <Password>28767352</Password>
+    <FullCurrentAddress>Tel Aviv, Ibn Gabirol 69</FullCurrentAddress>
+    <Latitude>32.0818194</Latitude>
+    <Longitud>34.7805717</Longitud>
+    <CurrentPosition>admin</CurrentPosition>
+    <Active>true</Active>
+    <MaxDistanceForCall>3</MaxDistanceForCall>
+    <TypeOfDistance>drive</TypeOfDistance>
+  </Volunteer>
+  <Volunteer>
+    <id>26044078</id>
+    <FullName>Hannah Berger</FullName>
+    <CallNumber>0546861545</CallNumber>
+    <EmailAddress>hannahberger1@gmail.com</EmailAddress>
+    <Password>16061487</Password>
+    <FullCurrentAddress>Tel Aviv, Ibn Gabirol 69</FullCurrentAddress>
+    <Latitude>32.0818194</Latitude>
+    <Longitud>34.7805717</Longitud>
+    <CurrentPosition>admin</CurrentPosition>
+    <Active>true</Active>
+    <MaxDistanceForCall>2</MaxDistanceForCall>
+    <TypeOfDistance>drive</TypeOfDistance>
+  </Volunteer>
+  <Volunteer>
+    <id>20115690</id>
+    <FullName>Daniel Kaplan</FullName>
+    <CallNumber>0577593956</CallNumber>
+    <EmailAddress>danielkaplan1@gmail.com</EmailAddress>
+    <Password>90954878</Password>
+    <FullCurrentAddress>Eilat, Tarshish 7</FullCurrentAddress>
+    <Latitude>29.5509309</Latitude>
+    <Longitud>34.9584473</Longitud>
+    <CurrentPosition>volnteer</CurrentPosition>
+    <Active>false</Active>
+    <MaxDistanceForCall>4</MaxDistanceForCall>
+    <TypeOfDistance>walk</TypeOfDistance>
+  </Volunteer>
+  <Volunteer>
+    <id>315482801</id>
+    <FullName>Nir bnp</FullName>
+    <CallNumber>0546527155</CallNumber>
+    <EmailAddress>neriyh7@gmail.com</EmailAddress>
+    <Password>12345678</Password>
+    <FullCurrentAddress>Tel Aviv, Ibn Gabirol 69</FullCurrentAddress>
+    <Latitude>32.0818194</Latitude>
+    <Longitud>34.7805717</Longitud>
+    <CurrentPosition>volnteer</CurrentPosition>
+    <Active>true</Active>
+    <MaxDistanceForCall>2</MaxDistanceForCall>
+    <TypeOfDistance>air</TypeOfDistance>
   </Volunteer>
 </ArrayOfVolunteer>

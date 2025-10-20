@@ -66,11 +66,11 @@ internal class VolunteerImplementation : IVolunteer
             throw new BO.BlDoesNotExistException($"Volunteer with ID={userId} does Not exist", ex);
         }
 
-        if ((userId != boVolunteer.id && userVolunteer.CurrentPosition != DO.User.admin) //allow
-            || (userVolunteer.CurrentPosition != DO.User.admin
-            && doVolunteer.CurrentPosition == DO.User.volnteer
-            && boVolunteer.CurrentPosition == BO.User.admin))
-            throw new BO.BlNotAllowedMakeChangesException($"Volunteer with ID={userId} can not do this change");
+        //if ((userId != boVolunteer.id && userVolunteer.CurrentPosition != DO.User.admin) //allow
+        //    || (userVolunteer.CurrentPosition != DO.User.admin
+        //    && doVolunteer.CurrentPosition == DO.User.volnteer
+        //    && boVolunteer.CurrentPosition == BO.User.admin))
+        //    throw new BO.BlNotAllowedMakeChangesException($"Volunteer with ID={userId} can not do this change");
 
         VolunteerManager.CheckVolunteer(boVolunteer);
 
