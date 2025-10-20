@@ -5,19 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-//namespace PL;
-//internal/*public*/ class Calltype : IEnumerable
-//{
-//    static readonly IEnumerable<BO.Calltype> s_enums =
-//(Enum.GetValues(typeof(BO.Calltype)) as IEnumerable<BO.Calltype>)!;
-//    public IEnumerator GetEnumerator() => s_enums.GetEnumerator();
-//}
 namespace PL
 {
     internal class VolunteerFilterCollection : IEnumerable
     {
-        static readonly IEnumerable<BO.VolunteerInListFields> s_enums =
-            (Enum.GetValues(typeof(BO.VolunteerInListFields)) as IEnumerable<BO.VolunteerInListFields>)!;
+        static readonly IEnumerable<BO.CallType> s_enums =
+            (Enum.GetValues(typeof(BO.CallType)) as IEnumerable<BO.CallType>)!;
 
         public IEnumerator GetEnumerator() => s_enums.GetEnumerator();
     }

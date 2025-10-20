@@ -143,7 +143,7 @@ namespace BlTest
                             // 3. Fetch and display
                             try
                             {
-                                var volunteerList = s_dal.Volunteer.listOfVolunteer(status, sortField);
+                                var volunteerList = s_dal.Volunteer.listOfVolunteer(status, sortField, null);
                                 foreach (var v in volunteerList)
                                 {
                                     Console.WriteLine(v);

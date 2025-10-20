@@ -18,6 +18,7 @@ public enum CallType
     makingfood,
     deliveringfood,
     None,
+    All,
 }
 
 public enum CompletionType

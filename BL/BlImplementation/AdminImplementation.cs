@@ -19,6 +19,7 @@ internal class AdminImplementation : IAdmin
         {
             case TimeUnit.Minute:
                 newTime = newTime.AddMinutes(1);
+
                 break;
             case TimeUnit.Hour:
                 newTime = newTime.AddHours(1);
@@ -74,7 +75,7 @@ internal class AdminImplementation : IAdmin
     public void RemoveClockObserver(Action clockObserver) =>
     AdminManager.ClockUpdatedObservers -= clockObserver;
     public void AddConfigObserver(Action configObserver) =>
-   AdminManager.ConfigUpdatedObservers += configObserver;
+    AdminManager.ConfigUpdatedObservers += configObserver;
     public void RemoveConfigObserver(Action configObserver) =>
     AdminManager.ConfigUpdatedObservers -= configObserver;
     #endregion Stage 5

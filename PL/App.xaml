@@ -4,6 +4,8 @@
              xmlns:local="clr-namespace:PL"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
+        <!-- Filters -->
+        <local:VolunteerFilterCollection x:Key="CallTypeKey"/>
 
         <!-- Style לכל DataGrid בפרויקט -->
         <Style TargetType="DataGrid">
@@ -136,10 +138,6 @@
             <Setter Property="Foreground" Value="#2C3E50"/>
             <Setter Property="HorizontalAlignment" Value ="Right"/>
         </Style>
-
-        <!-- Converters -->
-        <local:ActiveToColorConverter x:Key="ActiveToColorKey"/>
-        <local:ActiveToTextConverter x:Key="ActiveToTextKey"/>
 
     </Application.Resources>
 </Application>

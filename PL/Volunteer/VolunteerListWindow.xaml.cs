@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -12,10 +14,40 @@ namespace PL.Volunteer
     /// <summary>
     /// מסך תצוגת רשימת מתנדבים
     /// </summary>
-    public partial class VolunteerListWindow : Window
+    public partial class VolunteerListWindow : Window, INotifyPropertyChanged
     {
         // תלות עם BL
-        static readonly BIApi.IBl s_dal = BIApi.Factory.Get();
+        static readonly BIApi.IBl s_bl = BIApi.Factory.Get();
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        private void OnPropertyChanged(string propertyName)
+            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
+        private BO.CallType? _typeVolunteer;
+        public BO.CallType? TypeVolunteer
+        {
+            get => _typeVolunteer;
+            set
+            {
+                if (_typeVolunteer != value)
+                {
+                    _typeVolunteer = value;
+                    OnPropertyChanged(nameof(TypeVolunteer));
+                    // אם אתה רוצה שהרשימה תתעדכן אוטומטית:
+                    FilterVolunteersByStatus();
+                }
+            }
+        }
+
+        public VolunteerListWindow()
+        {
+            InitializeComponent();
+
+            // Attach event handlers in the constructor
+            Loaded += Window_Loaded;
+            Closed += Window_Closed;
+        }
 
         #region Dependency Properties
 
@@ -27,6 +59,7 @@ namespace PL.Volunteer
             get { return (ObservableCollection<VolunteerInList>)GetValue(VolunteersListProperty); }
             set { SetValue(VolunteersListProperty, value); }
         }
+
         public static readonly DependencyProperty VolunteersListProperty =
             DependencyProperty.Register(nameof(VolunteersList),
                 typeof(ObservableCollection<VolunteerInList>),
@@ -45,64 +78,25 @@ namespace PL.Volunteer
                 typeof(VolunteerInList),
                 typeof(VolunteerListWindow));
 
-        /// <summary>
-        /// פילטר לפי סטטוס פעיל/לא פעיל
-        /// </summary>
-        public bool? IsActiveFilter
-        {
-            get { return (bool?)GetValue(IsActiveFilterProperty); }
-            set { SetValue(IsActiveFilterProperty, value); }
-        }
-        public static readonly DependencyProperty IsActiveFilterProperty =
-            DependencyProperty.Register(nameof(IsActiveFilter),
-                typeof(bool?),
-                typeof(VolunteerListWindow),
-                new PropertyMetadata(null));
-
         #endregion
 
-        /// <summary>
-        /// בנאי המסך
-        /// </summary>
-        public VolunteerListWindow()
+        private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            InitializeComponent();
-
             try
             {
-                // רישום ל-Observer לעדכון אוטומטי
-                s_dal.Volunteer.AddObserver(RefreshVolunteersList);
+                // רישום מתודת ההשקפה על רשימת המתנדבים
+                s_bl.Volunteer.AddObserver(RefreshVolunteersList);
 
-                // טעינה ראשונית של הרשימה
-                LoadVolunteers();
+                // טען את הרשימה הראשונית
+                FilterVolunteersByStatus();
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"שגיאה באתחול המסך:\n{ex.Message}",
+                MessageBox.Show($"שגיאה בעת טעינת המסך:\n{ex.Message}",
                     "שגיאה",
                     MessageBoxButton.OK,
                     MessageBoxImage.Error);
                 Close();
-            }
-        }
-
-        /// <summary>
-        /// טעינת כל המתנדבים לרשימה
-        /// </summary>
-        private void LoadVolunteers()
-        {
-            try
-            {
-                // קבלת הרשימה מה-BL (ללא סינון ומיון ברירת מחדל)
-                var volunteers = s_dal.Volunteer.listOfVolunteer(null, null);
-                VolunteersList = new ObservableCollection<VolunteerInList>(volunteers);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"שגיאה בטעינת המתנדבים:\n{ex.Message}",
-                    "שגיאה",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error);
             }
         }
 
@@ -114,35 +108,16 @@ namespace PL.Volunteer
             // חובה להריץ ב-UI Thread
             Dispatcher.Invoke(() =>
             {
-                if (IsActiveFilter == null)
-                    LoadVolunteers();
-                else
-                    FilterVolunteersByStatus();
+                FilterVolunteersByStatus();
             });
         }
 
         /// <summary>
-        /// סינון הרשימה לפי סטטוס נבחר (פעיל/לא פעיל)
+        /// סינון הרשימה לפי סטטוס נבחר משלוח אוכל/הכנת אוכל)
         /// </summary>
         private void Status_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (sender is ComboBox comboBox && comboBox.SelectedIndex >= 0)
-            {
-                switch (comboBox.SelectedIndex)
-                {
-                    case 0: // הכל
-                        IsActiveFilter = null;
-                        break;
-                    case 1: // פעילים בלבד
-                        IsActiveFilter = true;
-                        break;
-                    case 2: // לא פעילים בלבד
-                        IsActiveFilter = false;
-                        break;
-                }
-
-                FilterVolunteersByStatus();
-            }
+            FilterVolunteersByStatus();
         }
 
         /// <summary>
@@ -152,15 +127,24 @@ namespace PL.Volunteer
         {
             try
             {
-                var filtered = s_dal.Volunteer.listOfVolunteer(IsActiveFilter, null);
+                IEnumerable<VolunteerInList> filtered;
+
+                if (TypeVolunteer == null || TypeVolunteer == CallType.All)
+                {
+                    filtered = s_bl.Volunteer.listOfVolunteer(null, null, null);
+                }
+                else
+                {
+                    filtered = s_bl.Volunteer.listOfVolunteer(null, BO.VolunteerInListFields.Type, TypeVolunteer);
+                }
+
                 VolunteersList = new ObservableCollection<VolunteerInList>(filtered);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"שגיאה בסינון המתנדבים:\n{ex.Message}",
-                    "שגיאה",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error);
+                MessageBox.Show($"שגיאה בטעינת המתנדבים:\n{ex.Message}", "שגיאה",
+                MessageBoxButton.OK,
+                MessageBoxImage.Error);
             }
         }
 
@@ -224,7 +208,6 @@ namespace PL.Volunteer
             }
         }
 
-
         /// <summary>
         /// לחיצה על כפתור מחיקה בשורה
         /// </summary>
@@ -249,7 +232,7 @@ namespace PL.Volunteer
 
                 if (result == MessageBoxResult.Yes)
                 {
-                    s_dal.Volunteer.Delete(volunteer.IdVolunteer);
+                    s_bl.Volunteer.Delete(volunteer.IdVolunteer);
                     MessageBox.Show("המתנדב נמחק בהצלחה!",
                         "הצלחה",
                         MessageBoxButton.OK,
@@ -268,10 +251,20 @@ namespace PL.Volunteer
         /// <summary>
         /// סגירת המסך - ביטול רישום ל-Observer
         /// </summary>
-        protected override void OnClosed(EventArgs e)
+        private void Window_Closed(object sender, EventArgs e)
         {
-            s_dal.Volunteer.RemoveObserver(RefreshVolunteersList);
-            base.OnClosed(e);
+            try
+            {
+                // הסרת המשקיף
+                s_bl.Volunteer.RemoveObserver(RefreshVolunteersList);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"שגיאה בעת סגירת המסך:\n{ex.Message}",
+                    "שגיאה",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
         }
 
         private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)

@@ -8,7 +8,7 @@ namespace BIApi;
 public interface IVolunteer : IObservable
 {
     public BO.User Entrance(string name, string password);
-    public List<BO.VolunteerInList> listOfVolunteer(bool? isActive, BO.VolunteerInListFields? field);
+    public List<BO.VolunteerInList> listOfVolunteer(bool? isActive, BO.VolunteerInListFields? field, object? filterValue);
 
     public void Create(BO.Volunteer volunteer);
     public BO.Volunteer? Read(int IdVolunteer);

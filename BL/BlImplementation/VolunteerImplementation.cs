@@ -116,15 +116,17 @@ internal class VolunteerImplementation : IVolunteer
     }
 
     // get filters and sort for volunteers and return a list of volunteers
-    public List<BO.VolunteerInList> listOfVolunteer(bool? isActive, BO.VolunteerInListFields? field)
+    public List<BO.VolunteerInList> listOfVolunteer(bool? isActive, BO.VolunteerInListFields? field, object? filterValue)
     {
 
         var volunteers = s_dal.Volunteer.ReadAll();
         
+        //final filter
         var assignments = s_dal.Assignment.ReadAll();
         if (isActive != null)
             volunteers = volunteers.Where(v => v.Active == isActive);
 
+        //sort:
         if (field != null)
         {
             switch (field)
@@ -162,6 +164,7 @@ internal class VolunteerImplementation : IVolunteer
         else
             volunteers = volunteers.OrderBy(v => v.id);
 
+        //convert DO to BO:
         List<BO.VolunteerInList> converted = volunteers.Select(v => 
         new BO.VolunteerInList
         {
@@ -174,6 +177,32 @@ internal class VolunteerImplementation : IVolunteer
             SumCallsExpired = VolunteerManager.CalculatSumCallsExpired(v.id),
             SumCallsConcluded = VolunteerManager.CalculatSumCallsConcluded(v.id),
         }).ToList();
+
+        // mor filter for stage 5
+        if (field != null && filterValue != null)
+        {
+            Console.WriteLine($"field: {field}, prop: {field?.ToString()}\n");
+            var prop = typeof(BO.VolunteerInList).GetProperty(field.ToString());
+            object convertedValue = filterValue;
+            var propType = prop.PropertyType;
+
+            if (propType.IsEnum)
+                convertedValue = Enum.Parse(propType, filterValue.ToString(), ignoreCase: true);
+            else if (Nullable.GetUnderlyingType(propType)?.IsEnum == true)
+            {
+                var enumType = Nullable.GetUnderlyingType(propType);
+                convertedValue = Enum.Parse(enumType, filterValue.ToString(), ignoreCase: true);
+            }
+            else if (Nullable.GetUnderlyingType(propType) != null)
+            {
+                var underlyingType = Nullable.GetUnderlyingType(propType);
+                convertedValue = Convert.ChangeType(filterValue, underlyingType);
+            }
+            else
+                convertedValue = Convert.ChangeType(filterValue, propType);
+
+            converted = converted.Where(c => object.Equals(prop.GetValue(c), convertedValue)).ToList(); ;
+        }
 
         return converted;
     }

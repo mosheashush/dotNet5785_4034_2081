@@ -4,13 +4,22 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PL.Volunteer"
+        xmlns:conv="clr-namespace:PL.Converters"
         mc:Ignorable="d"
         Title="ניהול מתנדבים | Volunteer Management" 
         Height="700" Width="1200"
         WindowStartupLocation="CenterScreen"
         Background="#F5F7FA"
-        DataContext="{Binding RelativeSource={RelativeSource Self}}">
+        DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        Loaded="Window_Loaded"
+        Closed="Window_Closed">
 
+    <Window.Resources>
+        <conv:CallTypeToHebrewConverter x:Key="CallTypeToHebrewConverter"/>
+        <conv:ActiveToColorConverter x:Key="ActiveToColorConverter"/>
+        <conv:ActiveToTextConverter x:Key="ActiveToTextConverter"/>
+    </Window.Resources>
+    
     <Grid Margin="25">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -96,15 +105,44 @@
                 </StackPanel>
 
                 <!-- Filter ComboBox -->
-                <ComboBox Grid.Column="1" 
+                <ComboBox Grid.Column="1"
                           Style="{StaticResource ModernComboBox}"
-                          SelectionChanged="Status_SelectionChanged"
-                          SelectedIndex="0" Margin="0,1,150,2">
-                    <ComboBoxItem Content="🔹              הכל"/>
-                    <ComboBoxItem Content="✅          פעילים"/>
-                    <ComboBoxItem Content="❌     לא פעילים"/>
+                          Margin="0,1,150,2"
+                          ItemsSource="{Binding Source={StaticResource CallTypeKey}}"
+                          SelectedValue="{Binding TypeVolunteer, Mode=TwoWay}"
+                          SelectedValuePath="."
+                          HorizontalContentAlignment="Stretch"
+                          HorizontalAlignment="Stretch">
+
+                    <ComboBox.ItemContainerStyle>
+                        <Style TargetType="ComboBoxItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ComboBoxItem">
+                                        <Border Background="Transparent">
+                                            <ContentPresenter
+                                HorizontalAlignment="Right"
+                                TextBlock.TextAlignment="Right"
+                                Margin="5,0,10,0"
+                                RecognizesAccessKey="True"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ComboBox.ItemContainerStyle>
+
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Converter={StaticResource CallTypeToHebrewConverter}}"
+                       TextAlignment="Right"
+                       HorizontalAlignment="Right"
+                       Margin="5,0,10,0"/>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
                 </ComboBox>
-                
+
                 <Path Data="M14,12V19.88C14.04,20.18 13.94,20.5 13.71,20.71C13.32,21.1 12.69,21.1 12.3,20.71L10.29,18.7C10.06,18.47 9.96,18.16 10,17.87V12H9.97L4.21,4.62C3.87,4.19 3.95,3.56 4.38,3.22C4.57,3.08 4.78,3 5,3V3H19V3C19.22,3 19.43,3.08 19.62,3.22C20.05,3.56 20.13,4.19 19.79,4.62L14.03,12H14Z"
                           Fill="#4A90E2" 
                           Width="20" 
@@ -187,20 +225,20 @@
 
 
                     <!-- Type Call Column -->
-                    <DataGridTextColumn Header="סוג הקריאה" 
-                                        Binding="{Binding Type}" 
+                    <DataGridTextColumn Header="סוג הקריאה"
+                                        Binding="{Binding Type, Converter={StaticResource CallTypeToHebrewConverter}}"
                                         Width="*"
                                         MinWidth="180">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
-                                <Setter Property="HorizontalAlignment" Value="Left"/>
+                                <Setter Property="HorizontalAlignment" Value="Center"/>
                                 <Setter Property="Foreground" Value="#5D6D7E"/>
                                 <Setter Property="FontStyle" Value="Italic"/>
-                                <Setter Property="HorizontalAlignment" Value="Center"/>
                                 <Setter Property="Margin" Value="0,10,0,10"/>
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
+
 
                     <!-- Statistics Column -->
                     <DataGridTemplateColumn Header="סטטיסטיקה" Width="250">
