@@ -266,4 +266,18 @@
     <MaxDistanceForCall>2</MaxDistanceForCall>
     <TypeOfDistance>air</TypeOfDistance>
   </Volunteer>
+  <Volunteer>
+    <id>316482802</id>
+    <FullName>Drt ty</FullName>
+    <CallNumber>0544300661</CallNumber>
+    <EmailAddress>neryt@gmail.com</EmailAddress>
+    <Password>12345678</Password>
+    <FullCurrentAddress>Tel Aviv, Ibn Gabirol 69</FullCurrentAddress>
+    <Latitude>32.0818194</Latitude>
+    <Longitud>34.7805717</Longitud>
+    <CurrentPosition>volnteer</CurrentPosition>
+    <Active>false</Active>
+    <MaxDistanceForCall>3</MaxDistanceForCall>
+    <TypeOfDistance>air</TypeOfDistance>
+  </Volunteer>
 </ArrayOfVolunteer>

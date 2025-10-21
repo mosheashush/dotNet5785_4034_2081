@@ -126,44 +126,6 @@ internal class VolunteerImplementation : IVolunteer
         if (isActive != null)
             volunteers = volunteers.Where(v => v.Active == isActive);
 
-        //sort:
-        if (field != null)
-        {
-            switch (field)
-            {
-                case BO.VolunteerInListFields.IdVolunteer:
-                    volunteers = volunteers.OrderBy(v => v.id);
-                    break;
-                case BO.VolunteerInListFields.FullName:
-                    volunteers = volunteers.OrderBy(v => v.FullName);
-                    break;
-                case BO.VolunteerInListFields.Active:
-                    volunteers = volunteers.OrderBy(v => v.Active);
-                    break;
-                case BO.VolunteerInListFields.IdCall:
-                    if (isActive == false)
-                        throw new BO.BlCanNotOrderNotExistsFieldException($"Volunteer with ID={isActive} can not do this change");
-                    volunteers = volunteers.OrderBy(v => assignments.FirstOrDefault(c => c.VolunteerId == v.id).CallId);
-                    break;
-                case BO.VolunteerInListFields.Type:
-                    if (isActive == false)
-                        throw new BO.BlCanNotOrderNotExistsFieldException($"Volunteer with ID={isActive} can not do this change");
-                    volunteers = volunteers.OrderBy(v => s_dal.Call.ReadAll().FirstOrDefault(c => c.Id == assignments.FirstOrDefault(c => c.VolunteerId == v.id).CallId).Type);
-                    break;
-                case BO.VolunteerInListFields.SumCallsCompleted:
-                    volunteers = volunteers.OrderBy(v => VolunteerManager.CalculatSumCallsCompleted(v.id));
-                    break;
-                case BO.VolunteerInListFields.SumCallsExpired:
-                    volunteers = volunteers.OrderBy(v => VolunteerManager.CalculatSumCallsExpired(v.id));
-                    break;
-                case BO.VolunteerInListFields.SumCallsConcluded:
-                    volunteers = volunteers.OrderBy(v => VolunteerManager.CalculatSumCallsConcluded(v.id));
-                    break;
-            }
-        }
-        else
-            volunteers = volunteers.OrderBy(v => v.id);
-
         //convert DO to BO:
         List<BO.VolunteerInList> converted = volunteers.Select(v => 
         new BO.VolunteerInList
@@ -204,6 +166,47 @@ internal class VolunteerImplementation : IVolunteer
             converted = converted.Where(c => object.Equals(prop.GetValue(c), convertedValue)).ToList(); ;
         }
 
-        return converted;
+        //sort:
+        // Fix for CS0019: Explicitly cast `filterValue` to `BO.CallType` before comparison.
+        if (field != null && filterValue is BO.CallType callTypeValue && callTypeValue != BO.CallType.None)
+        {
+
+            switch (field)
+            {
+                case BO.VolunteerInListFields.IdVolunteer:
+                    converted = converted.OrderBy(v => v.IdVolunteer).ToList();
+                    break;
+                case BO.VolunteerInListFields.FullName:
+                    converted = converted.OrderBy(v => v.FullName).ToList();
+                    break;
+                case BO.VolunteerInListFields.Active:
+                    converted = converted.OrderBy(v => v.Active).ToList();
+                    break;
+                case BO.VolunteerInListFields.IdCall:
+                    if (isActive == false)
+                        throw new BO.BlCanNotOrderNotExistsFieldException($"Volunteer with ID={isActive} can not do this change");
+                    converted = converted.OrderBy(v => assignments.FirstOrDefault(c => c.VolunteerId == v.IdVolunteer).CallId).ToList();
+                    break;
+                case BO.VolunteerInListFields.Type:
+                    if (isActive == false )
+                        throw new BO.BlCanNotOrderNotExistsFieldException($"Volunteer with ID={isActive} can not do this change");
+                    converted = converted.OrderBy(v => s_dal.Call.ReadAll().FirstOrDefault(c => c.Id == assignments.FirstOrDefault(c => c.VolunteerId == v.IdVolunteer).CallId).Type).ToList();
+                    break;
+                case BO.VolunteerInListFields.SumCallsCompleted:
+                    converted = converted.OrderBy(v => VolunteerManager.CalculatSumCallsCompleted(v.IdVolunteer)).ToList();
+                    break;
+                case BO.VolunteerInListFields.SumCallsExpired:
+                    converted = converted.OrderBy(v => VolunteerManager.CalculatSumCallsExpired(v.IdVolunteer)).ToList();
+                    break;
+                case BO.VolunteerInListFields.SumCallsConcluded:
+                    converted = converted.OrderBy(v => VolunteerManager.CalculatSumCallsConcluded(v.IdVolunteer)).ToList();
+                    break;
+            }
+        }
+        else
+            converted = converted.OrderBy(v => v.IdVolunteer).ToList();
+
+        // Fixing the CS0428 error by invoking the ToList method properly.
+        return converted.ToList();
     }
 }
