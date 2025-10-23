@@ -194,17 +194,20 @@ namespace PL.Volunteer
         /// </summary>
         private void btnUpdate_Click(object sender, RoutedEventArgs e)
         {
-            try
+            if (SelectedVolunteer != null)
             {
-                // פתיחת מסך הוספה (ללא ID)
-                new VolunteerWindow().ShowDialog();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"שגיאה בפתיחת מסך הוספה:\n{ex.Message}",
-                    "שגיאה",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error);
+                try
+                {
+                    // פתיחת מסך עריכה עם המתנדב הנבחר
+                    new VolunteerWindow(SelectedVolunteer.IdVolunteer).ShowDialog();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"שגיאה בפתיחת מסך המתנדב:\n{ex.Message}",
+                        "שגיאה",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Error);
+                }
             }
         }
 

@@ -47,8 +47,13 @@
                     </Style>
                 </Setter.Value>
             </Setter>
-            <!--<Setter Property="IsEnabled"  Value="False" />-->
         </Style>
+
+        <!--<Style TargetType="Label">
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+            <Setter Property="FlowDirection" Value="RightToLeft"/>
+            <Setter Property="Margin" Value="0,0,0,20"/>
+        </Style>-->
 
         
         <!-- Card לבן עם צל (ModernCard) -->

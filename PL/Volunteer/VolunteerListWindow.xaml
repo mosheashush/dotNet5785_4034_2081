@@ -61,7 +61,7 @@
                         Background="#E8F5E9" 
                         CornerRadius="8" 
                         Padding="15,10">
-                    <StackPanel Orientation="Horizontal">
+                    <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft">
                         <TextBlock Text="סה״כ מתנדבים:" 
                                    FontSize="14" 
                                    Foreground="#388E3C"
@@ -266,7 +266,7 @@
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >
                                     <!-- Update Button-->
                                     <Button Style="{StaticResource ModernButton}"
-                        Click="btnUpdate_Click">
+                                            Click="btnUpdate_Click">
                                         <StackPanel Orientation="Horizontal">
                                             <Path Data="M3,17.25V21H6.75L17.81,9.94L14.06,6.19L3,17.25M20.71,7.04
                                                         C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29

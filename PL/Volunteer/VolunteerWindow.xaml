@@ -8,7 +8,8 @@
         mc:Ignorable="d"
         Title="Volunteer Details" Height="650" Width="500"
         DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}"
-        Closed="Window_Closed">
+        Closed="Window_Closed"
+        FlowDirection="RightToLeft">
 
     <Window.Resources>
         <conv:UserToHebrewConverter x:Key="UserToHebrewConverter"/>
@@ -40,57 +41,80 @@
 
             <!-- Header -->
             <TextBlock Grid.Row="0" Grid.ColumnSpan="2" 
-                       Text="Volunteer Information" 
+                       Text="מידע על מתנדב" 
                        FontSize="18" FontWeight="Bold" 
                        HorizontalAlignment="Center" 
                        Margin="0,0,0,20"/>
 
             <!-- ID -->
-            <Label Grid.Row="1" Grid.Column="0" Content="ID:" FontWeight="Bold" Margin="5"/>
+            <Label Grid.Row="1" Grid.Column="0" Content="תעודת זהות:" FontWeight="Bold" Margin="5"/>
             <TextBox Grid.Row="1" Grid.Column="1" 
                      Text="{Binding CurrentVolunteer.id}" 
-                     Margin="5" Height="25"/>
+                     Margin="5" Height="25"
+                     FlowDirection="LeftToRight">
+                <TextBox.Style>
+                    <Style TargetType="TextBox">
+                        <Setter Property="IsReadOnly" Value="True"/>
+                        <!-- ברירת מחדל -->
+                        <Style.Triggers>
+
+                            <!-- אם ButtonText == 'הוסף' -->
+                            <DataTrigger Binding="{Binding ButtonText}" Value="הוסף">
+                                <Setter Property="IsReadOnly" Value="False"/>
+                            </DataTrigger>
+
+                            <!-- אם ButtonText == 'ערוך' -->
+                            <DataTrigger Binding="{Binding ButtonText}" Value="ערוך">
+                                <Setter Property="IsReadOnly" Value="True"/>
+                                <Setter Property="Background" Value="LightGray"/>
+                            </DataTrigger>
+
+                        </Style.Triggers>
+                    </Style>
+                </TextBox.Style>
+            </TextBox>
+
 
             <!-- Name -->
-            <Label Grid.Row="2" Grid.Column="0" Content="Full Name:" FontWeight="Bold" Margin="5"/>
+            <Label Grid.Row="2" Grid.Column="0" Content="שם מלא:" FontWeight="Bold" Margin="5"/>
             <TextBox Grid.Row="2" Grid.Column="1" 
-                     Text="{Binding CurrentVolunteer.FullName, Mode=TwoWay}" Margin="5" Height="25"/>
+                     Text="{Binding CurrentVolunteer.FullName, Mode=TwoWay}" Margin="5" Height="25" FlowDirection="LeftToRight"/>
 
             <!-- Phone -->
-            <Label Grid.Row="3" Grid.Column="0" Content="Phone:" FontWeight="Bold" Margin="5"/>
+            <Label Grid.Row="3" Grid.Column="0" Content="טלפון:" FontWeight="Bold" Margin="5"/>
             <TextBox Grid.Row="3" Grid.Column="1" 
-                     Text="{Binding CurrentVolunteer.CallNumber, Mode=TwoWay}" Margin="5" Height="25"/>
+                     Text="{Binding CurrentVolunteer.CallNumber, Mode=TwoWay}" Margin="5" Height="25" FlowDirection="LeftToRight"/>
 
             <!-- Email -->
-            <Label Grid.Row="4" Grid.Column="0" Content="Email:" FontWeight="Bold" Margin="5"/>
+            <Label Grid.Row="4" Grid.Column="0" Content="אימייל:" FontWeight="Bold" Margin="5"/>
             <TextBox Grid.Row="4" Grid.Column="1" 
-                     Text="{Binding CurrentVolunteer.EmailAddress, Mode=TwoWay}" Margin="5" Height="25"/>
+                     Text="{Binding CurrentVolunteer.EmailAddress, Mode=TwoWay}" Margin="5" Height="25" FlowDirection="LeftToRight"/>
 
             <!-- Password -->
-            <Label Grid.Row="5" Grid.Column="0" Content="Password:" FontWeight="Bold" Margin="5"/>
+            <Label Grid.Row="5" Grid.Column="0" Content="סיסמה:" FontWeight="Bold" Margin="5"/>
             <PasswordBox Grid.Row="5" Grid.Column="1" 
-                         Name="passwordBox" Margin="5" Height="25"/>
+                         Name="passwordBox" Margin="5" Height="25" FlowDirection="LeftToRight"/>
 
             <!-- Address -->
-            <Label Grid.Row="6" Grid.Column="0" Content="Address:" FontWeight="Bold" Margin="5"/>
+            <Label Grid.Row="6" Grid.Column="0" Content="כתובת:" FontWeight="Bold" Margin="5"/>
             <TextBox Grid.Row="6" Grid.Column="1" 
                      Text="{Binding CurrentVolunteer.FullCurrentAddress, Mode=TwoWay}" 
-                     TextWrapping="Wrap" Height="40" Margin="5"/>
+                     TextWrapping="Wrap" Height="40" Margin="5" FlowDirection="LeftToRight"/>
 
             <!-- Latitude -->
-            <Label Grid.Row="7" Grid.Column="0" Content="Latitude:" FontWeight="Bold" Margin="5"/>
+            <Label Grid.Row="7" Grid.Column="0" Content="קווי רוחב:" FontWeight="Bold" Margin="5"/>
             <TextBox Grid.Row="7" Grid.Column="1" 
                      Text="{Binding CurrentVolunteer.Latitude}" 
-                     IsReadOnly="True" Background="LightGray" Margin="5" Height="25"/>
+                     IsReadOnly="True" Background="LightGray" Margin="5" Height="25" FlowDirection="LeftToRight"/>
 
             <!-- Longitude -->
-            <Label Grid.Row="8" Grid.Column="0" Content="Longitude:" FontWeight="Bold" Margin="5"/>
+            <Label Grid.Row="8" Grid.Column="0" Content="קווי אורך:" FontWeight="Bold" Margin="5"/>
             <TextBox Grid.Row="8" Grid.Column="1" 
                      Text="{Binding CurrentVolunteer.Longitude}" 
-                     IsReadOnly="True" Background="LightGray" Margin="5" Height="25"/>
+                     IsReadOnly="True" Background="LightGray" Margin="5" Height="25" FlowDirection="LeftToRight"/>
 
             <!-- User Type -->
-            <Label Grid.Row="9" Grid.Column="0" Content="User Type:" FontWeight="Bold" Margin="5"/>
+            <Label Grid.Row="9" Grid.Column="0" Content="סוג משתמש:" FontWeight="Bold" Margin="5"/>
             <ComboBox Grid.Row="9" Grid.Column="1"
                       Style="{StaticResource ModernComboBox}"
                       Margin="5"
@@ -98,7 +122,8 @@
                       ItemsSource="{Binding Source={StaticResource UserKey}}"
                       SelectedItem="{Binding CurrentVolunteer.CurrentPosition, Mode=TwoWay}"
                       HorizontalContentAlignment="Stretch"
-                      HorizontalAlignment="Stretch">
+                      HorizontalAlignment="Stretch"
+                      FlowDirection="LeftToRight">
 
                 <ComboBox.ItemContainerStyle>
                     <Style TargetType="ComboBoxItem">
@@ -129,7 +154,7 @@
             </ComboBox>
 
             <!-- Distance Type -->
-            <Label Grid.Row="10" Grid.Column="0" Content="Distance Type:" FontWeight="Bold" Margin="5"/>
+            <Label Grid.Row="10" Grid.Column="0" Content="סוג מרחק:" FontWeight="Bold" Margin="5"/>
             <ComboBox Grid.Row="10" Grid.Column="1"
                       Style="{StaticResource ModernComboBox}"
                       Margin="5"
@@ -137,7 +162,8 @@
                       ItemsSource="{Binding Source={StaticResource DistanceKey}}"
                       SelectedItem="{Binding CurrentVolunteer.TypeOfDistance, Mode=TwoWay}"
                       HorizontalContentAlignment="Stretch"
-                      HorizontalAlignment="Stretch">
+                      HorizontalAlignment="Stretch"
+                      FlowDirection="LeftToRight">
 
                 <ComboBox.ItemContainerStyle>
                     <Style TargetType="ComboBoxItem">
@@ -169,16 +195,17 @@
 
 
             <!-- Active -->
-            <Label Grid.Row="11" Grid.Column="0" Content="Active:" FontWeight="Bold" Margin="5,0,20,0"/>
+            <Label Grid.Row="11" Grid.Column="0" Content="בפעילות:" FontWeight="Bold" Margin="5,0,0,0"/>
             <CheckBox Grid.Row="11" Grid.Column="1" 
                       IsChecked="{Binding CurrentVolunteer.Active, Mode=TwoWay}" 
-                      Content="Is Active" Margin="5,5,0,0"
-                      IsHitTestVisible="False" IsEnabled="False"/>
+                      Content="פעיל" Margin="10" IsEnabled="False"
+                      />
 
             <!-- Distance -->
-            <Label Grid.Row="12" Grid.Column="0" Content="Max Distance:" FontWeight="Bold" Margin="5"/>
+            <Label Grid.Row="12" Grid.Column="0" Content="מרחק מקסימלי לקריאה:" FontWeight="Bold" Margin="5"/>
             <TextBox Grid.Row="12" Grid.Column="1" 
-                     Text="{Binding CurrentVolunteer.MaxDistanceForCall, Mode=TwoWay}" Margin="5" Height="25"/>
+                     Text="{Binding CurrentVolunteer.MaxDistanceForCall, Mode=TwoWay}" Margin="5" Height="25"
+                     FlowDirection="LeftToRight"/>
 
             <!-- Button -->
             <Button Grid.Row="13" Grid.ColumnSpan="2"
