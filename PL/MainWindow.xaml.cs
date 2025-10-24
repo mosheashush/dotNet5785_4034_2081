@@ -251,9 +251,8 @@ public MainWindow()
             try
             {
                 // Replace with the actual window name, for example:
-                // new Calls.CallsWindow().Show();
-                MessageBox.Show("כאן ייפתח מסך ניהול הקריאות (התאם את ה-Namespace לפי הפרויקט).",
-                                "ניווט", MessageBoxButton.OK, MessageBoxImage.Information);
+                var window = new Call.CallListWindow();
+                window.Show();
             }
             catch (Exception ex)
             {

@@ -128,7 +128,7 @@ internal static class CallManager
         else if (call.MaxTimeForCall - s_dal.Config.RiskRange <= AdminManager.Now)
         {
             if (assignments != null && assignments.Any(a => a.FinishType == null))
-                return BO.CallState.ProcessedOnRisk;
+                return BO.CallState.processedOnRisk;
             else
                 return BO.CallState.openOnRisk;
         }

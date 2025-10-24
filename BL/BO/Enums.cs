@@ -36,9 +36,10 @@ public enum CallState
     open,
     openOnRisk,
     processed,
-    ProcessedOnRisk,
+    processedOnRisk,
     completed,
     expired,
+    all,
 }
 
 public enum VolunteerInListFields
