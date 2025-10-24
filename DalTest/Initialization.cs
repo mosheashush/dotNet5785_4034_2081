@@ -88,6 +88,20 @@ public static class Initialization
         {
             int type = s_rand.Next(0, 1);
 
+            int finishtype = s_rand.Next(0, 4);
+            DateTime? maxTime = null;
+            switch (finishtype)
+            {
+                case 0:
+                case 1:
+                case 2:
+                    maxTime = s_dal.Config.Clock + new TimeSpan(5, s_rand.Next(0, 25), s_rand.Next(0, 24), 0, 0);
+                    break;
+                case 3:
+                    maxTime = s_dal.Config.Clock - new TimeSpan(2, s_rand.Next(0, 25), s_rand.Next(0, 24), 0, 0);
+                    break;
+            }
+
             Call call = new Call
             {
                 Type = (type == 0) ? CallType.makingfood : CallType.deliveringfood,
@@ -96,7 +110,7 @@ public static class Initialization
                 Latitude = double.Parse(data[i, 2]),
                 Longitude = double.Parse(data[i, 3]),
                 CallStartTime = s_dal.Config.Clock,
-                MaxTimeForCall = s_dal.Config.Clock + new TimeSpan(7, s_rand.Next(0, 25), s_rand.Next(0, 24), 0, 0),
+                MaxTimeForCall = maxTime,
             };
             s_dal.Call!.Create(call);
         }
@@ -104,63 +118,75 @@ public static class Initialization
     private static void createAssignment()
     {
         // Create 20 assignments with random data
-        
-        List<int> list = s_dal.Volunteer!.ReadAll().Select(v => v.id).ToList();
+
+        List<int> volunteerlist = s_dal.Volunteer!.ReadAll().Select(v => v.id).ToList();
         List<int> callList = s_dal.Call!.ReadAll().Select(c => c.Id).ToList();
         for (int i = 1; i < 20; i++)
         {
-            int idcall, id_volunteer, finishtype;
+            int id_call, id_volunteer, finishtype;
             CompletionType? type = 0;
-            
-            
-            idcall = callList[s_rand.Next(0, callList.Count)];
-            id_volunteer = list[s_rand.Next(0, list.Count)];
+
+            id_call = callList[s_rand.Next(0, callList.Count)];
+            id_volunteer = volunteerlist[s_rand.Next(0, volunteerlist.Count)];
             DateTime? CompletionTimeNew = null;
-            if (s_dal.Volunteer!.ReadAll().FirstOrDefault(v => v.id == id_volunteer).Active == true)
+            CompletionTimeNew = null;
+            if (s_dal.Call!.ReadAll().FirstOrDefault(c => c.Id == id_call).MaxTimeForCall < s_dal.Config.Clock)
             {
-                type = null;
-                CompletionTimeNew = null;
+                type = CompletionType.expired;
+            }
+            else if (s_dal.Volunteer!.ReadAll().FirstOrDefault(v => v.id == id_volunteer).Active == true)
+            {
+                type = Smartswitch(true);
             }
             else
             {
-                finishtype = s_rand.Next(0, 4);
-                switch (finishtype)
-                {
-                    case 0:
-                        type = CompletionType.canceledAdmin;
-                        CompletionTimeNew = s_dal.Config.Clock + new TimeSpan(5, s_rand.Next(0, 25), s_rand.Next(0, 24), 0, 0);
-                        break;
-                    case 1:
-                        type = CompletionType.canceledVolunteer;
-                        CompletionTimeNew = s_dal.Config.Clock + new TimeSpan(5, s_rand.Next(0, 25), s_rand.Next(0, 24), 0, 0);
-                        break;
-                    case 2:
-                        type = CompletionType.completed;
-                        CompletionTimeNew = s_dal.Config.Clock + new TimeSpan(5, s_rand.Next(0, 25), s_rand.Next(0, 24), 0, 0);
-                        break;
-                    case 3:
-                        type = CompletionType.expired;
-                        CompletionTimeNew = s_dal.Config.Clock + new TimeSpan(9, s_rand.Next(0, 25), s_rand.Next(0, 24), 0, 0);
-                        break;
-                }
+                type = Smartswitch(false);
             }
 
+            if (type == CompletionType.completed)
+                CompletionTimeNew = s_dal.Config.Clock + new TimeSpan(5, s_rand.Next(0, 25), s_rand.Next(0, 24), 0, 0);
+
             Assignment assignment = new Assignment
-            {
-                CallId = idcall,
-                VolunteerId = id_volunteer,
-                StarCall = s_dal.Config.Clock,
-                CompletionTime = CompletionTimeNew,
-                FinishType = type,
-            };
+                {
+                    CallId = id_call,
+                    VolunteerId = id_volunteer,
+                    StarCall = s_dal.Config.Clock,
+                    CompletionTime = CompletionTimeNew,
+                    FinishType = type,
+                };
             s_dal.Assignment!.Create(assignment);
-            list.Remove(id_volunteer);
-            callList.Remove(idcall);
+            volunteerlist.Remove(id_volunteer);
+            callList.Remove(id_call);
 
         }
     }
 
+    private static CompletionType? Smartswitch(bool isCanBeActive){
+        int finishtype;
 
+
+        if (isCanBeActive)
+        {
+            finishtype = 4;
+        }
+        else
+        {
+            finishtype = 3;
+        }
+        finishtype = s_rand.Next(0, finishtype);
+        switch (finishtype)
+        {
+            case 0:
+                return CompletionType.canceledAdmin;
+            case 1:
+                return CompletionType.canceledVolunteer;
+            case 2:
+                return CompletionType.completed;
+            case 3:
+                return null;
+        }
+        return CompletionType.canceledAdmin;
+    }
 
 
     //public static void Do(IVolunteer? dalVolunteer, IAssignment? dalAssignment, ICall? dalCall, IConfig? dalConfig) // stage1
@@ -188,7 +214,7 @@ public static class Initialization
 
         s_dal.ResetDB(); // stage2
 
-        Console.WriteLine("Initializing all list ...");
+        Console.WriteLine("Initializing all volunteerlist ...");
         createVolunteer();
         createCall();
         createAssignment();

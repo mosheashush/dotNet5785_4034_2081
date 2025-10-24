@@ -186,7 +186,7 @@
                                 <Setter Property="HorizontalAlignment" Value="Center"/>
                                 <Setter Property="FontWeight" Value="SemiBold"/>
                                 <Setter Property="Foreground" Value="#34495E"/>
-                                <Setter Property="Margin" Value="10,5,0,5"/>
+                                <Setter Property="Margin" Value="10,15,0,25"/>
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
@@ -194,12 +194,13 @@
                     <!-- Type Column -->
                     <DataGridTextColumn Header="סוג הקריאה"
                         Binding="{Binding Type, Converter={StaticResource CallTypeToHebrewConverter}}"
-                        Width="150">
+                        Width="Auto">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
                                 <Setter Property="HorizontalAlignment" Value="Center"/>
                                 <Setter Property="Foreground" Value="#5D6D7E"/>
                                 <Setter Property="FontStyle" Value="Italic"/>
+                                <Setter Property="Margin" Value="10,15,0,25"/>
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
@@ -207,8 +208,8 @@
                     <!-- Description -->
                     <DataGridTextColumn Header="תיאור"
                         Binding="{Binding description}"
-                        Width="*"
-                        MinWidth="150">
+                        Width="Auto"
+                        MinWidth="50">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
                                 <Setter Property="TextWrapping" Value="Wrap"/>
@@ -219,37 +220,8 @@
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
 
-                    <!-- מזהה שיבוץ -->
-                    <DataGridTextColumn Header="מזהה שיבוץ"
-                    Binding="{Binding IdAssignment}"
-                    Width="100"
-                    MinWidth="90">
-                        <DataGridTextColumn.ElementStyle>
-                            <Style TargetType="TextBlock">
-                                <Setter Property="HorizontalAlignment" Value="Center"/>
-                                <Setter Property="Foreground" Value="#2C3E50"/>
-                                <Setter Property="FontSize" Value="13"/>
-                                <Setter Property="FontWeight" Value="SemiBold"/>
-                            </Style>
-                        </DataGridTextColumn.ElementStyle>
-                    </DataGridTextColumn>
-
-                    <!-- זמן נותר -->
-                    <DataGridTextColumn Header="זמן נותר"
-                    Binding="{Binding TimeRemaining}"
-                    Width="120"
-                    MinWidth="110">
-                        <DataGridTextColumn.ElementStyle>
-                            <Style TargetType="TextBlock">
-                                <Setter Property="HorizontalAlignment" Value="Center"/>
-                                <Setter Property="Foreground" Value="#2C3E50"/>
-                                <Setter Property="FontSize" Value="13"/>
-                            </Style>
-                        </DataGridTextColumn.ElementStyle>
-                    </DataGridTextColumn>
-
                     <!-- שם מתנדב סופי -->
-                    <DataGridTextColumn Header="שם מתנדב סופי"
+                    <DataGridTextColumn Header="שם מתנדב אחרון"
                     Binding="{Binding NameFinalVolunteer}"
                     Width="180"
                     MinWidth="160">
@@ -259,20 +231,8 @@
                                 <Setter Property="TextWrapping" Value="Wrap"/>
                                 <Setter Property="Foreground" Value="#2C3E50"/>
                                 <Setter Property="FontSize" Value="13"/>
-                            </Style>
-                        </DataGridTextColumn.ElementStyle>
-                    </DataGridTextColumn>
-
-                    <!-- זמן טיפול כולל -->
-                    <DataGridTextColumn Header="משך טיפול כולל"
-                    Binding="{Binding SumTimeProcess}"
-                    Width="130"
-                    MinWidth="120">
-                        <DataGridTextColumn.ElementStyle>
-                            <Style TargetType="TextBlock">
-                                <Setter Property="HorizontalAlignment" Value="Center"/>
-                                <Setter Property="Foreground" Value="#2C3E50"/>
-                                <Setter Property="FontSize" Value="13"/>
+                                <Setter Property="HorizontalAlignment" Value="left"/>
+                                <Setter Property="Margin" Value="10,15,0,10"/>
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
@@ -280,14 +240,14 @@
                     <!-- סך כל השיבוצים -->
                     <DataGridTextColumn Header="כמות שיבוצים"
                     Binding="{Binding SumOfAssignments}"
-                    Width="130"
-                    MinWidth="120">
+                    Width="Auto">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
                                 <Setter Property="HorizontalAlignment" Value="Center"/>
                                 <Setter Property="Foreground" Value="#2C3E50"/>
                                 <Setter Property="FontSize" Value="13"/>
                                 <Setter Property="FontWeight" Value="SemiBold"/>
+                                <Setter Property="Margin" Value="10,13,0,25"/>
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
@@ -296,44 +256,53 @@
                     <DataGridTemplateColumn Header="זמנים" Width="220">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
+                                <StackPanel Orientation="Vertical" HorizontalAlignment="Center" FlowDirection="RightToLeft">
+                                    <!-- התחלה -->
                                     <TextBlock Text="{Binding CallStartTime, StringFormat='התחלה: {0:dd/MM/yyyy HH:mm}'}"
-                               Foreground="#2E7D32" FontSize="12"/>
-                                    <TextBlock Text="{Binding MaxTimeForCall, StringFormat='מקסימום: {0:dd/MM/yyyy HH:mm}'}"
-                               Foreground="#C62828" FontSize="12"/>
+                           Foreground='Blue' FontSize='12'/>
+
+                                    <!-- זמן שנותר -->
+                                    <TextBlock Text="{Binding TimeRemaining, StringFormat='נשאר: {0:%d} ימים {0:hh\\:mm\\:ss}', TargetNullValue='נשאר: ---'}"
+                           Foreground='#C62828' FontSize='12'/>
+
+                                    <!-- משך טיפול כולל -->
+                                    <TextBlock Text="{Binding SumTimeProcess, StringFormat='משך טיפול: {0:%d} ימים {0:hh\\:mm\\:ss}', TargetNullValue='משך טיפול: ---'}"
+                           Foreground='#2E7D32' FontSize='12'/>
                                 </StackPanel>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
 
+
                     <!-- Call State -->
                     <DataGridTextColumn Header="מצב קריאה"
                         Binding="{Binding CallState, Converter={StaticResource CallStateToHebrewConverter}}"
-                        Width="150">
+                        Width="Auto">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
                                 <Setter Property="HorizontalAlignment" Value="Center"/>
                                 <Setter Property="Foreground" Value="#6A1B9A"/>
                                 <Setter Property="FontWeight" Value="Bold"/>
+                                <Setter Property="Margin" Value="10,15,0,25"/>
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
 
                     <!-- Volunteers Assigned -->
-                    <DataGridTemplateColumn Header="משובצים לקריאה" Width="180">
+                    <DataGridTemplateColumn Header="השתבצו לקריאה" Width="Auto">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                    <TextBlock Text="{Binding callAssignInLists.Count, StringFormat='👥 {0}'}"
-                               Foreground="#2E86C1" FontWeight="SemiBold"/>
-                                    <TextBlock Text=" מתנדבים" Foreground="#5D6D7E" Margin="3,0,0,0"/>
+                                    <TextBlock Text="{Binding SumOfAssignments, StringFormat='👥 {0}'}"
+                                                Foreground="#2E86C1" FontWeight="SemiBold" Margin="0,15,0,0"/>
+                                    <TextBlock Text=" מתנדבים" Foreground="#5D6D7E" Margin="3,15,0,0"/>
                                 </StackPanel>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
 
                     <!-- Actions -->
-                    <DataGridTemplateColumn Header="פעולות" Width="150">
+                    <DataGridTemplateColumn Header="פעולות" Width="200">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">

@@ -101,18 +101,6 @@
                      Text="{Binding CurrentVolunteer.FullCurrentAddress, Mode=TwoWay}" 
                      TextWrapping="Wrap" Height="40" Margin="5" FlowDirection="LeftToRight"/>
 
-            <!-- Latitude -->
-            <Label Grid.Row="7" Grid.Column="0" Content="קווי רוחב:" FontWeight="Bold" Margin="5"/>
-            <TextBox Grid.Row="7" Grid.Column="1" 
-                     Text="{Binding CurrentVolunteer.Latitude}" 
-                     IsReadOnly="True" Background="LightGray" Margin="5" Height="25" FlowDirection="LeftToRight"/>
-
-            <!-- Longitude -->
-            <Label Grid.Row="8" Grid.Column="0" Content="קווי אורך:" FontWeight="Bold" Margin="5"/>
-            <TextBox Grid.Row="8" Grid.Column="1" 
-                     Text="{Binding CurrentVolunteer.Longitude}" 
-                     IsReadOnly="True" Background="LightGray" Margin="5" Height="25" FlowDirection="LeftToRight"/>
-
             <!-- User Type -->
             <Label Grid.Row="9" Grid.Column="0" Content="סוג משתמש:" FontWeight="Bold" Margin="5"/>
             <ComboBox Grid.Row="9" Grid.Column="1"

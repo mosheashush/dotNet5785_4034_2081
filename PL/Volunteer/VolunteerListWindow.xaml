@@ -45,7 +45,7 @@
                           Stretch="Uniform"
                           Margin="0,0,15,0"/>
                     <StackPanel>
-                        <TextBlock Text="ניהול קריאות" 
+                        <TextBlock Text="ניהול מתנדבים" 
                                    FontSize="28" 
                                    FontWeight="Bold" 
                                    Foreground="#2C3E50"/>

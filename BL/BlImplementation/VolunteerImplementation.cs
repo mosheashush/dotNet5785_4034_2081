@@ -126,6 +126,8 @@ internal class VolunteerImplementation : IVolunteer
         if (isActive != null)
             volunteers = volunteers.Where(v => v.Active == isActive);
 
+        //var = 
+
         //convert DO to BO:
         List<BO.VolunteerInList> converted = volunteers.Select(v => 
         new BO.VolunteerInList
@@ -133,8 +135,8 @@ internal class VolunteerImplementation : IVolunteer
             IdVolunteer = v.id,
             FullName = v.FullName,
             Active = v.Active,
-            IdCall = (assignments.FirstOrDefault(c => c.VolunteerId == v.id) != null && assignments.FirstOrDefault(c => c.VolunteerId == v.id).CompletionTime == null) ? assignments.FirstOrDefault(c => c.VolunteerId == v.id).CallId : null,
-            Type = (assignments.FirstOrDefault(c => c.VolunteerId == v.id) != null && assignments.FirstOrDefault(c => c.VolunteerId == v.id).CompletionTime == null) ? (BO.CallType)(s_dal.Call.ReadAll().FirstOrDefault(c => c.Id == assignments.FirstOrDefault(a => a.VolunteerId == v.id).CallId).Type) : BO.CallType.None,
+            IdCall = (assignments.FirstOrDefault(c => c.VolunteerId == v.id) != null && assignments.FirstOrDefault(c => c.VolunteerId == v.id).FinishType == null) ? assignments.FirstOrDefault(c => c.VolunteerId == v.id).CallId : null,
+            Type = (assignments.FirstOrDefault(c => c.VolunteerId == v.id) != null && assignments.FirstOrDefault(c => c.VolunteerId == v.id).FinishType == null) ? (BO.CallType)(s_dal.Call.ReadAll().FirstOrDefault(c => c.Id == assignments.FirstOrDefault(a => a.VolunteerId == v.id && a.CompletionTime == null).CallId).Type) : BO.CallType.None,
             SumCallsCompleted = VolunteerManager.CalculatSumCallsCompleted(v.id),
             SumCallsExpired = VolunteerManager.CalculatSumCallsExpired(v.id),
             SumCallsConcluded = VolunteerManager.CalculatSumCallsConcluded(v.id),

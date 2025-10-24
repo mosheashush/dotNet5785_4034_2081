@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using BO;
+using DO;
 
 namespace PL
 {
@@ -104,7 +105,8 @@ namespace PL
             }
             catch (Exception ex)
             {
-                ShowStatusMessage($"שגיאה באתחול המערכת: {ex.Message}", true);
+                if (!(ex is DalXMLFileLoadCreateException))
+                    ShowStatusMessage($"שגיאה באתחול המערכת: {ex.Message}", true);
             }
         }
 

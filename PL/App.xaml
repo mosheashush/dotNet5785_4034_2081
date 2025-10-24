@@ -2,7 +2,7 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:PL"
-             StartupUri="LoginWindow.xaml">
+             StartupUri="MainWindow.xaml">
     <Application.Resources>
         <!-- Filters -->
         <local:VolunteerFilterCollection x:Key="CallTypeKey"/>
@@ -10,17 +10,12 @@
         <local:DistanceCollection x:Key="DistanceKey"/>
         <local:CallStateCollection x:Key="CallStateKey"/>
 
-        <!-- Style לכל DataGrid בפרויקט -->
+        <!-- ===== STYLE עבור DataGrid ===== -->
         <Style TargetType="DataGrid">
-            <!-- We will not represent those not selected from the logical entity in the graphic code.-->
             <Setter Property="AutoGenerateColumns" Value="False"/>
-
             <Setter Property="CanUserAddRows" Value="False"/>
             <Setter Property="CanUserDeleteRows" Value="False"/>
             <Setter Property="IsReadOnly" Value="True"/>
-
-            <!-- Beautiful design for DataGrid-->
-            <Setter Property="AutoGenerateColumns" Value="False"/>
             <Setter Property="GridLinesVisibility" Value="All"/>
             <Setter Property="HorizontalGridLinesBrush" Value="LightGray"/>
             <Setter Property="VerticalGridLinesBrush" Value="LightGray"/>
@@ -50,33 +45,41 @@
             </Setter>
         </Style>
 
-        <!--<Style TargetType="Label">
-            <Setter Property="HorizontalAlignment" Value="Right"/>
-            <Setter Property="FlowDirection" Value="RightToLeft"/>
-            <Setter Property="Margin" Value="0,0,0,20"/>
-        </Style>-->
-
-        
-        <!-- Card לבן עם צל (ModernCard) -->
-        <Style x:Key="ModernCard" TargetType="Border">
+        <!-- ===== STYLE עבור TextBox ===== -->
+        <Style x:Key="ModernTextBox" TargetType="TextBox">
+            <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="BorderBrush" Value="#BDC3C7"/>
+            <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Background" Value="White"/>
-            <Setter Property="CornerRadius" Value="12"/>
-            <Setter Property="Padding" Value="20"/>
-            <Setter Property="Effect">
-                <Setter.Value>
-                    <DropShadowEffect Color="#000000"
-                              Opacity="0.1"
-                              BlurRadius="20"
-                              ShadowDepth="0"/>
-                </Setter.Value>
-            </Setter>
+            <Setter Property="FlowDirection" Value="RightToLeft"/>
+            <Style.Triggers>
+                <Trigger Property="IsFocused" Value="True">
+                    <Setter Property="BorderBrush" Value="#3498DB"/>
+                    <Setter Property="BorderThickness" Value="2"/>
+                </Trigger>
+            </Style.Triggers>
         </Style>
 
-        <Style x:Key="Hebrow side" TargetType="WrapPanel">
-            <Setter Property="HorizontalAlignment" Value ="Right"/>
+        <!-- ===== STYLE עבור PasswordBox ===== -->
+        <Style x:Key="ModernPasswordBox" TargetType="PasswordBox">
+            <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="BorderBrush" Value="#BDC3C7"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="FlowDirection" Value="RightToLeft"/>
+            <Style.Triggers>
+                <Trigger Property="IsFocused" Value="True">
+                    <Setter Property="BorderBrush" Value="#3498DB"/>
+                    <Setter Property="BorderThickness" Value="2"/>
+                </Trigger>
+            </Style.Triggers>
         </Style>
 
-        <!-- כפתור ראשי כחול (ModernButton) -->
+        <!-- ===== STYLE עבור כפתורים ===== -->
+
+        <!-- כפתור ראשי כחול (ModernButton) - משופר -->
         <Style x:Key="ModernButton" TargetType="Button">
             <Setter Property="Background" Value="#4A90E2"/>
             <Setter Property="Foreground" Value="White"/>
@@ -89,10 +92,10 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Border Background="{TemplateBinding Background}"
-                        CornerRadius="8"
-                        Padding="{TemplateBinding Padding}">
+                                CornerRadius="8"
+                                Padding="{TemplateBinding Padding}">
                             <ContentPresenter HorizontalAlignment="Center"
-                                      VerticalAlignment="Center"/>
+                                            VerticalAlignment="Center"/>
                         </Border>
                     </ControlTemplate>
                 </Setter.Value>
@@ -107,16 +110,23 @@
             </Style.Triggers>
         </Style>
 
-        <!-- וריאציות Add/Delete כמו במסך מתנדבים -->
+        <!-- כפתור ירוק (AddButton/GreenButton) -->
         <Style x:Key="AddButton" TargetType="Button" BasedOn="{StaticResource ModernButton}">
             <Setter Property="Background" Value="#5CB85C"/>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
                     <Setter Property="Background" Value="#4CAE4C"/>
                 </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="#449D44"/>
+                </Trigger>
             </Style.Triggers>
         </Style>
 
+        <!-- כפתור ירוק - שם חלופי -->
+        <Style x:Key="GreenButton" TargetType="Button" BasedOn="{StaticResource AddButton}"/>
+
+        <!-- כפתור אדום (DeleteButton) -->
         <Style x:Key="DeleteButton" TargetType="Button" BasedOn="{StaticResource ModernButton}">
             <Setter Property="Background" Value="#E74C3C"/>
             <Setter Property="Padding" Value="16,10"/>
@@ -125,10 +135,13 @@
                 <Trigger Property="IsMouseOver" Value="True">
                     <Setter Property="Background" Value="#C0392B"/>
                 </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="#A93226"/>
+                </Trigger>
             </Style.Triggers>
         </Style>
 
-        <!-- ComboBox בסגנון Volunteer -->
+        <!-- ===== STYLE עבור ComboBox ===== -->
         <Style x:Key="ModernComboBox" TargetType="ComboBox">
             <Setter Property="Height" Value="40"/>
             <Setter Property="Padding" Value="12,8"/>
@@ -138,13 +151,38 @@
             <Setter Property="BorderThickness" Value="2"/>
         </Style>
 
-        <!-- טקסט כותרת פנימי אחיד -->
+        <!-- ===== STYLE עבור כרטיסים (Cards) ===== -->
+
+        <!-- Card לבן עם צל (ModernCard) -->
+        <Style x:Key="ModernCard" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="Padding" Value="20"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect Color="#000000"
+                                    Opacity="0.1"
+                                    BlurRadius="20"
+                                    ShadowDepth="0"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- ===== STYLE עבור טקסט ===== -->
+
+        <!-- כותרת בתוך כרטיס -->
         <Style x:Key="CardTitle" TargetType="TextBlock">
             <Setter Property="FontSize" Value="18"/>
             <Setter Property="FontWeight" Value="Bold"/>
             <Setter Property="Margin" Value="0,0,0,8"/>
             <Setter Property="Foreground" Value="#2C3E50"/>
-            <Setter Property="HorizontalAlignment" Value ="Right"/>
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+        </Style>
+
+        <!-- ===== STYLE אחרים ===== -->
+
+        <Style x:Key="Hebrow side" TargetType="WrapPanel">
+            <Setter Property="HorizontalAlignment" Value="Right"/>
         </Style>
 
     </Application.Resources>
