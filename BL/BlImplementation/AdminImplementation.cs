@@ -64,6 +64,12 @@ internal class AdminImplementation : IAdmin
         AdminManager.UpdateClock(AdminManager.Now);
     }
 
+    public void ResetClock()
+    {
+        s_dal.Config.ResetClock();
+        AdminManager.UpdateClock(AdminManager.Now);
+    }
+
     public void SetRiskTimeSpan(TimeSpan newRiskRange)
     {
         s_dal.Config.RiskRange = newRiskRange;

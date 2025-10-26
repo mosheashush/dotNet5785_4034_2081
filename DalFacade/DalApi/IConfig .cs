@@ -8,6 +8,7 @@ namespace DalApi
         int nextCallId { get; }
         int nextAsignmentId { get; }
         void Reset();
+        void ResetClock(); 
 
     }
 }

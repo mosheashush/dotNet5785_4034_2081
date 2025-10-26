@@ -43,5 +43,9 @@ internal static class Config
         RiskRange = new TimeSpan(1, 12, 0, 0);
     }
 
+    internal static void ResetClock()
+    {
+        Clock = new DateTime(2023, 1, 1, 8, 0, 0);
+    }
 
 }

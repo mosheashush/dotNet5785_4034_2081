@@ -191,8 +191,7 @@
             <Label Grid.Row="11" Grid.Column="0" Content="בפעילות:" FontWeight="Bold" Margin="5,0,0,0"/>
             <CheckBox Grid.Row="11" Grid.Column="1" 
                       IsChecked="{Binding CurrentVolunteer.Active, Mode=TwoWay}" 
-                      Content="פעיל" Margin="10" IsEnabled="False"
-                      />
+                      Content="פעיל" Margin="10" FlowDirection="LeftToRight" HorizontalAlignment="Left"/>
 
             <!-- Distance -->
             <Label Grid.Row="12" Grid.Column="0" Content="מרחק מקסימלי לקריאה:" FontWeight="Bold" Margin="5"/>

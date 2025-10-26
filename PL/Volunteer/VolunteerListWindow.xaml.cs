@@ -203,7 +203,7 @@ namespace PL.Volunteer
                 try
                 {
                     // פתיחת מסך עריכה עם המתנדב הנבחר
-                    new VolunteerWindow(SelectedVolunteer.IdVolunteer).ShowDialog();
+                    new VolunteerWindow(SelectedVolunteer.IdVolunteer).Show();
                 }
                 catch (Exception ex)
                 {
@@ -223,7 +223,7 @@ namespace PL.Volunteer
             try
             {
                 // פתיחת מסך הוספה (ללא ID)
-                new VolunteerWindow().ShowDialog();
+                new VolunteerWindow().Show();
             }
             catch (Exception ex)
             {
@@ -244,7 +244,7 @@ namespace PL.Volunteer
                 try
                 {
                     // פתיחת מסך עריכה עם המתנדב הנבחר
-                    new VolunteerWindow(SelectedVolunteer.IdVolunteer).ShowDialog();
+                    new VolunteerWindow(SelectedVolunteer.IdVolunteer).Show();
                 }
                 catch (Exception ex)
                 {

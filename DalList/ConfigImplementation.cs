@@ -49,4 +49,9 @@ public class ConfigImplementation : IConfig
     {
         Config.Reset();
     }
+
+    public void ResetClock()
+    {
+        Config.ResetClock();
+    }
 }

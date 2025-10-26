@@ -211,6 +211,16 @@ internal static class VolunteerManager
         if (boVolunteer.MaxDistanceForCall < 0)
             throw new BO.BlInvalidValueException($"Max distance for volunteer={boVolunteer.MaxDistanceForCall} is not valid");
 
+        //active
+        if((s_dal.Assignment.ReadAll().FirstOrDefault(a=> a.VolunteerId == boVolunteer.id && a.FinishType == null && boVolunteer.Active == false) != null))
+            throw new BO.BlInvalidValueException($"The volunteer={boVolunteer.id} is currently handling a call and therefore cannot be updated to inactive.\r\nYou must first cancel the assignment to handle the call");
+        
+        //admin
+        if(s_dal.Volunteer.ReadAll().Count(v => v.CurrentPosition == DO.User.admin) == 1
+            && boVolunteer.CurrentPosition == BO.User.volunteer
+            && s_dal.Volunteer.Read(boVolunteer.id).CurrentPosition == DO.User.admin)
+            throw new BO.BlInvalidValueException($"You cannot change the last admin ={boVolunteer.id} to a regular volunteer");
+
         return true;
     }
     //MapBOToDOVolunteer

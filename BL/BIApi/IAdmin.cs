@@ -30,6 +30,11 @@ public interface IAdmin
     void ResetDatabase();
 
     /// <summary>
+    /// Resets the system clock to the actual current time.
+    /// </summary>
+    void ResetClock();
+
+    /// <summary>
     /// Initializes the database: resets it and populates it with initial data.
     /// </summary>
     void InitializeDatabase();

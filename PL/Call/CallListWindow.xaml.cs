@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using BlApi;
 using BO;
+using DO;
 
 namespace PL.Call
 {
@@ -18,6 +19,7 @@ namespace PL.Call
     {
         // תלות עם BL
         static readonly BIApi.IBl s_bl = BIApi.Factory.Get();
+        public int Username { get; private set; }
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -56,10 +58,10 @@ namespace PL.Call
             }
         }
 
-        public CallListWindow()
+        public CallListWindow(int username)
         {
             InitializeComponent();
-
+            Username = username;
             // Attach event handlers in the constructor
             Loaded += Window_Loaded;
             Closed += Window_Closed;
@@ -158,14 +160,14 @@ namespace PL.Call
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"שגיאה בטעינת המתנדבים:\n{ex.Message}", "שגיאה",
+                MessageBox.Show($"שגיאה בטעינת הקריאות:\n{ex.Message}", "שגיאה",
                 MessageBoxButton.OK,
                 MessageBoxImage.Error);
             }
         }
 
         /// <summary>
-        /// מיון מתנדבים לפי הסטטוס הנבחר
+        /// מיון קריאות לפי הסטטוס הנבחר
         /// </summary>
         private void SortCallsByStatus()
         {
@@ -186,14 +188,14 @@ namespace PL.Call
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"שגיאה בטעינת המתנדבים:\n{ex.Message}", "שגיאה",
+                MessageBox.Show($"שגיאה בטעינת הקריאות:\n{ex.Message}", "שגיאה",
                 MessageBoxButton.OK,
                 MessageBoxImage.Error);
             }
         }
 
         /// <summary>
-        /// לחיצה כפולה על מתנדב - פתיחת מסך עריכה
+        /// לחיצה כפולה על קריאה - פתיחת מסך עריכה
         /// </summary>
         private void DataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
@@ -201,12 +203,12 @@ namespace PL.Call
             {
                 try
                 {
-                    // פתיחת מסך עריכה עם המתנדב הנבחר
-                    new CallWindow(SelectedCall.IdCall).ShowDialog();
+                    // פתיחת מסך עריכה עם הקריאה הנבחר
+                    new CallWindow(SelectedCall.IdCall).Show();
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"שגיאה בפתיחת מסך המתנדב:\n{ex.Message}",
+                    MessageBox.Show($"שגיאה בפתיחת מסך הקריאה:\n{ex.Message}",
                         "שגיאה",
                         MessageBoxButton.OK,
                         MessageBoxImage.Error);
@@ -215,14 +217,14 @@ namespace PL.Call
         }
 
         /// <summary>
-        /// לחיצה על כפתור הוספה - פתיחת מסך הוספת מתנדב חדש
+        /// לחיצה על כפתור הוספה - פתיחת מסך הוספת קריאה חדשה
         /// </summary>
         private void btnAdd_Click(object sender, RoutedEventArgs e)
         {
             try
             {
                 // פתיחת מסך הוספה (ללא ID)
-                new CallWindow().ShowDialog();
+                new CallWindow().Show();
             }
             catch (Exception ex)
             {
@@ -234,7 +236,7 @@ namespace PL.Call
         }
 
         /// <summary>
-        /// לחיצה על כפתור הוספה - פתיחת מסך הוספת מתנדב חדש
+        /// לחיצה על כפתור הוספה - פתיחת מסך הוספת קריאה חדשה
         /// </summary>
         private void btnUpdate_Click(object sender, RoutedEventArgs e)
         {
@@ -242,12 +244,12 @@ namespace PL.Call
             {
                 try
                 {
-                    // פתיחת מסך עריכה עם המתנדב הנבחר
-                    new CallWindow(SelectedCall.IdCall).ShowDialog();
+                    // פתיחת מסך עריכה עם הקריאה הנבחר
+                    new CallWindow(SelectedCall.IdCall).Show();
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"שגיאה בפתיחת מסך המתנדב:\n{ex.Message}",
+                    MessageBox.Show($"שגיאה בפתיחת מסך הקריאה:\n{ex.Message}",
                         "שגיאה",
                         MessageBoxButton.OK,
                         MessageBoxImage.Error);
@@ -262,25 +264,25 @@ namespace PL.Call
         {
             try
             {
-                // קבלת המתנדב מה-DataContext של הכפתור
+                // קבלת הקריאה מה-DataContext של הכפתור
                 var button = sender as Button;
-                var volunteer = button?.DataContext as VolunteerInList;
+                var call = button?.DataContext as CallInList;
 
-                if (volunteer == null)
+                if (call == null)
                     return;
 
                 // אישור מחיקה
                 var result = MessageBox.Show(
-                    $"האם אתה בטוח שברצונך למחוק את המתנדב:\n{volunteer.FullName}?\n\n" +
-                    "שים לב: ניתן למחוק מתנדב רק אם הוא לא טיפל מעולם בקריאות.",
+                    $"האם אתה בטוח שברצונך למחוק את הקריאה:\n{call.IdCall}?\n\n" +
+                    "שים לב: ניתן למחוק קריאה רק אם היא לא טופלה מעולם.",
                     "אישור מחיקה",
                     MessageBoxButton.YesNo,
                     MessageBoxImage.Question);
 
                 if (result == MessageBoxResult.Yes)
                 {
-                    s_bl.Volunteer.Delete(volunteer.IdVolunteer);
-                    MessageBox.Show("המתנדב נמחק בהצלחה!",
+                    s_bl.Call.Delete(call.IdCall);
+                    MessageBox.Show("הקריאה נמחקה בהצלחה!",
                         "הצלחה",
                         MessageBoxButton.OK,
                         MessageBoxImage.Information);
@@ -288,12 +290,57 @@ namespace PL.Call
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"שגיאה במחיקת המתנדב:\n{ex.Message}",
+                MessageBox.Show($"שגיאה במחיקת הקריאה:\n{ex.Message}",
                     "שגיאה",
                     MessageBoxButton.OK,
                     MessageBoxImage.Error);
             }
         }
+
+        /// <summary>
+        /// לחיצה על כפתור מחיקה בשורה
+        /// </summary>
+        private void btnCancelAssignment_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                // קבלת הקריאה מה-DataContext של הכפתור
+                var button = sender as Button;
+                var call = button?.DataContext as CallInList;
+
+                if (call == null)
+                    return;
+
+                if (call.IdAssignment == null)
+                    throw new BO.BlDoesNotExistException($"Assignment for call ID={call.IdCall} does Not exist");
+
+                // אישור מחיקה
+                var result = MessageBox.Show(
+                    $"האם אתה בטוח שברצונך לבטל את הטיפול בקריאה:\n{call.IdCall}?\n\n" +
+                    "",
+                    "אישור ביטול טיפול",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Question);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    s_bl.Call.CancelTreatment(Username, (int)call.IdAssignment);
+                    MessageBox.Show("הופסק הטיפול בקריאה בהצלחה!",
+                        "הצלחה",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information);
+                }
+            }
+
+            catch (Exception ex)
+            {
+                MessageBox.Show($"שגיאה במחיקת הקריאה:\n{ex.Message}",
+                    "שגיאה",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
+        }
+
 
         /// <summary>
         /// סגירת המסך - ביטול רישום ל-Observer
@@ -303,7 +350,7 @@ namespace PL.Call
             try
             {
                 // הסרת המשקיף
-                s_bl.Volunteer.RemoveObserver(RefreshCallsList);
+                s_bl.Call.RemoveObserver(RefreshCallsList);
             }
             catch (Exception ex)
             {

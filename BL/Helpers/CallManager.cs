@@ -50,7 +50,7 @@ internal static class CallManager
         };
     }
 
-    //MPIdVolunteerToOpenCall implementation\
+    //MPIdVolunteerToOpenCall implementation
     public static BO.OpenCallInList MPIdVolunteerToOpenCallInList(BO.Call call, int idVolunteer)
     {
         return new BO.OpenCallInList()
@@ -147,12 +147,16 @@ internal static class CallManager
         DO.Assignment assignment = s_dal.Assignment.ReadAll().FirstOrDefault(a => a.CallId == call.IdCall);
         return new BO.CallInList()
         {
-            IdAssignment = assignment?.Id ?? null,
+            IdAssignment = s_dal.Assignment.ReadAll()
+                                            .Where(a => a.CallId == call.IdCall)
+                                            .OrderByDescending(a => a.StarCall)
+                                            .Select(a => (int?)a.Id)
+                                            .FirstOrDefault(),
             IdCall = call.IdCall,
             Type = call.Type,
             CallStartTime = call.CallStartTime,
             TimeRemaining = call.MaxTimeForCall - AdminManager.Now,
-            NameFinalVolunteer = s_dal.Assignment.ReadAll().Where(a => a.CallId == call.IdCall).OrderByDescending(a => a.CompletionTime)
+            NameFinalVolunteer = s_dal.Assignment.ReadAll().Where(a => a.CallId == call.IdCall).OrderByDescending(a => a.StarCall)
                                                  .Join(s_dal.Volunteer.ReadAll(), a => a.VolunteerId, v => v.id, (a, v) => v.FullName)
                                                  .FirstOrDefault(),
             SumTimeProcess = assignment != null && assignment.FinishType == DO.CompletionType.completed ? AdminManager.Now - call.CallStartTime : null,

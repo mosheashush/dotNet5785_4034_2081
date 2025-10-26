@@ -27,14 +27,14 @@ namespace PL
         /// <summary>
         /// תכונת תלות לשם משתמש/תעודת זהות
         /// </summary>
-        public string Username
+        public int Username
         {
-            get { return (string)GetValue(UsernameProperty); }
+            get { return (int)GetValue(UsernameProperty); }
             set { SetValue(UsernameProperty, value); }
         }
         public static readonly DependencyProperty UsernameProperty =
-            DependencyProperty.Register("Username", typeof(string), typeof(LoginWindow),
-                new PropertyMetadata(string.Empty));
+            DependencyProperty.Register("Username", typeof(int), typeof(LoginWindow),
+                new PropertyMetadata(0));
 
         /// <summary>
         /// תכונת תלות לזכור אותי
@@ -125,11 +125,11 @@ namespace PL
                 StatusMessage = string.Empty;
 
                 // קבלת נתוני הכניסה - Username מגיע מה-Binding
-                string idNumber = Username?.Trim() ?? string.Empty;
+                int idNumber = Username;
                 string password = passwordBox.Password; // PasswordBox - חריג מהכלל!
 
                 // בדיקות תקינות
-                if (string.IsNullOrEmpty(idNumber))
+                if (idNumber==0)
                 {
                     ShowStatusMessage("נא להזין תעודת זהות", true);
                     return;
@@ -149,7 +149,7 @@ namespace PL
                     var volunteers = s_dal.Volunteer.listOfVolunteer(null, null, null);
 
                     // חיפוש המשתמש לפי תעודת זהות
-                    var volunteer = volunteers.FirstOrDefault(v => v.IdVolunteer.ToString() == idNumber);
+                    var volunteer = volunteers.FirstOrDefault(v => v.IdVolunteer == idNumber);
 
                     if (volunteer == null)
                     {
@@ -212,12 +212,12 @@ namespace PL
         /// </summary>
         /// <param name="userRole">סוג המשתמש</param>
         /// <param name="userId">מזהה המשתמש</param>
-        private void OpenMainWindow(BO.User userRole, string userId)
+        private void OpenMainWindow(BO.User userRole, int userId)
         {
             try
             {
                 // פתיחת MainWindow
-                var mainWindow = new MainWindow();
+                var mainWindow = new MainWindow(Username);
 
                 // הגדרת כותרת החלון בהתאם לסוג המשתמש
                 if (userRole == BO.User.admin)

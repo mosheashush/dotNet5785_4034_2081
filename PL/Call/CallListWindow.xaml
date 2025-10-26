@@ -301,8 +301,7 @@ Margin="0,0,0,20">
                     <!-- שם מתנדב סופי -->
                     <DataGridTextColumn Header="שם מתנדב אחרון"
                     Binding="{Binding NameFinalVolunteer}"
-                    Width="180"
-                    MinWidth="160">
+                    Width="Auto">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
                                 <Setter Property="HorizontalAlignment" Value="Right"/>
@@ -331,7 +330,7 @@ Margin="0,0,0,20">
                     </DataGridTextColumn>
 
                     <!-- Times -->
-                    <DataGridTemplateColumn Header="זמנים" Width="220">
+                    <DataGridTemplateColumn Header="זמנים" Width="Auto">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Vertical" HorizontalAlignment="Center" FlowDirection="RightToLeft">
@@ -380,7 +379,7 @@ Margin="0,0,0,20">
                     </DataGridTemplateColumn>
 
                     <!-- Actions -->
-                    <DataGridTemplateColumn Header="פעולות" Width="200">
+                    <DataGridTemplateColumn Header="פעולות" Width="350">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
@@ -394,15 +393,32 @@ Margin="0,0,0,20">
                                             <TextBlock Text="עדכן"/>
                                         </StackPanel>
                                     </Button>
+                                    
                                     <!-- Delete -->
                                     <Button Style="{StaticResource DeleteButton}" Click="btnDelete_Click" Margin="2,0">
                                         <StackPanel Orientation="Horizontal">
                                             <Path Data="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19
                                                         M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z"
-                                Stretch="Uniform"  Fill="White" Width="14" Height="14" Margin="0,0,5,0"/>
+                                                   Stretch="Uniform"  Fill="White" Width="14" Height="14" Margin="0,0,5,0"/>
                                             <TextBlock Text="מחק"/>
                                         </StackPanel>
                                     </Button>
+
+                                    <!-- Cancel Assignment -->
+                                    <Button Style="{StaticResource ModernButton}" Click="btnCancelAssignment_Click"
+                                            Background="#2196F3" Foreground="White" 
+                                            Margin="2,0" Padding="6,3" Cursor="Hand"
+                                            BorderBrush="#1976D2" BorderThickness="1"
+                                            ToolTip="בטל את ההשמה למתנדב">
+                                        
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <!-- סמל של ביטול/הסרה -->
+                                            <Path Data="M12,2A10,10 0 1,0 22,12A10,10 0 0,0 12,2ZM15.59,7L12,10.59L8.41,7L7,8.41L10.59,12L7,15.59L8.41,17L12,13.41L15.59,17L17,15.59L13.41,12L17,8.41Z"
+                                                  Fill="White" Stretch="Uniform" Width="14" Height="14" Margin="0,0,5,0"/>
+                                            <TextBlock Text="בטל השמה" VerticalAlignment="Center" FontWeight="SemiBold"/>
+                                        </StackPanel>
+                                    </Button>
+
                                 </StackPanel>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>

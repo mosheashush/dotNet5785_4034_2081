@@ -1,4 +1,5 @@
 ﻿using BIApi;
+using PL.Call;
 using PL.Volunteer;
 using System;
 using System.Globalization;
@@ -10,9 +11,17 @@ namespace PL
     public partial class MainWindow : Window
     {
         static readonly IBl s_bl = Factory.Get();
-public MainWindow()
+
+        // Saving references to open windows
+        private VolunteerListWindow? volunteerListWindow = null;
+        private CallListWindow? callListWindow = null;
+        public int Username { get; private set; }
+
+
+        public MainWindow(int username)
         {
             InitializeComponent();
+            Username = username;
             Loaded += MainWindow_Loaded;
             Closed += Window_Closed;
         }
@@ -121,15 +130,10 @@ public MainWindow()
             RiskRange = s_bl.Admin.GetRiskTimeSpan();
         }
 
-
-        private void RefreshFromBlClock_Click(object sender, RoutedEventArgs e)
-        {
-            CurrentTime = s_bl.Admin.GetClock();
-        }
-
         private void ResetClockToNow_Click(object sender, RoutedEventArgs e)
         {
-           // s_bl.Admin. (DateTime.Now);
+            s_bl.Admin.ResetClock();
+            CurrentTime = s_bl.Admin.GetClock();
         }
 
         #endregion
@@ -236,13 +240,32 @@ public MainWindow()
         {
             try
             {
-                // Create an instance of the volunteer management window
-                var window = new VolunteerListWindow();
-                window.Show();
+                // בדוק אם החלון כבר פתוח
+                if (volunteerListWindow != null && volunteerListWindow.IsLoaded)
+                {
+                    // אם החלון כבר פתוח - העבר אותו לחזית
+                    volunteerListWindow.Activate();
+                    volunteerListWindow.Focus();
+                    return;
+                }
+
+                // צור חלון חדש
+                volunteerListWindow = new VolunteerListWindow();
+
+                // האזן לסגירת החלון כדי לנקות את ה-reference
+                volunteerListWindow.Closed += (s, args) =>
+                {
+                    volunteerListWindow = null;
+                };
+
+                volunteerListWindow.Show();
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"פתיחת מסך המתנדבים נכשלה:\n{ex.Message}", "שגיאה", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"פתיחת מסך המתנדבים נכשלה:\n{ex.Message}",
+                              "שגיאה",
+                              MessageBoxButton.OK,
+                              MessageBoxImage.Error);
             }
         }
 
@@ -250,16 +273,35 @@ public MainWindow()
         {
             try
             {
-                // Replace with the actual window name, for example:
-                var window = new Call.CallListWindow();
-                window.Show();
+                // בדוק אם החלון כבר פתוח
+                if (callListWindow != null && callListWindow.IsLoaded)
+                {
+                    // אם החלון כבר פתוח - העבר אותו לחזית
+                    callListWindow.Activate();
+                    callListWindow.Focus();
+                    return;
+                }
+
+                // צור חלון חדש
+                callListWindow = new Call.CallListWindow(Username);
+
+                // האזן לסגירת החלון כדי לנקות את ה-reference
+                callListWindow.Closed += (s, args) =>
+                {
+                    callListWindow = null;
+                };
+
+                callListWindow.Show();
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"פתיחת מסך הקריאות נכשלה:\n{ex.Message}", "שגיאה", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"פתיחת מסך הקריאות נכשלה:\n{ex.Message}",
+                              "שגיאה",
+                              MessageBoxButton.OK,
+                              MessageBoxImage.Error);
             }
         }
-
-        #endregion
     }
+    #endregion
 }
+

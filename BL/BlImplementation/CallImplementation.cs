@@ -67,7 +67,8 @@ internal class CallImplementation : ICall
     //Delete implementation
     public void Delete(int id)
     {
-        if (CallManager.GetCallState(s_dal.Call.ReadAll().FirstOrDefault(c => c.Id == id)) != BO.CallState.open)
+        if (CallManager.GetCallState(s_dal.Call.ReadAll().FirstOrDefault(c => c.Id == id)) != BO.CallState.open
+            || s_dal.Assignment.ReadAll().FirstOrDefault(a => a.CallId == id) != null)
         {
             throw new BO.BlInMiddlePerformingTaskException($"Call with ID={id} is in progress past or present and cannot be deleted");
         }
@@ -230,7 +231,7 @@ internal class CallImplementation : ICall
         DO.Assignment updatedAssignment;
 
         if (assignment.VolunteerId != requesterId &&
-            s_dal.Volunteer.Read(requesterId).CurrentPosition == DO.User.admin)
+            s_dal.Volunteer.Read(requesterId).CurrentPosition != DO.User.admin)
             throw new BO.BlNotAllowedMakeChangesException($"Assignment with ID={assignmentId} does not belong to Volunteer with ID={requesterId}");
         if (assignment.FinishType != null)
             throw new BO.NoTimeCompleteTaskException($"Assignment with ID={assignmentId} already {assignment.FinishType}");
@@ -254,15 +255,8 @@ internal class CallImplementation : ICall
 
         var volunteer = s_dal.Volunteer.Read(assignment.VolunteerId)
                         ?? throw new BO.BlDoesNotExistException($"Volunteer with ID={assignment.VolunteerId} does Not exist");
-        DO.Volunteer updatedVolunteer;
 
-        updatedVolunteer = volunteer with
-        {
-            Active = false
-        };
-
-        s_dal.Volunteer.Update(updatedVolunteer);
-        VolunteerManager.Observers.NotifyItemUpdated(updatedVolunteer.id);
+        VolunteerManager.Observers.NotifyItemUpdated(volunteer.id);
         VolunteerManager.Observers.NotifyListUpdated(); //stage 5
 
         s_dal.Assignment.Update(updatedAssignment);
