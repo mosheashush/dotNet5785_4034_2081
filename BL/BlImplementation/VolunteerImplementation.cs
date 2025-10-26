@@ -87,7 +87,7 @@ internal class VolunteerImplementation : IVolunteer
     }
     public void Delete(int id)
     {
-        if (s_dal.Volunteer.ReadAll().FirstOrDefault(v => v.id == id).Active == true)
+        if (s_dal.Assignment.ReadAll().FirstOrDefault(a => a.VolunteerId == id) != null)
             throw new BO.BlInMiddlePerformingTaskException($"Volunteer with ID={id} has an assignment and cannot be deleted");
 
         try
@@ -136,7 +136,7 @@ internal class VolunteerImplementation : IVolunteer
             FullName = v.FullName,
             Active = v.Active,
             IdCall = (assignments.FirstOrDefault(c => c.VolunteerId == v.id) != null && assignments.FirstOrDefault(c => c.VolunteerId == v.id).FinishType == null) ? assignments.FirstOrDefault(c => c.VolunteerId == v.id).CallId : null,
-            Type = (assignments.FirstOrDefault(c => c.VolunteerId == v.id) != null && assignments.FirstOrDefault(c => c.VolunteerId == v.id).FinishType == null) ? (BO.CallType)(s_dal.Call.ReadAll().FirstOrDefault(c => c.Id == assignments.FirstOrDefault(a => a.VolunteerId == v.id && a.CompletionTime == null).CallId).Type) : BO.CallType.None,
+            Type = (assignments.FirstOrDefault(c => c.VolunteerId == v.id) != null && assignments.FirstOrDefault(c => c.VolunteerId == v.id).FinishType == null) ? (BO.CallType)(s_dal.Call.ReadAll().FirstOrDefault(c => c.Id == assignments.FirstOrDefault(a => a.VolunteerId == v.id && a.FinishType == null).CallId).Type) : BO.CallType.None,
             SumCallsCompleted = VolunteerManager.CalculatSumCallsCompleted(v.id),
             SumCallsExpired = VolunteerManager.CalculatSumCallsExpired(v.id),
             SumCallsConcluded = VolunteerManager.CalculatSumCallsConcluded(v.id),
@@ -169,8 +169,7 @@ internal class VolunteerImplementation : IVolunteer
         }
 
         //sort:
-        // Fix for CS0019: Explicitly cast `filterValue` to `BO.CallType` before comparison.
-        if (field != null && filterValue is BO.CallType callTypeValue && callTypeValue != BO.CallType.None)
+        if (field != null /*&& filterValue is BO.CallType callTypeValue && callTypeValue != BO.CallType.None*/)
         {
 
             switch (field)
@@ -182,7 +181,7 @@ internal class VolunteerImplementation : IVolunteer
                     converted = converted.OrderBy(v => v.FullName).ToList();
                     break;
                 case BO.VolunteerInListFields.Active:
-                    converted = converted.OrderBy(v => v.Active).ToList();
+                    converted = converted.OrderByDescending(v => v.Active).ToList();
                     break;
                 case BO.VolunteerInListFields.IdCall:
                     if (isActive == false)
@@ -195,13 +194,13 @@ internal class VolunteerImplementation : IVolunteer
                     converted = converted.OrderBy(v => s_dal.Call.ReadAll().FirstOrDefault(c => c.Id == assignments.FirstOrDefault(c => c.VolunteerId == v.IdVolunteer).CallId).Type).ToList();
                     break;
                 case BO.VolunteerInListFields.SumCallsCompleted:
-                    converted = converted.OrderBy(v => VolunteerManager.CalculatSumCallsCompleted(v.IdVolunteer)).ToList();
+                    converted = converted.OrderByDescending(v => VolunteerManager.CalculatSumCallsCompleted(v.IdVolunteer)).ToList();
                     break;
                 case BO.VolunteerInListFields.SumCallsExpired:
-                    converted = converted.OrderBy(v => VolunteerManager.CalculatSumCallsExpired(v.IdVolunteer)).ToList();
+                    converted = converted.OrderByDescending(v => VolunteerManager.CalculatSumCallsExpired(v.IdVolunteer)).ToList();
                     break;
                 case BO.VolunteerInListFields.SumCallsConcluded:
-                    converted = converted.OrderBy(v => VolunteerManager.CalculatSumCallsConcluded(v.IdVolunteer)).ToList();
+                    converted = converted.OrderByDescending(v => VolunteerManager.CalculatSumCallsConcluded(v.IdVolunteer)).ToList();
                     break;
             }
         }

@@ -16,6 +16,7 @@
 
     <Window.Resources>
         <conv:CallTypeToHebrewConverter x:Key="CallTypeToHebrewConverter"/>
+        <conv:VolunteerInListFieldsToHebrewConverter x:Key="VolunteerInListFieldsToHebrewConverter"/>
     </Window.Resources>
     
     <Grid Margin="25">
@@ -79,38 +80,69 @@
 
         <!-- Filter Section -->
         <Border Grid.Row="1" 
-                Style="{StaticResource ModernCard}" 
-                Margin="0,0,0,20">
+        Style="{StaticResource ModernCard}" 
+        Margin="0,0,0,20">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="300"/>
+                    <!-- כפתור הוסף - ימין -->
                     <ColumnDefinition Width="*"/>
+                    <!-- רווח מרכזי -->
                     <ColumnDefinition Width="Auto"/>
+                    <!-- סמל סינון -->
+                    <ColumnDefinition Width="Auto"/>
+                    <!-- קומבובוקס סינון -->
+                    <ColumnDefinition Width="Auto"/>
+                    <!-- טקסט "סנן לפי" -->
+                    <ColumnDefinition Width="20"/>
+                    <!-- רווח קטן -->
+                    <ColumnDefinition Width="Auto"/>
+                    <!-- סמל מיון -->
+                    <ColumnDefinition Width="Auto"/>
+                    <!-- קומבובוקס מיון -->
+                    <ColumnDefinition Width="Auto"/>
+                    <!-- טקסט "מיין לפי" -->
                 </Grid.ColumnDefinitions>
 
-                <!-- Filter Icon & Label -->
-                <StackPanel Grid.Column="2" 
-                            Orientation="Horizontal" 
-                            VerticalAlignment="Center"
-                            Margin="20,0,20,0">
-                    <TextBlock Text=":סינון לפי" 
-                               FontSize="14" 
-                               FontWeight="SemiBold" 
-                               Foreground="#2C3E50"
-                               VerticalAlignment="Center"
-                               Margin="-150,0,0,0"/>
-                </StackPanel>
+                <!-- Add Button - ימין מצד -->
+                <Button Grid.Column="0" 
+                Style="{StaticResource AddButton}"
+                Click="btnAdd_Click"
+                Width="180"
+                HorizontalAlignment="Right"
+                Margin="0,0,20,0">
+                    <StackPanel Orientation="Horizontal">
+                        <Path Data="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z" 
+                      Fill="White" 
+                      Width="18" 
+                      Height="18"
+                      Stretch="Uniform"
+                      Margin="0,0,8,0"/>
+                        <TextBlock Text="הוסף מתנדב חדש"/>
+                    </StackPanel>
+                </Button>
+
+                <!-- ========== קבוצת סינון - שמאל ========== -->
+
+                <!-- Filter Icon -->
+                <Path Grid.Column="2"
+              Data="M14,12V19.88C14.04,20.18 13.94,20.5 13.71,20.71C13.32,21.1 12.69,21.1 12.3,20.71L10.29,18.7C10.06,18.47 9.96,18.16 10,17.87V12H9.97L4.21,4.62C3.87,4.19 3.95,3.56 4.38,3.22C4.57,3.08 4.78,3 5,3V3H19V3C19.22,3 19.43,3.08 19.62,3.22C20.05,3.56 20.13,4.19 19.79,4.62L14.03,12H14Z"
+              Fill="#4A90E2" 
+              Width="20" 
+              Height="20"
+              Stretch="Uniform"
+              VerticalAlignment="Center"
+              Margin="0,0,10,0"/>
 
                 <!-- Filter ComboBox -->
-                <ComboBox Grid.Column="1"
-                          Style="{StaticResource ModernComboBox}"
-                          Margin="0,1,150,2"
-                          ItemsSource="{Binding Source={StaticResource CallTypeKey}}"
-                          SelectedValue="{Binding TypeVolunteer, Mode=TwoWay}"
-                          SelectedValuePath="."
-                          HorizontalContentAlignment="Stretch"
-                          HorizontalAlignment="Stretch">
+                <ComboBox Grid.Column="3"
+                  Style="{StaticResource ModernComboBox}"
+                  Width="200"
+                  ItemsSource="{Binding Source={StaticResource CallTypeKey}}"
+                  SelectedValue="{Binding TypeVolunteer, Mode=TwoWay}"
+                  SelectedValuePath="."
+                  HorizontalContentAlignment="Stretch"
+                  Margin="0,0,10,0">
 
                     <ComboBox.ItemContainerStyle>
                         <Style TargetType="ComboBoxItem">
@@ -120,9 +152,9 @@
                                     <ControlTemplate TargetType="ComboBoxItem">
                                         <Border Background="Transparent">
                                             <ContentPresenter HorizontalAlignment="Right"
-                                                              TextBlock.TextAlignment="Right"
-                                                              Margin="5,0,10,0"
-                                                              RecognizesAccessKey="True"/>
+                                                    TextBlock.TextAlignment="Right"
+                                                    Margin="5,0,10,0"
+                                                    RecognizesAccessKey="True"/>
                                         </Border>
                                     </ControlTemplate>
                                 </Setter.Value>
@@ -133,36 +165,81 @@
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding Converter={StaticResource CallTypeToHebrewConverter}}"
-                                       TextAlignment="Right"
-                                       HorizontalAlignment="Right"
-                                       Margin="5,0,10,0"/>
+                               TextAlignment="Right"
+                               HorizontalAlignment="Right"
+                               Margin="5,0,10,0"/>
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
 
-                <Path Data="M14,12V19.88C14.04,20.18 13.94,20.5 13.71,20.71C13.32,21.1 12.69,21.1 12.3,20.71L10.29,18.7C10.06,18.47 9.96,18.16 10,17.87V12H9.97L4.21,4.62C3.87,4.19 3.95,3.56 4.38,3.22C4.57,3.08 4.78,3 5,3V3H19V3C19.22,3 19.43,3.08 19.62,3.22C20.05,3.56 20.13,4.19 19.79,4.62L14.03,12H14Z"
-                          Fill="#4A90E2" 
-                          Width="20" 
-                          Height="20"
-                          Stretch="Uniform"
-                          Margin="10,0,10,0"/>
+                <!-- Filter Label -->
+                <TextBlock Grid.Column="4"
+                   Text=":סנן לפי" 
+                   FontSize="14" 
+                   FontWeight="SemiBold" 
+                   Foreground="#2C3E50"
+                   VerticalAlignment="Center"
+                   Margin="0,0,0,0"/>
 
+                <!-- ========== קבוצת מיון ========== -->
 
-                <!-- Add Button -->
-                <Button Grid.Column="3" 
-                        Style="{StaticResource AddButton}"
-                        Click="btnAdd_Click"
-                        Width="180">
-                    <StackPanel Orientation="Horizontal">
-                        <Path Data="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z" 
-                              Fill="White" 
-                              Width="18" 
-                              Height="18"
-                              Stretch="Uniform"
-                              Margin="0,0,8,0"/>
-                        <TextBlock Text="הוסף מתנדב חדש"/>
-                    </StackPanel>
-                </Button>
+                <!-- Sort Icon (סמל שונה למיון) -->
+                <Path Grid.Column="6"
+              Data="M19,17H22L18,21L14,17H17V3H19M2,17H12V19H2M6,5V7H2V5M2,11H9V13H2V11Z"
+              Fill="#4A90E2" 
+              Width="20" 
+              Height="20"
+              Stretch="Uniform"
+              VerticalAlignment="Center"
+              Margin="0,0,10,0"/>
+
+                <!-- Sort ComboBox -->
+                <ComboBox Grid.Column="7"
+                  Style="{StaticResource ModernComboBox}"
+                  Width="200"
+                  ItemsSource="{Binding Source={StaticResource VolunteerInListFieldsKey}}"
+                  SelectedValue="{Binding TypeSort, Mode=TwoWay}"
+                  SelectedValuePath="."
+                  HorizontalContentAlignment="Stretch"
+                  Margin="0,0,10,0">
+
+                    <ComboBox.ItemContainerStyle>
+                        <Style TargetType="ComboBoxItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ComboBoxItem">
+                                        <Border Background="Transparent">
+                                            <ContentPresenter HorizontalAlignment="Right"
+                                                    TextBlock.TextAlignment="Right"
+                                                    Margin="5,0,10,0"
+                                                    RecognizesAccessKey="True"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ComboBox.ItemContainerStyle>
+
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Converter={StaticResource VolunteerInListFieldsToHebrewConverter}}"
+                               TextAlignment="Right"
+                               HorizontalAlignment="Right"
+                               Margin="5,0,10,0"/>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+
+                <!-- Sort Label -->
+                <TextBlock Grid.Column="8"
+                   Text=":מיין לפי" 
+                   FontSize="14" 
+                   FontWeight="SemiBold" 
+                   Foreground="#2C3E50"
+                   VerticalAlignment="Center"
+                   Margin="0,0,0,0"/>
+
             </Grid>
         </Border>
 
@@ -192,7 +269,7 @@
                     <!-- Name Column -->
                     <DataGridTextColumn Header="שם מלא" 
                                         Binding="{Binding FullName}" 
-                                        Width="*"
+                                        Width="Auto"
                                         MinWidth="100">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
@@ -207,7 +284,7 @@
                     </DataGridTextColumn>
 
                     <!-- Active Column -->
-                    <DataGridCheckBoxColumn Header="בפעילות"
+                    <DataGridCheckBoxColumn Header="פעיל"
                         Binding="{Binding Active}"
                         Width="140"
                         IsReadOnly="True">
@@ -220,12 +297,26 @@
                         </DataGridCheckBoxColumn.ElementStyle>
                     </DataGridCheckBoxColumn>
 
+                    <!-- Name Column -->
+                    <DataGridTextColumn Header="מספר הקריאה" 
+                                        Binding="{Binding IdCall}" 
+                                        Width="50"
+                                        MinWidth="100">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                                <Setter Property="FontWeight" Value="SemiBold"/>
+                                <Setter Property="Foreground"  Value="#2C3E50"/>
+                                <Setter Property="Margin" Value="0,10,0,10"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
 
                     <!-- Type Call Column -->
                     <DataGridTextColumn Header="סוג הקריאה"
                                         Binding="{Binding Type, Converter={StaticResource CallTypeToHebrewConverter}}"
                                         Width="*"
-                                        MinWidth="180">
+                                        MinWidth="100">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
                                 <Setter Property="HorizontalAlignment" Value="Center"/>
@@ -238,7 +329,7 @@
 
 
                     <!-- Statistics Column -->
-                    <DataGridTemplateColumn Header="סטטיסטיקה" Width="250">
+                    <DataGridTemplateColumn Header="סטטיסטיקה" Width="150">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
@@ -260,7 +351,7 @@
                     </DataGridTemplateColumn>
 
                     <!-- Actions Column -->
-                    <DataGridTemplateColumn Header="פעולות" Width="150">
+                    <DataGridTemplateColumn Header="פעולות" Width="200">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >

@@ -40,6 +40,22 @@ namespace PL.Call
             }
         }
 
+        private BO.CallInListFields? _typeSort;
+        public BO.CallInListFields? TypeSort
+        {
+            get => _typeSort;
+            set
+            {
+                if (_typeSort != value)
+                {
+                    _typeSort = value;
+                    OnPropertyChanged(nameof(TypeSort));
+                    // אם אתה רוצה שהרשימה תתעדכן אוטומטית:
+                    SortCallsByStatus();
+                }
+            }
+        }
+
         public CallListWindow()
         {
             InitializeComponent();
@@ -136,6 +152,34 @@ namespace PL.Call
                 else
                 {
                     filtered = s_bl.Call.GetCallsList(BO.CallInListFields.CallState, TypeCall, null);
+                }
+
+                CallsList = new ObservableCollection<CallInList>(filtered);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"שגיאה בטעינת המתנדבים:\n{ex.Message}", "שגיאה",
+                MessageBoxButton.OK,
+                MessageBoxImage.Error);
+            }
+        }
+
+        /// <summary>
+        /// מיון מתנדבים לפי הסטטוס הנבחר
+        /// </summary>
+        private void SortCallsByStatus()
+        {
+            try
+            {
+                IEnumerable<CallInList> filtered;
+
+                if (TypeSort == null)
+                {
+                    filtered = s_bl.Call.GetCallsList(null, null, null);
+                }
+                else
+                {
+                    filtered = s_bl.Call.GetCallsList(null, null, TypeSort);
                 }
 
                 CallsList = new ObservableCollection<CallInList>(filtered);

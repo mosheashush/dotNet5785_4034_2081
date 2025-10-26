@@ -40,6 +40,23 @@ namespace PL.Volunteer
             }
         }
 
+        private BO.VolunteerInListFields? _typeSort;
+        public BO.VolunteerInListFields? TypeSort
+        {
+            get => _typeSort;
+            set
+            {
+                if (_typeSort != value)
+                {
+                    _typeSort = value;
+                    OnPropertyChanged(nameof(TypeSort));
+                    // אם אתה רוצה שהרשימה תתעדכן אוטומטית:
+                    SortVolunteersByStatus();
+                }
+            }
+        }
+
+
         public VolunteerListWindow()
         {
             InitializeComponent();
@@ -136,6 +153,34 @@ namespace PL.Volunteer
                 else
                 {
                     filtered = s_bl.Volunteer.listOfVolunteer(null, BO.VolunteerInListFields.Type, TypeVolunteer);
+                }
+
+                VolunteersList = new ObservableCollection<VolunteerInList>(filtered);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"שגיאה בטעינת המתנדבים:\n{ex.Message}", "שגיאה",
+                MessageBoxButton.OK,
+                MessageBoxImage.Error);
+            }
+        }
+
+        /// <summary>
+        /// מיון מתנדבים לפי הסטטוס הנבחר
+        /// </summary>
+        private void SortVolunteersByStatus()
+        {
+            try
+            {
+                IEnumerable<VolunteerInList> filtered;
+
+                if (TypeSort == null)
+                {
+                    filtered = s_bl.Volunteer.listOfVolunteer(null, null, null);
+                }
+                else
+                {
+                    filtered = s_bl.Volunteer.listOfVolunteer(null, TypeSort, null);
                 }
 
                 VolunteersList = new ObservableCollection<VolunteerInList>(filtered);

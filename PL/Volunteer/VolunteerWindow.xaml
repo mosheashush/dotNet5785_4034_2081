@@ -14,11 +14,16 @@
     <Window.Resources>
         <conv:UserToHebrewConverter x:Key="UserToHebrewConverter"/>
         <conv:DistanceTypeToHebrewConverter x:Key="DistanceTypeToHebrewConverter"/>
+        <conv:CallStateToHebrewConverter x:Key="CallStateToHebrewConverter"/>
+        <conv:CallTypeToHebrewConverter x:Key="CallTypeToHebrewConverter"/>
+        <conv:CollectionToVisibilityConverter x:Key="CollectionToVisibilityConverter"/>
     </Window.Resources>
 
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <Grid Margin="15">
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -195,8 +200,178 @@
                      Text="{Binding CurrentVolunteer.MaxDistanceForCall, Mode=TwoWay}" Margin="5" Height="25"
                      FlowDirection="LeftToRight"/>
 
+            <!-- ==================== אזור קריאה בטיפול ==================== -->
+
+            <!-- כותרת -->
+            <Border Grid.Row="13" Grid.ColumnSpan="2" 
+        Background="#FFF3E5F5"
+        BorderBrush="#FF9C27B0" 
+        BorderThickness="0,2,0,0"
+        Margin="0,20,0,10"
+        Padding="10,8">
+                <TextBlock Text="קריאה בטיפול" 
+               FontSize="15" 
+               FontWeight="Bold"
+               Foreground="#FF7B1FA2"
+               HorizontalAlignment="Center"/>
+            </Border>
+
+            <!-- תצוגת הקריאה בטיפול -->
+            <Border Grid.Row="14" Grid.ColumnSpan="2"
+                                    BorderBrush="#FFBDBDBD" 
+                                    BorderThickness="1"
+                                    CornerRadius="5"
+                                    Margin="5"
+                                    Background="White">
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- הודעה במקרה שאין קריאה בטיפול -->
+                    <TextBlock Grid.Row="0"
+                   Text="אין קריאה בטיפול כרגע"
+                   FontStyle="Italic"
+                   Foreground="Gray"
+                   HorizontalAlignment="Center"
+                   Margin="10"
+                   Visibility="{Binding CurrentVolunteer.CallInProgress, Converter={StaticResource CollectionToVisibilityConverter}}"/>
+
+                    <!-- הקריאה בטיפול (כרטיס בודד) -->
+                    <Border Grid.Row="1"
+                Background="#FFF5F5F5" 
+                BorderBrush="#FFE0E0E0" 
+                CornerRadius="4"
+                Margin="5,5,120,5"
+                Padding="10"
+                              MaxHeight="200"
+                              ScrollViewer.VerticalScrollBarVisibility="Auto"
+                              BorderThickness="0"
+                              >
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="Visibility" Value="Visible"/>
+                                <Style.Triggers>
+                                    <!-- אם CallInProgress הוא null - הסתר את הכרטיס -->
+                                    <DataTrigger Binding="{Binding CurrentVolunteer.CallInProgress}" Value="{x:Null}">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="150"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- מספר קריאה -->
+                            <TextBlock Grid.Row="0" Grid.Column="0" 
+                           Text="מספר קריאה:" 
+                           FontWeight="Bold" 
+                           Foreground="#FF424242"
+                           Margin="0,0,5,3"/>
+                            <TextBlock Grid.Row="0" Grid.Column="1" 
+                           Text="{Binding CurrentVolunteer.CallInProgress.IdCall}" 
+                           FontWeight="SemiBold"
+                           Foreground="#FF1565C0"
+                           FlowDirection="LeftToRight"
+                           Margin="0,0,0,3"
+                           HorizontalAlignment="Left"/>
+
+                            <!-- סוג קריאה -->
+                            <TextBlock Grid.Row="1" Grid.Column="0" 
+                           Text="סוג קריאה:" 
+                           FontWeight="Bold"
+                           Foreground="#FF424242"
+                           Margin="0,0,5,3"/>
+                            <TextBlock Grid.Row="1" Grid.Column="1" 
+                           Text="{Binding CurrentVolunteer.CallInProgress.Type, Converter={StaticResource CallTypeToHebrewConverter}}"
+                           Margin="0,0,0,3"/>
+
+                            <!-- תיאור -->
+                            <TextBlock Grid.Row="2" Grid.Column="0" 
+                           Text="תיאור:" 
+                           FontWeight="Bold"
+                           Foreground="#FF424242"
+                           Margin="0,0,5,3"/>
+                            <TextBlock Grid.Row="2" Grid.Column="1" 
+                           Text="{Binding CurrentVolunteer.CallInProgress.description}"
+                           TextWrapping="Wrap"
+                           FlowDirection="LeftToRight"
+                           Margin="0,0,0,3"/>
+
+                            <!-- כתובת -->
+                            <TextBlock Grid.Row="3" Grid.Column="0" 
+                           Text="כתובת:" 
+                           FontWeight="Bold"
+                           Foreground="#FF424242"
+                           Margin="0,0,5,3"/>
+                            <TextBlock Grid.Row="3" Grid.Column="1" 
+                           Text="{Binding CurrentVolunteer.CallInProgress.FullAddress}"
+                           TextWrapping="Wrap"
+                           FlowDirection="LeftToRight"
+                           Margin="0,0,0,3"
+                           HorizontalAlignment="Left"/>
+
+                            <!-- מרחק מהמתנדב -->
+                            <TextBlock Grid.Row="4" Grid.Column="0" 
+                           Text="מרחק ממך:" 
+                           FontWeight="Bold"
+                           Foreground="#FF424242"
+                           Margin="0,0,5,3"/>
+                            <StackPanel Grid.Row="4" Grid.Column="1" Orientation="Horizontal" Margin="0,0,0,3">
+                                <TextBlock Text="{Binding CurrentVolunteer.CallInProgress.DistanceFromVolunteer, StringFormat='{}{0:F2}'}"
+                               FlowDirection="LeftToRight"/>
+                                <TextBlock Text=" ק״מ" Margin="5,0,0,0"/>
+                            </StackPanel>
+
+                            <!-- זמן תחילת טיפול -->
+                            <TextBlock Grid.Row="5" Grid.Column="0" 
+                           Text="התחלת טיפול:" 
+                           FontWeight="Bold"
+                           Foreground="#FF424242"
+                           Margin="0,0,5,3"/>
+                            <TextBlock Grid.Row="5" Grid.Column="1" 
+                           Text="{Binding CurrentVolunteer.CallInProgress.VolunteerTakeCall, StringFormat='dd/MM/yyyy HH:mm'}"
+                           FlowDirection="LeftToRight"
+                           Margin="0,0,0,3"
+                           HorizontalAlignment="Left"/>
+
+                            <!-- סטטוס -->
+                            <TextBlock Grid.Row="6" Grid.Column="0" 
+                           Text="סטטוס:" 
+                           FontWeight="Bold"
+                           Foreground="#FF424242"
+                           Margin="0,0,5,0"/>
+                            <Border Grid.Row="6" Grid.Column="1"
+                        CornerRadius="3" 
+                        Padding="6,3"
+                        HorizontalAlignment="Left">
+                                <TextBlock Text="{Binding CurrentVolunteer.CallInProgress.CallState, Converter={StaticResource CallStateToHebrewConverter}}"
+                               FontSize="11"
+                               FontWeight="SemiBold"
+                               Foreground="White"/>
+                            </Border>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </Border>
+
             <!-- Button -->
-            <Button Grid.Row="13" Grid.ColumnSpan="2"
+            <Button Grid.Row="16" Grid.ColumnSpan="2"
                     Content="{Binding ButtonText}" 
                     Click="btnAddUpdate_Click"
                     Width="150" Height="40" Margin="10"

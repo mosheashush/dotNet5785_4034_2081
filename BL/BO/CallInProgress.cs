@@ -11,7 +11,7 @@ public class CallInProgress
     public string FullAddress { get; set; }
     public DateTime CallStartTime { get; set; }
     public DateTime? MaxTimeForCall { get; set; }
-    public DateTime VolunteerTakeCall { get; set; } //take from assignment entity
+    public DateTime VolunteerTakeCall { get; set; } 
 
     //new in BL
     public double DistanceFromVolunteer { get; set; }

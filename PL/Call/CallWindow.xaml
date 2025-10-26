@@ -4,11 +4,20 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PL.Call"
+        xmlns:conv="clr-namespace:PL.Converters"
         mc:Ignorable="d"
         Title="Call Details" Height="650" Width="500"
         DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}"
         Closed="Window_Closed"
         FlowDirection="RightToLeft">
+
+    <Window.Resources>
+        <conv:CallTypeToHebrewConverter x:Key="CallTypeToHebrewConverter"/>
+        <conv:CallStateToHebrewConverter x:Key="CallStateToHebrewConverter"/>
+        <conv:CompletionTypeToHebrewConverter x:Key="CompletionTypeToHebrewConverter"/>
+        <conv:CompletionTypeToColorConverter x:Key="CompletionTypeToColorConverter"/>
+        <conv:CollectionToVisibilityConverter x:Key="CollectionToVisibilityConverter"/>
+    </Window.Resources>
 
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <Grid Margin="15">
@@ -35,15 +44,15 @@
 
             <!-- Header -->
             <TextBlock Grid.Row="0" Grid.ColumnSpan="2" 
-                       Text="מידע על מתנדב" 
+                       Text="מידע על הקריאה" 
                        FontSize="18" FontWeight="Bold" 
                        HorizontalAlignment="Center" 
                        Margin="0,0,0,20"/>
 
             <!-- ID -->
-            <Label Grid.Row="1" Grid.Column="0" Content="תעודת זהות:" FontWeight="Bold" Margin="5"/>
+            <Label Grid.Row="1" Grid.Column="0" Content="מספר סדורי:" FontWeight="Bold" Margin="5"/>
             <TextBox Grid.Row="1" Grid.Column="1" 
-                     Text="{Binding CurrentVolunteer.id}" 
+                     Text="{Binding CurrentCall.IdCall}" 
                      Margin="5" Height="25"
                      FlowDirection="LeftToRight">
                 <TextBox.Style>
@@ -68,81 +77,76 @@
                 </TextBox.Style>
             </TextBox>
 
+            <!-- Type -->
+            <Label Grid.Row="2" Grid.Column="0" Content="סוג קריאה:" FontWeight="Bold" Margin="5"/>
+            <ComboBox Grid.Row="2" Grid.Column="1"
+           Style="{StaticResource ModernComboBox}"
+           Margin="5"
+           Height="35"
+           ItemsSource="{Binding Source={StaticResource CallTypeKey}}"
+           SelectedItem="{Binding CurrentCall.Type, Mode=TwoWay}"
+           HorizontalContentAlignment="Stretch"
+           HorizontalAlignment="Stretch"
+           FlowDirection="LeftToRight">
 
-            <!-- Name -->
-            <Label Grid.Row="2" Grid.Column="0" Content="שם מלא:" FontWeight="Bold" Margin="5"/>
-            <TextBox Grid.Row="2" Grid.Column="1" 
-                     Text="{Binding CurrentVolunteer.FullName, Mode=TwoWay}" Margin="5" Height="25" FlowDirection="LeftToRight"/>
+                <ComboBox.ItemContainerStyle>
+                    <Style TargetType="ComboBoxItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ComboBoxItem">
+                                    <Border Background="Transparent">
+                                        <ContentPresenter HorizontalAlignment="Right"
+                                   TextBlock.TextAlignment="Right"
+                                   Margin="5,0,30,0"
+                                   RecognizesAccessKey="True"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ComboBox.ItemContainerStyle>
+
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Converter={StaticResource CallTypeToHebrewConverter}}"
+            TextAlignment="Right"
+            HorizontalAlignment="Right"
+            Margin="5,0,0,0"/>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+
 
             <!-- Phone -->
-            <Label Grid.Row="3" Grid.Column="0" Content="טלפון:" FontWeight="Bold" Margin="5"/>
+            <Label Grid.Row="3" Grid.Column="0" Content="תיאור:" FontWeight="Bold" Margin="5"/>
             <TextBox Grid.Row="3" Grid.Column="1" 
-                     Text="{Binding CurrentVolunteer.CallNumber, Mode=TwoWay}" Margin="5" Height="25" FlowDirection="LeftToRight"/>
-
-            <!-- Email -->
-            <Label Grid.Row="4" Grid.Column="0" Content="אימייל:" FontWeight="Bold" Margin="5"/>
-            <TextBox Grid.Row="4" Grid.Column="1" 
-                     Text="{Binding CurrentVolunteer.EmailAddress, Mode=TwoWay}" Margin="5" Height="25" FlowDirection="LeftToRight"/>
-
-            <!-- Password -->
-            <Label Grid.Row="5" Grid.Column="0" Content="סיסמה:" FontWeight="Bold" Margin="5"/>
-            <PasswordBox Grid.Row="5" Grid.Column="1" 
-                         Name="passwordBox" Margin="5" Height="25" FlowDirection="LeftToRight"/>
+                     Text="{Binding CurrentCall.description, Mode=TwoWay}" Margin="5" Height="25" FlowDirection="LeftToRight"/>
 
             <!-- Address -->
-            <Label Grid.Row="6" Grid.Column="0" Content="כתובת:" FontWeight="Bold" Margin="5"/>
-            <TextBox Grid.Row="6" Grid.Column="1" 
-                     Text="{Binding CurrentVolunteer.FullCurrentAddress, Mode=TwoWay}" 
+            <Label Grid.Row="4" Grid.Column="0" Content="כתובת:" FontWeight="Bold" Margin="5"/>
+            <TextBox Grid.Row="4" Grid.Column="1" 
+                     Text="{Binding CurrentCall.FullAddress, Mode=TwoWay}" 
                      TextWrapping="Wrap" Height="40" Margin="5" FlowDirection="LeftToRight"/>
 
-            <!-- User Type -->
-            <Label Grid.Row="9" Grid.Column="0" Content="סוג משתמש:" FontWeight="Bold" Margin="5"/>
-            <ComboBox Grid.Row="9" Grid.Column="1"
-                      Style="{StaticResource ModernComboBox}"
-                      Margin="5"
-                      Height="35"
-                      ItemsSource="{Binding Source={StaticResource UserKey}}"
-                      SelectedItem="{Binding CurrentVolunteer.CurrentPosition, Mode=TwoWay}"
-                      HorizontalContentAlignment="Stretch"
-                      HorizontalAlignment="Stretch"
-                      FlowDirection="LeftToRight">
+            <!-- Email -->
+            <Label Grid.Row="5" Grid.Column="0" Content="אימייל:" FontWeight="Bold" Margin="5"/>
+            <TextBox Grid.Row="5" Grid.Column="1" 
+                     Text="{Binding CurrentCall.CallStartTime, Mode=TwoWay}" Margin="5" Height="25" FlowDirection="LeftToRight"/>
 
-                <ComboBox.ItemContainerStyle>
-                    <Style TargetType="ComboBoxItem">
-                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="ComboBoxItem">
-                                    <Border Background="Transparent">
-                                        <ContentPresenter HorizontalAlignment="Right"
-                                              TextBlock.TextAlignment="Right"
-                                              Margin="5,0,30,0"
-                                              RecognizesAccessKey="True"/>
-                                    </Border>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                </ComboBox.ItemContainerStyle>
-
-                <!--<ComboBox.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock Text="{Binding Converter={StaticResource UserToHebrewConverter}}"
-                       TextAlignment="Right"
-                       HorizontalAlignment="Right"
-                       Margin="5,0,0,0"/>
-                    </DataTemplate>
-                </ComboBox.ItemTemplate>-->
-            </ComboBox>
+            <!-- Email -->
+            <Label Grid.Row="6" Grid.Column="0" Content="אימייל:" FontWeight="Bold" Margin="5"/>
+            <TextBox Grid.Row="6" Grid.Column="1" 
+                     Text="{Binding CurrentCall.MaxTimeForCall, Mode=TwoWay}" Margin="5" Height="25" FlowDirection="LeftToRight"/>
 
             <!-- Distance Type -->
-            <Label Grid.Row="10" Grid.Column="0" Content="סוג מרחק:" FontWeight="Bold" Margin="5"/>
-            <ComboBox Grid.Row="10" Grid.Column="1"
+            <Label Grid.Row="7" Grid.Column="0" Content="סוג מרחק:" FontWeight="Bold" Margin="5"/>
+            <ComboBox Grid.Row="7" Grid.Column="1"
                       Style="{StaticResource ModernComboBox}"
                       Margin="5"
                       Height="35"
-                      ItemsSource="{Binding Source={StaticResource DistanceKey}}"
-                      SelectedItem="{Binding CurrentVolunteer.TypeOfDistance, Mode=TwoWay}"
+                      ItemsSource="{Binding Source={StaticResource CallStateKey}}"
+                      SelectedItem="{Binding CurrentCall.CallState, Mode=TwoWay}"
                       HorizontalContentAlignment="Stretch"
                       HorizontalAlignment="Stretch"
                       FlowDirection="LeftToRight">
@@ -165,32 +169,141 @@
                     </Style>
                 </ComboBox.ItemContainerStyle>
 
-                <!--<ComboBox.ItemTemplate>
+                <ComboBox.ItemTemplate>
                     <DataTemplate>
-                        <TextBlock Text="{Binding Converter={StaticResource DistanceTypeToHebrewConverter}}"
+                        <TextBlock Text="{Binding Converter={StaticResource CallStateToHebrewConverter}}"
                        TextAlignment="Right"
                        HorizontalAlignment="Right"
                        Margin="5,0,0,0"/>
                     </DataTemplate>
-                </ComboBox.ItemTemplate>-->
+                </ComboBox.ItemTemplate>
             </ComboBox>
 
 
-            <!-- Active -->
-            <Label Grid.Row="11" Grid.Column="0" Content="בפעילות:" FontWeight="Bold" Margin="5,0,0,0"/>
-            <CheckBox Grid.Row="11" Grid.Column="1" 
-                      IsChecked="{Binding CurrentVolunteer.Active, Mode=TwoWay}" 
-                      Content="פעיל" Margin="10" IsEnabled="False"
-                      />
+            <!-- רשימת ההקצאות -->
+            <Border Grid.Row="9" Grid.ColumnSpan="2"
+                    BorderBrush="#FFBDBDBD" 
+                    BorderThickness="1"
+                    CornerRadius="5"
+                    Margin="5"
+                    Background="White">
 
-            <!-- Distance -->
-            <Label Grid.Row="12" Grid.Column="0" Content="מרחק מקסימלי לקריאה:" FontWeight="Bold" Margin="5"/>
-            <TextBox Grid.Row="12" Grid.Column="1" 
-                     Text="{Binding CurrentVolunteer.MaxDistanceForCall, Mode=TwoWay}" Margin="5" Height="25"
-                     FlowDirection="LeftToRight"/>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- הודעה במקרה שאין הקצאות -->
+                    <TextBlock Grid.Row="0"
+                               Text="לא נמצאו הקצאות עבור קריאה זו"
+                               FontStyle="Italic"
+                               Foreground="Gray"
+                               HorizontalAlignment="Center"
+                               Margin="10"
+                               Visibility="{Binding CurrentCall.callAssignInLists, Converter={StaticResource CollectionToVisibilityConverter}}"/>
+
+                    <!-- ListView להצגת ההקצאות -->
+                    <ListView Grid.Row="1"
+                              ItemsSource="{Binding CurrentCall.callAssignInLists}"
+                              MaxHeight="200"
+                              Margin="5"
+                              ScrollViewer.VerticalScrollBarVisibility="Auto"
+                              BorderThickness="0"
+                              Background="Transparent">
+
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Border Background="#FFF5F5F5" 
+                                        BorderBrush="#FFE0E0E0" 
+                                        BorderThickness="1"
+                                        CornerRadius="4"
+                                        Margin="0,3"
+                                        Padding="10">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="120"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <!-- ת.ז המתנדב -->
+                                        <TextBlock Grid.Row="0" Grid.Column="0" 
+                                                   Text="ת.ז מתנדב:" 
+                                                   FontWeight="Bold" 
+                                                   Foreground="#FF424242"
+                                                   Margin="0,0,5,3"/>
+                                        <TextBlock Grid.Row="0" Grid.Column="1" 
+                                                   Text="{Binding IdVolunteer}" 
+                                                   FontWeight="SemiBold"
+                                                   Foreground="#FF1565C0"
+                                                   FlowDirection="RightToLeft"
+                                                   Margin="0,0,0,3"/>
+                                        
+                                        <!-- שם המתנדב -->
+                                        <TextBlock Grid.Row="1" Grid.Column="0" 
+                                                   Text="שם מתנדב:" 
+                                                   FontWeight="Bold" 
+                                                   Foreground="#FF424242"
+                                                   Margin="0,0,5,3"/>
+                                        <TextBlock Grid.Row="1" Grid.Column="1" 
+                                                   Text="{Binding FullName}" 
+                                                   FontWeight="SemiBold"
+                                                   Foreground="#FF1565C0"
+                                                   FlowDirection="RightToLeft"
+                                                   Margin="0,0,0,3"/>
+
+                                        <!-- זמן כניסה לטיפול -->
+                                        <TextBlock Grid.Row="2" Grid.Column="0" 
+                                                   Text="התחלה:" 
+                                                   FontWeight="Bold"
+                                                   Foreground="#FF424242"
+                                                   Margin="0,0,5,3"/>
+                                        <TextBlock Grid.Row="2" Grid.Column="1" 
+                                                   Text="{Binding CallStartTime, StringFormat='dd/MM/yyyy HH:mm'}"
+                                                   FlowDirection="LeftToRight"
+                                                   Margin="0,0,0,3"/>
+
+                                        <!-- זמן סיום וסוג סיום -->
+                                        <StackPanel Grid.Row="3" Grid.ColumnSpan="2" 
+                                                    Orientation="Horizontal">
+
+                                            <TextBlock Text="סיום:" 
+                                                       FontWeight="Bold"
+                                                       Foreground="#FF424242"
+                                                       Margin="0,0,5,0"/>
+
+                                            <TextBlock Text="{Binding CompletionTime, StringFormat='dd/MM/yyyy HH:mm'}"
+                                                       FlowDirection="LeftToRight"
+                                                       Margin="0,0,10,0"/>
+
+
+                                            <!-- סוג סיום -->
+                                            <Border Background="{Binding FinishType, Converter={StaticResource CompletionTypeToColorConverter}}" 
+                                                                         CornerRadius="3" 
+                                                                         Padding="6,3">
+                                                <TextBlock Text="{Binding FinishType, Converter={StaticResource CompletionTypeToHebrewConverter}}"
+                                                           FontSize="11"
+                                                           FontWeight="SemiBold"
+                                                           Foreground="White"/>
+                                            </Border>
+                                        </StackPanel>
+
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </Grid>
+            </Border>
 
             <!-- Button -->
-            <Button Grid.Row="13" Grid.ColumnSpan="2"
+            <Button Grid.Row="10" Grid.ColumnSpan="2"
                     Content="{Binding ButtonText}" 
                     Click="btnAddUpdate_Click"
                     Width="150" Height="40" Margin="10"

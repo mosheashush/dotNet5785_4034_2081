@@ -38,4 +38,31 @@ namespace PL
 
         public IEnumerator GetEnumerator() => s_enums.GetEnumerator();
     }
+
+    internal class CompletionTypeCollection : IEnumerable
+    {
+        static readonly IEnumerable<BO.CompletionType> s_enums =
+        (Enum.GetValues(typeof(BO.CompletionType)) as IEnumerable<BO.CompletionType>)!;
+
+        public IEnumerator GetEnumerator() => s_enums.GetEnumerator();
+    }
+
+    internal class VolunteerInListFieldsCollection : IEnumerable
+    {
+        static readonly IEnumerable<BO.VolunteerInListFields> s_enums =
+            ((IEnumerable<BO.VolunteerInListFields>)Enum.GetValues(typeof(BO.VolunteerInListFields)))
+            // כאן אנחנו מסננים את מה שלא רוצים שיופיע
+            .Where(e => e != BO.VolunteerInListFields.IdCall && e != BO.VolunteerInListFields.Type);
+        public IEnumerator GetEnumerator() => s_enums.GetEnumerator();
+    }
+    
+    internal class CallInListFieldsCollection : IEnumerable
+    {
+
+        static readonly IEnumerable<BO.CallInListFields> s_enums =
+        ((IEnumerable<BO.CallInListFields>)Enum.GetValues(typeof(BO.CallInListFields)))
+        // כאן אנחנו מסננים את מה שלא רוצים שיופיע
+        .Where(e => e != BO.CallInListFields.IdAssignment);
+        public IEnumerator GetEnumerator() => s_enums.GetEnumerator();
+    }
 }

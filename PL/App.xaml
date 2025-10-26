@@ -9,6 +9,10 @@
         <local:UserCollection x:Key="UserKey"/>
         <local:DistanceCollection x:Key="DistanceKey"/>
         <local:CallStateCollection x:Key="CallStateKey"/>
+        <local:CompletionTypeCollection x:Key="CompletionTypeKey"/>
+        <local:VolunteerInListFieldsCollection x:Key="VolunteerInListFieldsKey"/>
+        <local:CallInListFieldsCollection x:Key="CallInListFieldsKey"/>
+
 
         <!-- ===== STYLE עבור DataGrid ===== -->
         <Style TargetType="DataGrid">
@@ -187,3 +191,4 @@
 
     </Application.Resources>
 </Application>
+
