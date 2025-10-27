@@ -40,7 +40,16 @@ namespace PL
         private void Window_Closed(object sender, EventArgs e)
         {
             s_bl.Admin.RemoveClockObserver(clockObserver);
-            s_bl.Admin.RemoveConfigObserver(configObserver);    
+            s_bl.Admin.RemoveConfigObserver(configObserver);
+
+            foreach (Window window in Application.Current.Windows)
+            {
+                if (window is LoginWindow loginWindow)
+                {
+                    loginWindow.Show();
+                    break;
+                }
+            }
         }
 
         #region Dependency Properties – Clock and Configuration

@@ -4,6 +4,8 @@ using System.ComponentModel;
 using System.Windows;
 using BlApi;
 using BO;
+using DalApi;
+using DO;
 
 namespace PL.Call
 {
@@ -14,6 +16,7 @@ namespace PL.Call
     {
         // תלות עם BL
         static readonly BIApi.IBl s_bl = BIApi.Factory.Get();
+
 
         private readonly int? _IdCall; // null = add mode, has value = update mode
 
@@ -46,6 +49,7 @@ namespace PL.Call
             get { return (BO.Call)GetValue(CurrentCallProperty); }
             set { SetValue(CurrentCallProperty, value); }
         }
+
         public static readonly DependencyProperty CurrentCallProperty =
             DependencyProperty.Register(nameof(CurrentCall),
                 typeof(BO.Call),
@@ -75,11 +79,11 @@ namespace PL.Call
             {
                 _IdCall = null;
 
-                // initialize a new volunteer
+                // initialize a new call
                 CurrentCall = new BO.Call
                 {
                     IdCall = 0,
-                    Type = CallType.None,           
+                    Type = BO.CallType.None,           
                     description = null,
                     FullAddress = "",
                     Latitude = 0,
@@ -154,31 +158,40 @@ namespace PL.Call
                 {
                     s_bl.Call.Create(CurrentCall);
                     MessageBox.Show($"הקריאה נוסף בהצלחה!\nID: {CurrentCall.IdCall}",
-                        "Success",
+                        "הצלחה",
                         MessageBoxButton.OK,
                         MessageBoxImage.Information);
                 }
                 else // Update mode
                 {
-                    // In update, also send the requester's ID
-                    // In our case, assume it's admin (0) - adjust according to your logic
                     s_bl.Call.Update(CurrentCall);
-                    MessageBox.Show("הקריאה התעדכן בהצלחה!",
-                        "Success",
+                    MessageBox.Show("הקריאה התעדכנה בהצלחה!",
+                        "הצלחה",
                         MessageBoxButton.OK,
                         MessageBoxImage.Information);
                 }
 
-                // Automatically close the window
-                DialogResult = true;
                 Close();
+            }
+            catch (DalXMLFileLoadCreateException ex)
+            {
+                // שגיאה ספציפית בקבצי XML
+                MessageBox.Show($"שגיאה בשמירת הקריאה בקובץ XML:\n{ex.Message}\n\nפרטים נוספים:\n{ex.InnerException?.Message}",
+                    "שגיאה קריטית",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+
+                // אל תסגור את החלון! תן למשתמש לנסות שוב
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"שגיאה בשמירת הקריאה\n{ex.Message}",
-                    "Error",
+                // שגיאה כללית
+                MessageBox.Show($"שגיאה בשמירת הקריאה:\n{ex.Message}",
+                    "שגיאה",
                     MessageBoxButton.OK,
                     MessageBoxImage.Error);
+
+                // אל תסגור את החלון! תן למשתמש לנסות שוב
             }
         }
 
@@ -190,7 +203,7 @@ namespace PL.Call
             // בדיקת מזהה קריאה
             if (_IdCall == null)
             {
-                if (CurrentCall.IdCall <= 0)
+                if (CurrentCall.IdCall < 0)
                 {
                     MessageBox.Show("מזהה קריאה חייב להיות מספר חיובי!",
                         "שגיאת קלט",
@@ -201,19 +214,17 @@ namespace PL.Call
             }
 
             // סוג קריאה
-            if (!Enum.IsDefined(typeof(CallType), CurrentCall.Type))
+            if (CurrentCall.Type == BO.CallType.None || CurrentCall.Type == BO.CallType.All)
             {
-                MessageBox.Show("סוג הקריאה אינו תקין!",
+                MessageBox.Show("!יש לבחור סוג קריאה תקין\nאינו בפעילות' ו-'הכל' אינם ערכים חוקיים לקריאה'",
                     "שגיאת קלט",
                     MessageBoxButton.OK,
                     MessageBoxImage.Warning);
                 return false;
             }
-
-            // תיאור
-            if (string.IsNullOrWhiteSpace(CurrentCall.description))
+            if (!Enum.IsDefined(typeof(BO.CallType), CurrentCall.Type))
             {
-                MessageBox.Show("תיאור הקריאה הוא שדה חובה!",
+                MessageBox.Show("סוג הקריאה אינו תקין!",
                     "שגיאת קלט",
                     MessageBoxButton.OK,
                     MessageBoxImage.Warning);

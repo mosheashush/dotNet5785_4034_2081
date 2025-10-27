@@ -39,37 +39,64 @@ static class XMLTools
 
     public static void SaveListToXMLSerializer<T>(List<T> list, string filePath)
     {
+        string fullPath = s_xmlDir + filePath;
+        string tempPath = fullPath + ".tmp";
+
         try
         {
-            FileStream file = new FileStream(s_xmlDir + filePath, FileMode.Create, FileAccess.ReadWrite, FileShare.None);
-            XmlSerializer x = new XmlSerializer(list.GetType());
-            x.Serialize(file, list);
-            file.Close();
+            using (FileStream file = new FileStream(tempPath, FileMode.Create, FileAccess.Write, FileShare.None))
+            {
+                XmlSerializer x = new XmlSerializer(list.GetType());
+                x.Serialize(file, list);
+            }
+
+            // אם הגענו לכאן - הכתיבה הצליחה
+            if (File.Exists(fullPath))
+                File.Delete(fullPath);
+            File.Move(tempPath, fullPath);
         }
         catch (Exception ex)
         {
-            throw new DalXMLFileLoadCreateException($"fail to create xml file: , {ex.Message}");
+            // ניקוי
+            if (File.Exists(tempPath))
+            {
+                try { File.Delete(tempPath); }
+                catch { }
+            }
+
+            // הצג את השגיאה המלאה!
+            string detailedError = $"fail to create xml file: {fullPath}\n\n";
+            detailedError += $"Error: {ex.Message}\n\n";
+
+            if (ex.InnerException != null)
+            {
+                detailedError += $"Inner Error: {ex.InnerException.Message}\n\n";
+                detailedError += $"Stack Trace: {ex.InnerException.StackTrace}";
+            }
+
+            throw new DalXMLFileLoadCreateException(detailedError, ex);
         }
     }
+
     public static List<T> LoadListFromXMLSerializer<T>(string filePath)
     {
         try
         {
             if (File.Exists(s_xmlDir + filePath))
             {
-                List<T> list;
-                XmlSerializer x = new XmlSerializer(typeof(List<T>));
-                using FileStream file = new FileStream(s_xmlDir + filePath, FileMode.Open, FileAccess.Read, FileShare.None);
-                list = (List<T>)x.Deserialize(file)!;
-                file.Close();
-                return list;
+                using (FileStream file = new FileStream(s_xmlDir + filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
+                {
+                    XmlSerializer x = new XmlSerializer(typeof(List<T>));
+                    List<T> list = (List<T>)x.Deserialize(file)!;
+                    return list;
+                } // הקובץ נסגר אוטומטית כאן
             }
             else
                 return new List<T>();
         }
         catch (Exception ex)
         {
-            throw new DalXMLFileLoadCreateException($"fail to load xml file: {filePath}, {ex.Message}");
+            throw new DalXMLFileLoadCreateException($"fail to load xml file: {s_xmlDir + filePath}, {ex.Message}");
         }
     }
     #endregion

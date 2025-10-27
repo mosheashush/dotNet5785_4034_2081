@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PL.Call"
-        xmlns:conv="clr-namespace:PL.Converters"
+        xmlns:conv="clr-namespace:PL.Converters" xmlns:BO="clr-namespace:BO;assembly=BL"
         mc:Ignorable="d"
         Title="Call Details" Height="650" Width="500"
         DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}"
@@ -52,7 +52,8 @@
             <!-- ID -->
             <Label Grid.Row="1" Grid.Column="0" Content="מספר סדורי:" FontWeight="Bold" Margin="5"/>
             <TextBox Grid.Row="1" Grid.Column="1" 
-                     Text="{Binding CurrentCall.IdCall}" 
+                     IsReadOnly="True"
+                     Background="LightGray"
                      Margin="5" Height="25"
                      FlowDirection="LeftToRight">
                 <TextBox.Style>
@@ -63,13 +64,13 @@
 
                             <!-- אם ButtonText == 'הוסף' -->
                             <DataTrigger Binding="{Binding ButtonText}" Value="הוסף">
-                                <Setter Property="IsReadOnly" Value="False"/>
+                                <Setter Property="Text" Value="מתעדכן אוטומטית"/>
+                                <Setter Property="HorizontalContentAlignment" Value="Right"/>
                             </DataTrigger>
 
                             <!-- אם ButtonText == 'ערוך' -->
                             <DataTrigger Binding="{Binding ButtonText}" Value="ערוך">
-                                <Setter Property="IsReadOnly" Value="True"/>
-                                <Setter Property="Background" Value="LightGray"/>
+                                <Setter Property="Text" Value="{Binding CurrentCall.IdCall}"/>
                             </DataTrigger>
 
                         </Style.Triggers>
@@ -80,14 +81,36 @@
             <!-- Type -->
             <Label Grid.Row="2" Grid.Column="0" Content="סוג קריאה:" FontWeight="Bold" Margin="5"/>
             <ComboBox Grid.Row="2" Grid.Column="1"
-           Style="{StaticResource ModernComboBox}"
-           Margin="5"
-           Height="35"
-           ItemsSource="{Binding Source={StaticResource CallTypeKey}}"
-           SelectedItem="{Binding CurrentCall.Type, Mode=TwoWay}"
-           HorizontalContentAlignment="Stretch"
-           HorizontalAlignment="Stretch"
-           FlowDirection="LeftToRight">
+                      Margin="5" Height="35"
+                      ItemsSource="{Binding Source={StaticResource CallTypeKey}}"
+                      SelectedItem="{Binding CurrentCall.Type, Mode=TwoWay}"
+                      HorizontalContentAlignment="Right"
+                      FlowDirection="LeftToRight">
+                <ComboBox.Style>
+                    <Style TargetType="ComboBox" BasedOn="{StaticResource ModernComboBox}">
+                        <Setter Property="IsEnabled" Value="True"/>
+                        <Style.Triggers>
+                            <!-- אם בטיפול או בטיפול בסיכון - נעילה -->
+                            <DataTrigger Binding="{Binding CurrentCall.CallState}" Value="{x:Static BO:CallState.processed}">
+                                <Setter Property="IsEnabled" Value="False"/>
+                                <Setter Property="Background" Value="LightGray"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding CurrentCall.CallState}" Value="{x:Static BO:CallState.processedOnRisk}">
+                                <Setter Property="IsEnabled" Value="False"/>
+                                <Setter Property="Background" Value="LightGray"/>
+                            </DataTrigger>
+                            <!-- אם סגורה (completed) או פג תוקף - נעילה -->
+                            <DataTrigger Binding="{Binding CurrentCall.CallState}" Value="{x:Static BO:CallState.completed}">
+                                <Setter Property="IsEnabled" Value="False"/>
+                                <Setter Property="Background" Value="LightGray"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding CurrentCall.CallState}" Value="{x:Static BO:CallState.expired}">
+                                <Setter Property="IsEnabled" Value="False"/>
+                                <Setter Property="Background" Value="LightGray"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ComboBox.Style>
 
                 <ComboBox.ItemContainerStyle>
                     <Style TargetType="ComboBoxItem">
@@ -97,50 +120,116 @@
                                 <ControlTemplate TargetType="ComboBoxItem">
                                     <Border Background="Transparent">
                                         <ContentPresenter HorizontalAlignment="Right"
-                                   TextBlock.TextAlignment="Right"
-                                   Margin="5,0,30,0"
-                                   RecognizesAccessKey="True"/>
+                                            TextBlock.TextAlignment="Right"
+                                            Margin="5,0,30,0"/>
                                     </Border>
                                 </ControlTemplate>
                             </Setter.Value>
                         </Setter>
                     </Style>
                 </ComboBox.ItemContainerStyle>
-
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
                         <TextBlock Text="{Binding Converter={StaticResource CallTypeToHebrewConverter}}"
-            TextAlignment="Right"
-            HorizontalAlignment="Right"
-            Margin="5,0,0,0"/>
+                     TextAlignment="Right" HorizontalAlignment="Right" Margin="5,0,0,0"/>
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
             </ComboBox>
 
-
-            <!-- Phone -->
+            <!-- Description -->
             <Label Grid.Row="3" Grid.Column="0" Content="תיאור:" FontWeight="Bold" Margin="5"/>
             <TextBox Grid.Row="3" Grid.Column="1" 
-                     Text="{Binding CurrentCall.description, Mode=TwoWay}" Margin="5" Height="25" FlowDirection="LeftToRight"/>
+         Text="{Binding CurrentCall.description, Mode=TwoWay}" 
+         Margin="5" Height="25" FlowDirection="LeftToRight">
+                <TextBox.Style>
+                    <Style TargetType="TextBox">
+                        <Setter Property="IsReadOnly" Value="False"/>
+                        <Style.Triggers>
+                            <!-- אם בטיפול או בטיפול בסיכון - נעילה -->
+                            <DataTrigger Binding="{Binding CurrentCall.CallState}" Value="{x:Static BO:CallState.processed}">
+                                <Setter Property="IsReadOnly" Value="True"/>
+                                <Setter Property="Background" Value="LightGray"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding CurrentCall.CallState}" Value="{x:Static BO:CallState.processedOnRisk}">
+                                <Setter Property="IsReadOnly" Value="True"/>
+                                <Setter Property="Background" Value="LightGray"/>
+                            </DataTrigger>
+                            <!-- אם סגורה (completed) או פג תוקף - נעילה -->
+                            <DataTrigger Binding="{Binding CurrentCall.CallState}" Value="{x:Static BO:CallState.completed}">
+                                <Setter Property="IsReadOnly" Value="True"/>
+                                <Setter Property="Background" Value="LightGray"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding CurrentCall.CallState}" Value="{x:Static BO:CallState.expired}">
+                                <Setter Property="IsReadOnly" Value="True"/>
+                                <Setter Property="Background" Value="LightGray"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBox.Style>
+            </TextBox>
 
             <!-- Address -->
             <Label Grid.Row="4" Grid.Column="0" Content="כתובת:" FontWeight="Bold" Margin="5"/>
             <TextBox Grid.Row="4" Grid.Column="1" 
-                     Text="{Binding CurrentCall.FullAddress, Mode=TwoWay}" 
-                     TextWrapping="Wrap" Height="40" Margin="5" FlowDirection="LeftToRight"/>
+         Text="{Binding CurrentCall.FullAddress, Mode=TwoWay}" 
+         TextWrapping="Wrap" Height="40" Margin="5" FlowDirection="LeftToRight">
+                <TextBox.Style>
+                    <Style TargetType="TextBox">
+                        <Setter Property="IsReadOnly" Value="False"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding CurrentCall.CallState}" Value="{x:Static BO:CallState.processed}">
+                                <Setter Property="IsReadOnly" Value="True"/>
+                                <Setter Property="Background" Value="LightGray"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding CurrentCall.CallState}" Value="{x:Static BO:CallState.processedOnRisk}">
+                                <Setter Property="IsReadOnly" Value="True"/>
+                                <Setter Property="Background" Value="LightGray"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding CurrentCall.CallState}" Value="{x:Static BO:CallState.completed}">
+                                <Setter Property="IsReadOnly" Value="True"/>
+                                <Setter Property="Background" Value="LightGray"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding CurrentCall.CallState}" Value="{x:Static BO:CallState.expired}">
+                                <Setter Property="IsReadOnly" Value="True"/>
+                                <Setter Property="Background" Value="LightGray"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBox.Style>
+            </TextBox>
 
-            <!-- Email -->
-            <Label Grid.Row="5" Grid.Column="0" Content="אימייל:" FontWeight="Bold" Margin="5"/>
+            <!-- Start Time -->
+            <Label Grid.Row="5" Grid.Column="0" Content="זמן פתיחה:" FontWeight="Bold" Margin="5"/>
             <TextBox Grid.Row="5" Grid.Column="1" 
-                     Text="{Binding CurrentCall.CallStartTime, Mode=TwoWay}" Margin="5" Height="25" FlowDirection="LeftToRight"/>
+         Text="{Binding CurrentCall.CallStartTime, Mode=TwoWay}" 
+         Margin="5" Height="25" FlowDirection="LeftToRight" IsReadOnly="True" Background="LightGray">
+            </TextBox>
 
-            <!-- Email -->
-            <Label Grid.Row="6" Grid.Column="0" Content="אימייל:" FontWeight="Bold" Margin="5"/>
+            <!-- Max Time - תמיד ניתן לעריכה אלא אם completed/expired -->
+            <Label Grid.Row="6" Grid.Column="0" Content="זמן מקסימלי:" FontWeight="Bold" Margin="5"/>
             <TextBox Grid.Row="6" Grid.Column="1" 
-                     Text="{Binding CurrentCall.MaxTimeForCall, Mode=TwoWay}" Margin="5" Height="25" FlowDirection="LeftToRight"/>
-
+         Text="{Binding CurrentCall.MaxTimeForCall, Mode=TwoWay}" 
+         Margin="5" Height="25" FlowDirection="LeftToRight">
+                <TextBox.Style>
+                    <Style TargetType="TextBox">
+                        <Setter Property="IsReadOnly" Value="False"/>
+                        <Style.Triggers>
+                            <!-- רק אם completed או פג תוקף - נעילה -->
+                            <DataTrigger Binding="{Binding CurrentCall.CallState}" Value="{x:Static BO:CallState.completed}">
+                                <Setter Property="IsReadOnly" Value="True"/>
+                                <Setter Property="Background" Value="LightGray"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding CurrentCall.CallState}" Value="{x:Static BO:CallState.expired}">
+                                <Setter Property="IsReadOnly" Value="True"/>
+                                <Setter Property="Background" Value="LightGray"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBox.Style>
+            </TextBox>
+            
             <!-- Distance Type -->
-            <Label Grid.Row="7" Grid.Column="0" Content="סוג מרחק:" FontWeight="Bold" Margin="5"/>
+            <Label Grid.Row="7" Grid.Column="0" Content="סוג סיום:" FontWeight="Bold" Margin="5"/>
             <ComboBox Grid.Row="7" Grid.Column="1"
                       Style="{StaticResource ModernComboBox}"
                       Margin="5"
@@ -149,7 +238,8 @@
                       SelectedItem="{Binding CurrentCall.CallState, Mode=TwoWay}"
                       HorizontalContentAlignment="Stretch"
                       HorizontalAlignment="Stretch"
-                      FlowDirection="LeftToRight">
+                      FlowDirection="LeftToRight"
+                      IsEnabled="False">
 
                 <ComboBox.ItemContainerStyle>
                     <Style TargetType="ComboBoxItem">

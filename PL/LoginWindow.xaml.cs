@@ -27,14 +27,14 @@ namespace PL
         /// <summary>
         /// תכונת תלות לשם משתמש/תעודת זהות
         /// </summary>
-        public int Username
+        public int? Username
         {
-            get { return (int)GetValue(UsernameProperty); }
+            get { return (int?)GetValue(UsernameProperty); }
             set { SetValue(UsernameProperty, value); }
         }
         public static readonly DependencyProperty UsernameProperty =
-            DependencyProperty.Register("Username", typeof(int), typeof(LoginWindow),
-                new PropertyMetadata(0));
+            DependencyProperty.Register("Username", typeof(int?), typeof(LoginWindow),
+                new PropertyMetadata(null));
 
         /// <summary>
         /// תכונת תלות לזכור אותי
@@ -105,7 +105,7 @@ namespace PL
             }
             catch (Exception ex)
             {
-                if (!(ex is DalXMLFileLoadCreateException))
+                //if (!(ex is DalXMLFileLoadCreateException))
                     ShowStatusMessage($"שגיאה באתחול המערכת: {ex.Message}", true);
             }
         }
@@ -125,11 +125,11 @@ namespace PL
                 StatusMessage = string.Empty;
 
                 // קבלת נתוני הכניסה - Username מגיע מה-Binding
-                int idNumber = Username;
-                string password = passwordBox.Password; // PasswordBox - חריג מהכלל!
+                int? idNumber = Username;
+                string password = passwordBox.Password;
 
                 // בדיקות תקינות
-                if (idNumber==0)
+                if (!idNumber.HasValue || idNumber.Value == 0)
                 {
                     ShowStatusMessage("נא להזין תעודת זהות", true);
                     return;
@@ -149,11 +149,11 @@ namespace PL
                     var volunteers = s_dal.Volunteer.listOfVolunteer(null, null, null);
 
                     // חיפוש המשתמש לפי תעודת זהות
-                    var volunteer = volunteers.FirstOrDefault(v => v.IdVolunteer == idNumber);
+                    var volunteer = volunteers.FirstOrDefault(v => v.IdVolunteer == idNumber.Value);
 
                     if (volunteer == null)
                     {
-                        ShowStatusMessage($"תעודת זהות {idNumber} לא נמצאה במערכת", true);
+                        ShowStatusMessage($"תעודת זהות {idNumber.Value} לא נמצאה במערכת", true);
                         return;
                     }
 
@@ -181,13 +181,13 @@ namespace PL
                 await System.Threading.Tasks.Task.Delay(1000);
 
                 // מעבר למסך הראשי
-                OpenMainWindow(userRole, idNumber);
+                OpenMainWindow(userRole, idNumber.Value);
             }
             catch (Exception ex)
             {
                 ShowStatusMessage($"שגיאה כללית: {ex.Message}", true);
             }
-        } 
+        }
         #endregion
 
         #region ניהול הודעות
@@ -216,10 +216,20 @@ namespace PL
         {
             try
             {
-                // פתיחת MainWindow
-                var mainWindow = new MainWindow(Username);
+                // אם זה מנהל - בדוק שאין כבר מנהל מחובר
+                if (userRole == BO.User.admin)
+                {
+                    if (App.IsAdminLoggedIn)
+                    {
+                        ShowStatusMessage("מנהל כבר מחובר למערכת. רק מנהל אחד יכול להיות מחובר בו זמנית.", true);
+                        return;
+                    }
+                    App.IsAdminLoggedIn = true;
+                }
 
-                // הגדרת כותרת החלון בהתאם לסוג המשתמש
+                // פתיחת MainWindow
+                var mainWindow = new MainWindow(userId);  // ← שים לב: userId ולא Username
+
                 if (userRole == BO.User.admin)
                 {
                     mainWindow.Title = "מסך ניהול ראשי - מנהל";
@@ -229,11 +239,26 @@ namespace PL
                     mainWindow.Title = "מסך ניהול ראשי - מתנדב";
                 }
 
-                // הצגת MainWindow
+                // כשסוגרים את MainWindow - שחרר את המנהל
+                mainWindow.Closed += (s, e) =>
+                {
+                    if (userRole == BO.User.admin)
+                    {
+                        App.IsAdminLoggedIn = false;
+                    }
+                };
+
                 mainWindow.Show();
 
-                // סגירת חלון הכניסה
-                this.Close();
+                // ניקוי הפרטים אם לא בחרו "זכור אותי"
+                if (!RememberMe)
+                {
+                    Username = null;  // ← null במקום 0
+                    passwordBox.Password = string.Empty;
+                }
+
+                // ניקוי הודעת סטטוס
+                StatusMessage = string.Empty;
             }
             catch (Exception ex)
             {

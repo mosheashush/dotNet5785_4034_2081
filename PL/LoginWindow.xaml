@@ -86,7 +86,10 @@
                          Content="זכור אותי" 
                          Margin="0,10,0,0" 
                          FontSize="13"
-                         Foreground="#7F8C8D"/>
+                         Foreground="#7F8C8D"
+                         FlowDirection="LeftToRight"
+                         HorizontalContentAlignment="Right"
+                         HorizontalAlignment="Left"/>
 
                 <!-- כפתור כניסה ראשי - עם אירוע Click -->
                 <Button Content="🔐 כניסה למערכת" 

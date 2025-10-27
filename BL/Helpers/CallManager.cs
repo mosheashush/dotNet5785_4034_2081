@@ -69,7 +69,7 @@ internal static class CallManager
     public static void CheckCall(BO.Call boCall)
     {
         //check id
-        if (boCall.IdCall < 1000 || boCall.IdCall > 1999)
+        if ((boCall.IdCall < 1000 || boCall.IdCall > 1999) && boCall.IdCall != 0)
             throw new BO.BlInvalidValueException($"Call id ={boCall.IdCall} not have corrent digits");
 
         //check time to complete task

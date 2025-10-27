@@ -9,6 +9,8 @@ namespace PL
     /// </summary>
     public partial class App : Application
     {
+        // Is an administrator currently logged in?
+        public static bool IsAdminLoggedIn = false;
     }
 
 }
