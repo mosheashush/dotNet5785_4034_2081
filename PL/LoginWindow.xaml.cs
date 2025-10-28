@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using BO;
 using DO;
+using PL.Volunteer;
 
 namespace PL
 {
@@ -227,28 +228,28 @@ namespace PL
                     App.IsAdminLoggedIn = true;
                 }
 
-                // פתיחת MainWindow
-                var mainWindow = new MainWindow(userId);  // ← שים לב: userId ולא Username
-
+                // פתיחת המסך המתאים לפי סוג המשתמש
                 if (userRole == BO.User.admin)
                 {
+                    // פתיחת מסך מנהל
+                    var mainWindow = new MainWindow(userId);
                     mainWindow.Title = "מסך ניהול ראשי - מנהל";
+
+                    // כשסוגרים את MainWindow - שחרר את המנהל
+                    mainWindow.Closed += (s, e) =>
+                    {
+                        App.IsAdminLoggedIn = false;
+                    };
+
+                    mainWindow.Show();
                 }
                 else
                 {
-                    mainWindow.Title = "מסך ניהול ראשי - מתנדב";
+                    // פתיחת מסך מתנדב
+                    var mainWindowVolunteer = new MainWindowVolunteer(userId);
+                    mainWindowVolunteer.Title = "מסך ראשי - מתנדב";
+                    mainWindowVolunteer.Show();
                 }
-
-                // כשסוגרים את MainWindow - שחרר את המנהל
-                mainWindow.Closed += (s, e) =>
-                {
-                    if (userRole == BO.User.admin)
-                    {
-                        App.IsAdminLoggedIn = false;
-                    }
-                };
-
-                mainWindow.Show();
 
                 // ניקוי הפרטים אם לא בחרו "זכור אותי"
                 if (!RememberMe)
