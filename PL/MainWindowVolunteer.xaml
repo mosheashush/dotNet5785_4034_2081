@@ -3,76 +3,40 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PL.Volunteer"
         mc:Ignorable="d"
-        Title="מערכת ניהול מתנדבים - מסך ראשי" 
-        Height="700" Width="1000"
-        FlowDirection="RightToLeft"
+        Title="מערכת ניהול מתנדבים" 
+        Height="700" Width="900"
         WindowStartupLocation="CenterScreen"
-        WindowState="Maximized"
         ResizeMode="CanResize"
-        Closing="Window_Closing">
+        FlowDirection="RightToLeft"
+        Closing="Window_Closing"
+        Background="#F5F5F5">
 
     <Window.Resources>
-        <!-- סגנונות -->
+        <!-- Converter להמרת bool לנראות -->
+        <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
 
-        <!-- כותרת ראשית -->
-        <Style x:Key="MainTitleStyle" TargetType="TextBlock">
-            <Setter Property="FontSize" Value="36"/>
-            <Setter Property="FontWeight" Value="Bold"/>
+        <!-- Converter הפוך -->
+        <local:InverseBooleanToVisibilityConverter x:Key="InverseBoolToVisibilityConverter"/>
+
+        <!-- סגנונות כפתורים -->
+        <Style x:Key="PrimaryButton" TargetType="Button">
+            <Setter Property="Background" Value="#4CAF50"/>
             <Setter Property="Foreground" Value="White"/>
-            <Setter Property="HorizontalAlignment" Value="Center"/>
-            <Setter Property="Margin" Value="0,10,0,5"/>
-        </Style>
-
-        <!-- כותרת משנה -->
-        <Style x:Key="SubTitleStyle" TargetType="TextBlock">
-            <Setter Property="FontSize" Value="18"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="HorizontalAlignment" Value="Center"/>
-            <Setter Property="Margin" Value="0,0,0,10"/>
-        </Style>
-
-        <!-- כרטיס מידע -->
-        <Style x:Key="InfoCardStyle" TargetType="Border">
-            <Setter Property="Background" Value="White"/>
-            <Setter Property="CornerRadius" Value="10"/>
-            <Setter Property="Padding" Value="20"/>
-            <Setter Property="Margin" Value="10"/>
-            <Setter Property="Effect">
-                <Setter.Value>
-                    <DropShadowEffect Color="Gray" 
-                                    Direction="270" 
-                                    ShadowDepth="3" 
-                                    BlurRadius="10" 
-                                    Opacity="0.3"/>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <!-- כפתור ראשי גדול -->
-        <Style x:Key="MainButtonStyle" TargetType="Button">
-            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="FontSize" Value="14"/>
             <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="Padding" Value="30,20"/>
-            <Setter Property="Margin" Value="15"/>
-            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Padding" Value="20,10"/>
+            <Setter Property="Margin" Value="5"/>
             <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="MinHeight" Value="120"/>
+            <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}" 
-                                CornerRadius="15"
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="5"
                                 Padding="{TemplateBinding Padding}">
-                            <Border.Effect>
-                                <DropShadowEffect Color="Gray" 
-                                                Direction="270" 
-                                                ShadowDepth="4" 
-                                                BlurRadius="12" 
-                                                Opacity="0.4"/>
-                            </Border.Effect>
-                            <ContentPresenter HorizontalAlignment="Center" 
+                            <ContentPresenter HorizontalAlignment="Center"
                                             VerticalAlignment="Center"/>
                         </Border>
                     </ControlTemplate>
@@ -80,52 +44,83 @@
             </Setter>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Opacity" Value="0.9"/>
+                    <Setter Property="Background" Value="#45A049"/>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Background" Value="#CCCCCC"/>
+                    <Setter Property="Cursor" Value="Arrow"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
 
-        <!-- תווית מידע -->
-        <Style x:Key="InfoLabelStyle" TargetType="TextBlock">
-            <Setter Property="FontSize" Value="16"/>
-            <Setter Property="Margin" Value="0,5"/>
-            <Setter Property="Foreground" Value="#34495E"/>
+        <Style x:Key="SecondaryButton" TargetType="Button" BasedOn="{StaticResource PrimaryButton}">
+            <Setter Property="Background" Value="#2196F3"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#0B7DDA"/>
+                </Trigger>
+            </Style.Triggers>
         </Style>
 
-        <!-- ערך מודגש -->
-        <Style x:Key="InfoValueStyle" TargetType="TextBlock">
+        <Style x:Key="DangerButton" TargetType="Button" BasedOn="{StaticResource PrimaryButton}">
+            <Setter Property="Background" Value="#F44336"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#DA190B"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- סגנון כרטיס -->
+        <Style x:Key="CardStyle" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="Padding" Value="20"/>
+            <Setter Property="Margin" Value="10"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect BlurRadius="10" 
+                                    ShadowDepth="2" 
+                                    Opacity="0.3"
+                                    Color="Gray"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- סגנון טקסט כותרת -->
+        <Style x:Key="HeaderTextStyle" TargetType="TextBlock">
             <Setter Property="FontSize" Value="18"/>
             <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="Foreground" Value="#2C3E50"/>
+            <Setter Property="Foreground" Value="#333333"/>
+            <Setter Property="Margin" Value="0,0,0,15"/>
         </Style>
 
-        <!-- Badge סטטוס -->
-        <Style x:Key="StatusBadgeStyle" TargetType="Border">
-            <Setter Property="CornerRadius" Value="15"/>
-            <Setter Property="Padding" Value="15,8"/>
-            <Setter Property="Margin" Value="5"/>
-            <Setter Property="HorizontalAlignment" Value="Center"/>
+        <!-- סגנון טקסט תווית -->
+        <Style x:Key="LabelTextStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="#666666"/>
+            <Setter Property="Margin" Value="0,5,0,5"/>
         </Style>
 
+        <!-- סגנון טקסט ערך -->
+        <Style x:Key="ValueTextStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Foreground" Value="#333333"/>
+            <Setter Property="Margin" Value="10,5,0,5"/>
+        </Style>
     </Window.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <!-- כותרת עליונה -->
-            <RowDefinition Height="Auto"/>
-            <!-- כרטיס פרטי מתנדב -->
-            <RowDefinition Height="Auto"/>
-            <!-- סטטוס קריאה -->
             <RowDefinition Height="*"/>
-            <!-- תפריט ראשי -->
             <RowDefinition Height="Auto"/>
-            <!-- פוטר -->
         </Grid.RowDefinitions>
 
-        <!-- שורה 0: כותרת עליונה -->
+        <!-- כותרת עליונה -->
         <Border Grid.Row="0" 
-                Background="#2C3E50"
+                Background="#2196F3" 
                 Padding="20">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -134,283 +129,232 @@
                 </Grid.ColumnDefinitions>
 
                 <StackPanel Grid.Column="0">
-                    <TextBlock Style="{StaticResource MainTitleStyle}">
-                        <Run Text="👋 שלום, "/>
-                        <Run x:Name="VolunteerNameText" Text="..."/>
-                    </TextBlock>
-                    <TextBlock Text="ברוך הבא למערכת ניהול המתנדבים" 
-                               Style="{StaticResource SubTitleStyle}"/>
+                    <TextBlock Text="מערכת ניהול מתנדבים"
+                             FontSize="24"
+                             FontWeight="Bold"
+                             Foreground="White"/>
+                    <TextBlock Text="{Binding CurrentVolunteer.FullName, FallbackValue='מתנדב'}"
+                             FontSize="16"
+                             Foreground="White"
+                             Opacity="0.9"
+                             Margin="0,5,0,0"/>
                 </StackPanel>
 
-                <!-- כפתור יציאה -->
-                <Button Grid.Column="1" 
-                        Content="🚪 יציאה"
-                        Background="#E74C3C"
-                        Foreground="White"
-                        FontSize="16"
-                        FontWeight="Bold"
-                        Padding="20,10"
-                        Cursor="Hand"
-                        BorderThickness="0"
-                        Click="LogoutButton_Click">
-                    <Button.Template>
-                        <ControlTemplate TargetType="Button">
-                            <Border Background="{TemplateBinding Background}" 
-                                    CornerRadius="8"
-                                    Padding="{TemplateBinding Padding}">
-                                <ContentPresenter HorizontalAlignment="Center" 
-                                                VerticalAlignment="Center"/>
-                            </Border>
-                        </ControlTemplate>
-                    </Button.Template>
-                </Button>
+                <Button Grid.Column="1"
+                        Content="יציאה"
+                        Style="{StaticResource DangerButton}"
+                        Click="LogoutButton_Click"
+                        VerticalAlignment="Center"/>
             </Grid>
         </Border>
 
-        <!-- שורה 1: כרטיס פרטי מתנדב -->
-        <Border Grid.Row="1" Style="{StaticResource InfoCardStyle}">
+        <!-- תוכן ראשי -->
+        <ScrollViewer Grid.Row="1" 
+                      VerticalScrollBarVisibility="Auto"
+                      Margin="20">
             <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
 
-                <!-- אייקון -->
-                <Border Grid.Column="0" 
-                        Background="#3498DB"
-                        Width="80" Height="80"
-                        CornerRadius="40"
-                        Margin="0,0,20,0">
-                    <TextBlock Text="👤" 
-                               FontSize="40"
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Center"/>
+                <!-- פרטים אישיים -->
+                <Border Grid.Row="0" Style="{StaticResource CardStyle}">
+                    <StackPanel>
+                        <TextBlock Text="הפרטים שלי" 
+                                 Style="{StaticResource HeaderTextStyle}"/>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <!-- שם מלא -->
+                            <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal">
+                                <TextBlock Text="שם מלא:" Style="{StaticResource LabelTextStyle}"/>
+                                <TextBlock Text="{Binding CurrentVolunteer.FullName, FallbackValue='לא צוין'}" 
+                                         Style="{StaticResource ValueTextStyle}"/>
+                            </StackPanel>
+
+                            <!-- תעודת זהות -->
+                            <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
+                                <TextBlock Text="תעודת זהות:" Style="{StaticResource LabelTextStyle}"/>
+                                <TextBlock Text="{Binding CurrentVolunteer.id, FallbackValue='לא צוין'}" 
+                                         Style="{StaticResource ValueTextStyle}"/>
+                            </StackPanel>
+
+                            <!-- טלפון -->
+                            <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal">
+                                <TextBlock Text="טלפון:" Style="{StaticResource LabelTextStyle}"/>
+                                <TextBlock Text="{Binding CurrentVolunteer.CallNumber, FallbackValue='לא צוין'}" 
+                                         Style="{StaticResource ValueTextStyle}"/>
+                            </StackPanel>
+
+                            <!-- אימייל -->
+                            <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
+                                <TextBlock Text="אימייל:" Style="{StaticResource LabelTextStyle}"/>
+                                <TextBlock Text="{Binding CurrentVolunteer.EmailAddress, FallbackValue='לא צוין'}" 
+                                         Style="{StaticResource ValueTextStyle}"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <Button Content="עדכן פרטים"
+                                Style="{StaticResource SecondaryButton}"
+                                Click="MyDetailsButton_Click"
+                                HorizontalAlignment="Right"
+                                Margin="0,15,0,0"/>
+                    </StackPanel>
                 </Border>
 
-                <!-- פרטים -->
-                <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                    <TextBlock Style="{StaticResource InfoLabelStyle}">
-                        <Run Text="ת.ז: "/>
-                        <Run x:Name="IdText" Style="{StaticResource InfoValueStyle}"/>
-                    </TextBlock>
-                    <TextBlock Style="{StaticResource InfoLabelStyle}">
-                        <Run Text="טלפון: "/>
-                        <Run x:Name="PhoneText" Style="{StaticResource InfoValueStyle}"/>
-                    </TextBlock>
-                    <TextBlock Style="{StaticResource InfoLabelStyle}">
-                        <Run Text="אימייל: "/>
-                        <Run x:Name="EmailText" Style="{StaticResource InfoValueStyle}"/>
-                    </TextBlock>
-                </StackPanel>
-            </Grid>
-        </Border>
+                <!-- סטטוס קריאה נוכחית -->
+                <Border Grid.Row="1" Style="{StaticResource CardStyle}">
+                    <StackPanel>
+                        <TextBlock Text="הקריאה הנוכחית שלי" 
+                                 Style="{StaticResource HeaderTextStyle}"/>
 
-        <!-- שורה 2: סטטוס קריאה נוכחית -->
-        <Border Grid.Row="2" Style="{StaticResource InfoCardStyle}">
-            <StackPanel>
-                <TextBlock Text="📞 קריאה נוכחית" 
-                           FontSize="22" 
-                           FontWeight="Bold"
-                           Foreground="#2C3E50"
-                           Margin="0,0,0,15"/>
+                        <!-- יש קריאה בטיפול -->
+                        <StackPanel Visibility="{Binding HasCallInProgress, Converter={StaticResource BoolToVisibilityConverter}}">
+                            <Border Background="#E8F5E9" 
+                                    CornerRadius="5" 
+                                    Padding="15"
+                                    Margin="0,0,0,15">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
 
-                <!-- אם יש קריאה -->
-                <Grid x:Name="HasCallPanel" Visibility="Collapsed">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
+                                    <!-- מספר קריאה -->
+                                    <StackPanel Grid.Row="0" Orientation="Horizontal">
+                                        <TextBlock Text="מספר קריאה:" Style="{StaticResource LabelTextStyle}"/>
+                                        <TextBlock Text="{Binding CurrentVolunteer.CallInProgress.IdCall}" 
+                                                 Style="{StaticResource ValueTextStyle}"
+                                                 FontWeight="Bold"
+                                                 Foreground="#4CAF50"/>
+                                    </StackPanel>
 
-                    <StackPanel Grid.Column="0">
-                        <TextBlock Style="{StaticResource InfoLabelStyle}">
-                            <Run Text="מספר קריאה: "/>
-                            <Run x:Name="CallIdText" FontWeight="Bold" Foreground="#3498DB"/>
-                        </TextBlock>
-                        <TextBlock Style="{StaticResource InfoLabelStyle}">
-                            <Run Text="סוג: "/>
-                            <Run x:Name="CallTypeText" FontWeight="Bold"/>
-                        </TextBlock>
-                        <TextBlock Style="{StaticResource InfoLabelStyle}">
-                            <Run Text="כתובת: "/>
-                            <Run x:Name="CallAddressText"/>
-                        </TextBlock>
+                                    <!-- סוג קריאה -->
+                                    <StackPanel Grid.Row="1" Orientation="Horizontal">
+                                        <TextBlock Text="סוג:" Style="{StaticResource LabelTextStyle}"/>
+                                        <TextBlock Text="{Binding CurrentVolunteer.CallInProgress.Type}" 
+                                                 Style="{StaticResource ValueTextStyle}"/>
+                                    </StackPanel>
+
+                                    <!-- כתובת -->
+                                    <StackPanel Grid.Row="2" Orientation="Horizontal">
+                                        <TextBlock Text="כתובת:" Style="{StaticResource LabelTextStyle}"/>
+                                        <TextBlock Text="{Binding CurrentVolunteer.CallInProgress.FullAddress, FallbackValue='לא צוין'}" 
+                                                 Style="{StaticResource ValueTextStyle}"
+                                                 TextWrapping="Wrap"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+
+                            <Button Content="נהל קריאה"
+                                    Style="{StaticResource PrimaryButton}"
+                                    Click="ManageCallButton_Click"
+                                    IsEnabled="{Binding HasCallInProgress}"
+                                    HorizontalAlignment="Center"/>
+                        </StackPanel>
+
+                        <!-- אין קריאה בטיפול -->
+                        <StackPanel Visibility="{Binding HasCallInProgress, Converter={StaticResource InverseBoolToVisibilityConverter}}">
+                            <Border Background="#FFF3E0" 
+                                    CornerRadius="5" 
+                                    Padding="15"
+                                    Margin="0,0,0,15">
+                                <TextBlock Text="אין קריאה בטיפול כרגע"
+                                         FontSize="14"
+                                         Foreground="#F57C00"
+                                         TextAlignment="Center"/>
+                            </Border>
+
+                            <Button Content="בחר קריאה חדשה"
+                                    Style="{StaticResource PrimaryButton}"
+                                    Click="SelectCallButton_Click"
+                                    HorizontalAlignment="Center"/>
+                        </StackPanel>
                     </StackPanel>
-
-                    <!-- Badge סטטוס -->
-                    <Border Grid.Column="1" 
-                            Style="{StaticResource StatusBadgeStyle}"
-                            Background="#27AE60">
-                        <TextBlock Text="✓ בטיפול" 
-                                   FontSize="16"
-                                   FontWeight="Bold"
-                                   Foreground="White"/>
-                    </Border>
-                </Grid>
-
-                <!-- אם אין קריאה -->
-                <StackPanel x:Name="NoCallPanel" 
-                           HorizontalAlignment="Center"
-                           Visibility="Visible">
-                    <TextBlock Text="אין קריאה בטיפול כרגע" 
-                              FontSize="18"
-                              Foreground="Gray"
-                              HorizontalAlignment="Center"
-                              Margin="0,10"/>
-                    <Border Style="{StaticResource StatusBadgeStyle}"
-                            Background="#95A5A6">
-                        <TextBlock Text="⭕ פנוי" 
-                                  FontSize="16"
-                                  FontWeight="Bold"
-                                  Foreground="White"/>
-                    </Border>
-                </StackPanel>
-            </StackPanel>
-        </Border>
-
-        <!-- שורה 3: תפריט ראשי - כפתורים -->
-        <Grid Grid.Row="3" Margin="20">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-
-            <!-- כפתור 1: הפרטים שלי -->
-            <Button Grid.Row="0" Grid.Column="0"
-                    Style="{StaticResource MainButtonStyle}"
-                    Background="#3498DB"
-                    Click="MyDetailsButton_Click">
-                <StackPanel>
-                    <TextBlock Text="👤" FontSize="40" HorizontalAlignment="Center"/>
-                    <TextBlock Text="הפרטים שלי" 
-                               FontSize="22" 
-                               HorizontalAlignment="Center"
-                               Margin="0,10,0,0"/>
-                    <TextBlock Text="צפייה ועדכון פרטים אישיים" 
-                               FontSize="14" 
-                               HorizontalAlignment="Center"
-                               Opacity="0.8"
-                               Margin="0,5,0,0"/>
-                </StackPanel>
-            </Button>
-
-            <!-- כפתור 2: בחירת קריאה -->
-            <Button Grid.Row="0" Grid.Column="1"
-                    x:Name="SelectCallButton"
-                    Style="{StaticResource MainButtonStyle}"
-                    Background="#27AE60"
-                    Click="SelectCallButton_Click">
-                <StackPanel>
-                    <TextBlock Text="📋" FontSize="40" HorizontalAlignment="Center"/>
-                    <TextBlock Text="בחירת קריאה לטיפול" 
-                               FontSize="22" 
-                               HorizontalAlignment="Center"
-                               Margin="0,10,0,0"/>
-                    <TextBlock Text="בחר קריאה חדשה לטיפול" 
-                               FontSize="14" 
-                               HorizontalAlignment="Center"
-                               Opacity="0.8"
-                               Margin="0,5,0,0"/>
-                </StackPanel>
-            </Button>
-
-            <!-- כפתור 3: ניהול קריאה נוכחית -->
-            <Button Grid.Row="1" Grid.Column="0"
-                    x:Name="ManageCallButton"
-                    Style="{StaticResource MainButtonStyle}"
-                    Background="#F39C12"
-                    Click="ManageCallButton_Click"
-                    IsEnabled="False">
-                <StackPanel>
-                    <TextBlock Text="⚙️" FontSize="40" HorizontalAlignment="Center"/>
-                    <TextBlock Text="ניהול קריאה נוכחית" 
-                               FontSize="22" 
-                               HorizontalAlignment="Center"
-                               Margin="0,10,0,0"/>
-                    <TextBlock Text="סיום או ביטול טיפול" 
-                               FontSize="14" 
-                               HorizontalAlignment="Center"
-                               Opacity="0.8"
-                               Margin="0,5,0,0"/>
-                </StackPanel>
-            </Button>
-
-            <!-- כפתור 4: היסטוריית קריאות -->
-            <Button Grid.Row="1" Grid.Column="1"
-                    Style="{StaticResource MainButtonStyle}"
-                    Background="#9B59B6"
-                    Click="HistoryButton_Click">
-                <StackPanel>
-                    <TextBlock Text="📜" FontSize="40" HorizontalAlignment="Center"/>
-                    <TextBlock Text="היסטוריית קריאות" 
-                               FontSize="22" 
-                               HorizontalAlignment="Center"
-                               Margin="0,10,0,0"/>
-                    <TextBlock Text="צפייה בקריאות שטיפלתי בהן" 
-                               FontSize="14" 
-                               HorizontalAlignment="Center"
-                               Opacity="0.8"
-                               Margin="0,5,0,0"/>
-                </StackPanel>
-            </Button>
-        </Grid>
-
-        <!-- שורה 4: פוטר -->
-        <Border Grid.Row="4" 
-                Background="#34495E"
-                Padding="15">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
+                </Border>
 
                 <!-- סטטיסטיקות -->
-                <StackPanel Grid.Column="0" 
-                           Orientation="Horizontal"
-                           HorizontalAlignment="Left">
-                    <Border Background="#27AE60" 
-                            CornerRadius="5" 
-                            Padding="10,5" 
-                            Margin="5">
-                        <TextBlock Foreground="White" FontSize="14">
-                            <Run Text="✓ טופלו: "/>
-                            <Run x:Name="CompletedCountText" FontWeight="Bold" Text="0"/>
-                        </TextBlock>
-                    </Border>
-                    <Border Background="#E74C3C" 
-                            CornerRadius="5" 
-                            Padding="10,5" 
-                            Margin="5">
-                        <TextBlock Foreground="White" FontSize="14">
-                            <Run Text="✗ בוטלו: "/>
-                            <Run x:Name="CancelledCountText" FontWeight="Bold" Text="0"/>
-                        </TextBlock>
-                    </Border>
-                </StackPanel>
+                <Border Grid.Row="2" Style="{StaticResource CardStyle}">
+                    <StackPanel>
+                        <TextBlock Text="הסטטיסטיקות שלי" 
+                                 Style="{StaticResource HeaderTextStyle}"/>
 
-                <!-- מידע מרכזי -->
-                <TextBlock Grid.Column="1" 
-                          Text="מערכת ניהול מתנדבים © 2025"
-                          Foreground="White"
-                          FontSize="14"
-                          HorizontalAlignment="Center"
-                          VerticalAlignment="Center"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
 
-                <!-- זמן אחרון -->
-                <TextBlock Grid.Column="2" 
-                          HorizontalAlignment="Right"
-                          VerticalAlignment="Center"
-                          Foreground="White"
-                          FontSize="14">
-                    <Run Text="עדכון אחרון: "/>
-                    <Run x:Name="LastUpdateText" Text="--:--:--"/>
-                </TextBlock>
+                            <!-- קריאות שהושלמו -->
+                            <Border Grid.Column="0" 
+                                    Background="#E3F2FD" 
+                                    CornerRadius="5" 
+                                    Padding="15"
+                                    Margin="0,0,5,0">
+                                <StackPanel>
+                                    <TextBlock Text="קריאות שהושלמו"
+                                             FontSize="14"
+                                             Foreground="#1976D2"
+                                             TextAlignment="Center"
+                                             Margin="0,0,0,10"/>
+                                    <TextBlock Text="{Binding CurrentVolunteer.SumCallsCompleted, FallbackValue='0'}"
+                                             FontSize="36"
+                                             FontWeight="Bold"
+                                             Foreground="#1976D2"
+                                             TextAlignment="Center"/>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- קריאות שבוטלו -->
+                            <Border Grid.Column="1" 
+                                    Background="#FFEBEE" 
+                                    CornerRadius="5" 
+                                    Padding="15"
+                                    Margin="5,0,0,0">
+                                <StackPanel>
+                                    <TextBlock Text="קריאות שבוטלו"
+                                             FontSize="14"
+                                             Foreground="#C62828"
+                                             TextAlignment="Center"
+                                             Margin="0,0,0,10"/>
+                                    <TextBlock Text="{Binding CurrentVolunteer.SumCallsConcluded, FallbackValue='0'}"
+                                             FontSize="36"
+                                             FontWeight="Bold"
+                                             Foreground="#C62828"
+                                             TextAlignment="Center"/>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+
+                        <Button Content="היסטוריית קריאות"
+                                Style="{StaticResource SecondaryButton}"
+                                Click="HistoryButton_Click"
+                                HorizontalAlignment="Center"
+                                Margin="0,15,0,0"/>
+                    </StackPanel>
+                </Border>
             </Grid>
+        </ScrollViewer>
+
+        <!-- תחתית -->
+        <Border Grid.Row="2" 
+                Background="#E0E0E0" 
+                Padding="10">
+            <TextBlock HorizontalAlignment="Center">
+                <Run Text="עדכון אחרון:"/>
+                <Run Text="{Binding LastUpdateTime, FallbackValue='--:--:--'}"/>
+            </TextBlock>
         </Border>
     </Grid>
 </Window>

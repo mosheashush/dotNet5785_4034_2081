@@ -17,8 +17,67 @@ namespace PL.Volunteer
 
         static readonly BIApi.IBl s_dal = BIApi.Factory.Get();
         private int volunteerId;
-        private BO.Volunteer currentVolunteer;
         private DispatcherTimer refreshTimer;
+
+        #endregion
+
+        #region Dependency Properties
+
+        /// <summary>
+        /// המתנדב הנוכחי
+        /// </summary>
+        public BO.Volunteer CurrentVolunteer
+        {
+            get { return (BO.Volunteer)GetValue(CurrentVolunteerProperty); }
+            set { SetValue(CurrentVolunteerProperty, value); }
+        }
+        public static readonly DependencyProperty CurrentVolunteerProperty =
+            DependencyProperty.Register(nameof(CurrentVolunteer),
+                typeof(BO.Volunteer),
+                typeof(MainWindowVolunteer),
+                new PropertyMetadata(null, OnCurrentVolunteerChanged));
+
+        /// <summary>
+        /// זמן עדכון אחרון
+        /// </summary>
+        public string LastUpdateTime
+        {
+            get { return (string)GetValue(LastUpdateTimeProperty); }
+            set { SetValue(LastUpdateTimeProperty, value); }
+        }
+        public static readonly DependencyProperty LastUpdateTimeProperty =
+            DependencyProperty.Register(nameof(LastUpdateTime),
+                typeof(string),
+                typeof(MainWindowVolunteer),
+                new PropertyMetadata(string.Empty));
+
+        /// <summary>
+        /// האם יש קריאה בטיפול
+        /// </summary>
+        public bool HasCallInProgress
+        {
+            get { return (bool)GetValue(HasCallInProgressProperty); }
+            set { SetValue(HasCallInProgressProperty, value); }
+        }
+        public static readonly DependencyProperty HasCallInProgressProperty =
+            DependencyProperty.Register(nameof(HasCallInProgress),
+                typeof(bool),
+                typeof(MainWindowVolunteer),
+                new PropertyMetadata(false));
+
+        /// <summary>
+        /// Callback כאשר CurrentVolunteer משתנה
+        /// </summary>
+        private static void OnCurrentVolunteerChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var window = d as MainWindowVolunteer;
+            if (window != null && e.NewValue != null)
+            {
+                var volunteer = e.NewValue as BO.Volunteer;
+                window.HasCallInProgress = volunteer?.CallInProgress != null;
+                window.Title = $"מערכת ניהול מתנדבים - {volunteer?.FullName ?? "מתנדב"}";
+            }
+        }
 
         #endregion
 
@@ -31,6 +90,7 @@ namespace PL.Volunteer
         public MainWindowVolunteer(int volunteerId)
         {
             InitializeComponent();
+            DataContext = this;
 
             this.volunteerId = volunteerId;
 
@@ -53,10 +113,10 @@ namespace PL.Volunteer
             try
             {
                 // טעינה מהשכבה הלוגית
-                currentVolunteer = s_dal.Volunteer.Read(volunteerId);
+                CurrentVolunteer = s_dal.Volunteer.Read(volunteerId);
 
-                // עדכון התצוגה
-                UpdateUI();
+                // עדכון זמן
+                LastUpdateTime = DateTime.Now.ToString("HH:mm:ss");
             }
             catch (Exception ex)
             {
@@ -68,74 +128,6 @@ namespace PL.Volunteer
 
                 // סגירת המסך במקרה של שגיאה קריטית
                 this.Close();
-            }
-        }
-
-        /// <summary>
-        /// עדכון כל אלמנטי ה-UI
-        /// </summary>
-        private void UpdateUI()
-        {
-            if (currentVolunteer == null)
-                return;
-
-            // עדכון פרטים אישיים
-            VolunteerNameText.Text = currentVolunteer.FullName ?? "מתנדב";
-            IdText.Text = currentVolunteer.id.ToString();
-            PhoneText.Text = currentVolunteer.CallNumber ?? "לא צוין";
-            EmailText.Text = currentVolunteer.EmailAddress ?? "לא צוין";
-
-            // עדכון סטטוס קריאה
-            UpdateCallStatus();
-
-            // עדכון סטטיסטיקות
-            CompletedCountText.Text = currentVolunteer.SumCallsCompleted.ToString();
-            CancelledCountText.Text = currentVolunteer.SumCallsConcluded.ToString();
-
-            // עדכון זמן
-            LastUpdateText.Text = DateTime.Now.ToString("HH:mm:ss");
-
-            // עדכון כותרת החלון
-            this.Title = $"מערכת ניהול מתנדבים - {currentVolunteer.FullName}";
-        }
-
-        /// <summary>
-        /// עדכון סטטוס הקריאה הנוכחית
-        /// </summary>
-        private void UpdateCallStatus()
-        {
-            if (currentVolunteer.CallInProgress != null)
-            {
-                // יש קריאה בטיפול
-                HasCallPanel.Visibility = Visibility.Visible;
-                NoCallPanel.Visibility = Visibility.Collapsed;
-
-                // עדכון פרטי הקריאה
-                CallIdText.Text = currentVolunteer.CallInProgress.IdCall.ToString();
-                CallTypeText.Text = currentVolunteer.CallInProgress.Type.ToString();
-                CallAddressText.Text = currentVolunteer.CallInProgress.FullAddress ?? "לא צוין";
-
-                // הפעלת כפתור ניהול קריאה
-                ManageCallButton.IsEnabled = true;
-                ManageCallButton.Opacity = 1.0;
-
-                // כפתור בחירת קריאה - מושבת
-                SelectCallButton.IsEnabled = false;
-                SelectCallButton.Opacity = 0.5;
-            }
-            else
-            {
-                // אין קריאה בטיפול
-                HasCallPanel.Visibility = Visibility.Collapsed;
-                NoCallPanel.Visibility = Visibility.Visible;
-
-                // השבתת כפתור ניהול קריאה
-                ManageCallButton.IsEnabled = false;
-                ManageCallButton.Opacity = 0.5;
-
-                // כפתור בחירת קריאה - מופעל
-                SelectCallButton.IsEnabled = true;
-                SelectCallButton.Opacity = 1.0;
             }
         }
 
@@ -199,7 +191,7 @@ namespace PL.Volunteer
         {
             try
             {
-                if (currentVolunteer.CallInProgress != null)
+                if (CurrentVolunteer?.CallInProgress != null)
                 {
                     MessageBox.Show(
                         "יש לך כבר קריאה בטיפול.\nסיים או בטל אותה לפני בחירת קריאה חדשה.",
@@ -209,13 +201,11 @@ namespace PL.Volunteer
                     return;
                 }
 
-                var selectCallWindow = new SelectCallWindow(volunteerId);
-
-                if (selectCallWindow.ShowDialog() == true)
-                {
-                    // קריאה נבחרה - רענון
-                    LoadVolunteerData();
-                }
+                //var selectCallWindow = new SelectCallWindow(volunteerId);
+                //if (selectCallWindow.ShowDialog() == true)
+                //{
+                //    LoadVolunteerData();
+                //}
             }
             catch (Exception ex)
             {
@@ -234,7 +224,7 @@ namespace PL.Volunteer
         {
             try
             {
-                if (currentVolunteer.CallInProgress == null)
+                if (CurrentVolunteer?.CallInProgress == null)
                 {
                     MessageBox.Show(
                         "אין קריאה בטיפול כרגע.",
@@ -244,10 +234,8 @@ namespace PL.Volunteer
                     return;
                 }
 
-                var manageWindow = new ManageCurrentCallWindow(volunteerId);
-                manageWindow.ShowDialog();
-
-                // רענון לאחר סגירת החלון
+                //var manageWindow = new ManageCurrentCallWindow(volunteerId);
+                //manageWindow.ShowDialog();
                 LoadVolunteerData();
             }
             catch (Exception ex)
@@ -267,8 +255,8 @@ namespace PL.Volunteer
         {
             try
             {
-                var historyWindow = new VolunteerCallHistoryWindow(volunteerId);
-                historyWindow.ShowDialog();
+                //var historyWindow = new VolunteerCallHistoryWindow(volunteerId);
+                //historyWindow.ShowDialog();
             }
             catch (Exception ex)
             {
