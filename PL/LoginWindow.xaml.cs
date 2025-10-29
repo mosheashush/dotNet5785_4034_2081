@@ -217,32 +217,30 @@ namespace PL
         {
             try
             {
-                // אם זה מנהל - בדוק שאין כבר מנהל מחובר
                 if (userRole == BO.User.admin)
                 {
-                    if (App.IsAdminLoggedIn)
+                    var choiceWindow = new AdminChoiceModernWindow();
+                    if (choiceWindow.ShowDialog() == true && choiceWindow.IsAdminChosen != null)
                     {
-                        ShowStatusMessage("מנהל כבר מחובר למערכת. רק מנהל אחד יכול להיות מחובר בו זמנית.", true);
-                        return;
+                        if (choiceWindow.IsAdminChosen == true)
+                        {
+                            // חלון מנהל
+                            App.IsAdminLoggedIn = true;
+                            var mainWindow = new MainWindow(userId);
+                            mainWindow.Title = "מסך ניהול ראשי - מנהל";
+                            mainWindow.Closed += (s, e) => App.IsAdminLoggedIn = false;
+                            mainWindow.Show();
+                        }
+                        else
+                        {
+                            // חלון מתנדב
+                            var mainWindowVolunteer = new MainWindowVolunteer(userId);
+                            mainWindowVolunteer.Title = "מסך ראשי - מתנדב";
+                            mainWindowVolunteer.Show();
+                        }
                     }
-                    App.IsAdminLoggedIn = true;
                 }
 
-                // פתיחת המסך המתאים לפי סוג המשתמש
-                if (userRole == BO.User.admin)
-                {
-                    // פתיחת מסך מנהל
-                    var mainWindow = new MainWindow(userId);
-                    mainWindow.Title = "מסך ניהול ראשי - מנהל";
-
-                    // כשסוגרים את MainWindow - שחרר את המנהל
-                    mainWindow.Closed += (s, e) =>
-                    {
-                        App.IsAdminLoggedIn = false;
-                    };
-
-                    mainWindow.Show();
-                }
                 else
                 {
                     // פתיחת מסך מתנדב

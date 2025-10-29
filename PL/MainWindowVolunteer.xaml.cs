@@ -1,9 +1,11 @@
 ﻿using BIApi;
 using BlApi;
 using BO;
+using PL.Call;
 using System;
 using System.Windows;
 using System.Windows.Threading;
+
 
 namespace PL.Volunteer
 {
@@ -15,7 +17,7 @@ namespace PL.Volunteer
     {
         #region Fields
 
-        static readonly BIApi.IBl s_dal = BIApi.Factory.Get();
+        static readonly BIApi.IBl s_bl = BIApi.Factory.Get();
         private int volunteerId;
         private DispatcherTimer refreshTimer;
 
@@ -113,7 +115,7 @@ namespace PL.Volunteer
             try
             {
                 // טעינה מהשכבה הלוגית
-                CurrentVolunteer = s_dal.Volunteer.Read(volunteerId);
+                CurrentVolunteer = s_bl.Volunteer.Read(volunteerId);
 
                 // עדכון זמן
                 LastUpdateTime = DateTime.Now.ToString("HH:mm:ss");
@@ -201,11 +203,17 @@ namespace PL.Volunteer
                     return;
                 }
 
-                //var selectCallWindow = new SelectCallWindow(volunteerId);
-                //if (selectCallWindow.ShowDialog() == true)
-                //{
-                //    LoadVolunteerData();
-                //}
+                var selectCallWindow = new OpenCallWindow(volunteerId);
+
+                // הירשם ל-Event
+                selectCallWindow.CallSelected += (s, args) =>
+                {
+                    // רענן את הנתונים כשנבחרה קריאה
+                    LoadVolunteerData();
+                };
+
+                // פשוט Show (לא ShowDialog)
+                selectCallWindow.Show();
             }
             catch (Exception ex)
             {
@@ -234,14 +242,150 @@ namespace PL.Volunteer
                     return;
                 }
 
-                //var manageWindow = new ManageCurrentCallWindow(volunteerId);
-                //manageWindow.ShowDialog();
-                LoadVolunteerData();
+                var manageWindow = new CallWindow(CurrentVolunteer.CallInProgress.IdCall);
+
+                // הירשם ל-Event
+                manageWindow.PropertyChanged += (s, args) =>
+                {
+                    // רענן את הנתונים כשנבחרה קריאה
+                    LoadVolunteerData();
+                };
+
+                // פשוט Show (לא ShowDialog)
+                manageWindow.Show();
             }
             catch (Exception ex)
             {
                 MessageBox.Show(
                     $"שגיאה בפתיחת מסך ניהול קריאה:\n{ex.Message}",
+                    "שגיאה",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
+        }
+
+        /// <summary>
+        /// כפתור ביטול/מחיקת קריאה נוכחית
+        /// </summary>
+        private void DeleteCallButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                // בדיקה שיש קריאה בטיפול
+                if (CurrentVolunteer?.CallInProgress == null)
+                {
+                    MessageBox.Show(
+                        "אין קריאה בטיפול כרגע.",
+                        "אין קריאה",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information);
+                    return;
+                }
+
+                // אישור מהמשתמש
+                var result = MessageBox.Show(
+                    $"האם אתה בטוח שברצונך לבטל את הקריאה מספר {CurrentVolunteer.CallInProgress.IdCall}?\n\n" +
+                    $"סוג: {CurrentVolunteer.CallInProgress.Type}\n" +
+                    $"כתובת: {CurrentVolunteer.CallInProgress.FullAddress}\n\n" +
+                    "הקריאה תחזור להיות זמינה למתנדבים אחרים.",
+                    "אישור ביטול קריאה",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    try
+                    {
+                        // ביטול הקריאה דרך ה-BL
+                        s_bl.Call.CancelTreatment(volunteerId, CurrentVolunteer.CallInProgress.IdAssignment);
+
+                        MessageBox.Show(
+                            "הקריאה בוטלה בהצלחה!",
+                            "הצלחה",
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Information);
+
+                        // רענון הנתונים
+                        LoadVolunteerData();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(
+                            $"שגיאה בביטול הקריאה:\n{ex.Message}",
+                            "שגיאה",
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Error);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $"שגיאה כללית:\n{ex.Message}",
+                    "שגיאה",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
+        }
+
+        /// <summary>
+        /// כפתור סיום קריאה - סימון הקריאה כהושלמה
+        /// </summary>
+        private void CompleteCallButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                // בדיקה שיש קריאה בטיפול
+                if (CurrentVolunteer?.CallInProgress == null)
+                {
+                    MessageBox.Show(
+                        "אין קריאה בטיפול כרגע.",
+                        "אין קריאה",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information);
+                    return;
+                }
+
+                // אישור מהמשתמש
+                var result = MessageBox.Show(
+                    $"האם אתה בטוח שברצונך לסיים את הקריאה מספר {CurrentVolunteer.CallInProgress.IdCall}?\n\n" +
+                    $"סוג: {CurrentVolunteer.CallInProgress.Type}\n" +
+                    $"כתובת: {CurrentVolunteer.CallInProgress.FullAddress}\n\n" +
+                    "הקריאה תסומן כהושלמה בהצלחה.",
+                    "אישור סיום קריאה",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Question);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    try
+                    {
+                        // סימון הקריאה כהושלמה דרך ה-BL
+                        s_bl.Call.FinishTreatment(volunteerId, CurrentVolunteer.CallInProgress.IdAssignment);
+
+                        MessageBox.Show(
+                            $"כל הכבוד! הקריאה {CurrentVolunteer.CallInProgress.IdCall} הושלמה בהצלחה!",
+                            "הצלחה",
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Information);
+
+                        // רענון הנתונים
+                        LoadVolunteerData();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(
+                            $"שגיאה בסיום הקריאה:\n{ex.Message}",
+                            "שגיאה",
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Error);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $"שגיאה כללית:\n{ex.Message}",
                     "שגיאה",
                     MessageBoxButton.OK,
                     MessageBoxImage.Error);
@@ -267,54 +411,6 @@ namespace PL.Volunteer
                     MessageBoxImage.Error);
             }
         }
-
-        /// <summary>
-        /// כפתור יציאה
-        /// </summary>
-        private void LogoutButton_Click(object sender, RoutedEventArgs e)
-        {
-            var result = MessageBox.Show(
-                "האם אתה בטוח שברצונך לצאת מהמערכת?",
-                "יציאה מהמערכת",
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Question);
-
-            if (result == MessageBoxResult.Yes)
-            {
-                // עצירת Timer
-                refreshTimer?.Stop();
-
-                // חזרה למסך כניסה
-                var loginWindow = new LoginWindow();
-                loginWindow.Show();
-
-                this.Close();
-            }
-        }
-
-        /// <summary>
-        /// סגירת החלון
-        /// </summary>
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            // עצירת Timer
-            refreshTimer?.Stop();
-
-            // אישור סגירה
-            var result = MessageBox.Show(
-                "האם אתה בטוח שברצונך לסגור את המערכת?",
-                "סגירת המערכת",
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Question);
-
-            if (result == MessageBoxResult.No)
-            {
-                e.Cancel = true;
-                // הפעלה מחדש של Timer אם המשתמש ביטל
-                refreshTimer?.Start();
-            }
-        }
-
         #endregion
     }
 }

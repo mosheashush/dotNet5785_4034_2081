@@ -22,7 +22,7 @@ namespace PL.Call
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        private void OnPropertyChanged(string propertyName)
+        public void OnPropertyChanged(string propertyName)
             => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
         private BO.CallState? _typeCallState;

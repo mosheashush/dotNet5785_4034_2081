@@ -203,7 +203,7 @@ internal class CallImplementation : ICall
         var updatedAssignment = assignment with
         {
             FinishType = DO.CompletionType.completed,
-            CompletionTime = DateTime.Now
+            CompletionTime = AdminManager.Now
         };
 
         var volunteer = s_dal.Volunteer.Read(assignment.VolunteerId)
@@ -241,7 +241,7 @@ internal class CallImplementation : ICall
             updatedAssignment = assignment with
             {
                 FinishType = DO.CompletionType.canceledAdmin,
-                CompletionTime = DateTime.Now
+                CompletionTime = AdminManager.Now
             };
         }
         else
@@ -249,7 +249,7 @@ internal class CallImplementation : ICall
             updatedAssignment = assignment with
             {
                 FinishType = DO.CompletionType.canceledVolunteer,
-                CompletionTime = DateTime.Now
+                CompletionTime = AdminManager.Now
             };
         }
 
@@ -286,7 +286,7 @@ internal class CallImplementation : ICall
         {
             VolunteerId = volunteerId,
             CallId = callId,
-            StarCall = DateTime.Now,
+            StarCall = AdminManager.Now,
         };
 
         // Create the assignment in the data layer

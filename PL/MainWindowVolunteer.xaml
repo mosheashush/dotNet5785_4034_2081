@@ -10,7 +10,6 @@
         WindowStartupLocation="CenterScreen"
         ResizeMode="CanResize"
         FlowDirection="RightToLeft"
-        Closing="Window_Closing"
         Background="#F5F5F5">
 
     <Window.Resources>
@@ -139,12 +138,6 @@
                              Opacity="0.9"
                              Margin="0,5,0,0"/>
                 </StackPanel>
-
-                <Button Grid.Column="1"
-                        Content="יציאה"
-                        Style="{StaticResource DangerButton}"
-                        Click="LogoutButton_Click"
-                        VerticalAlignment="Center"/>
             </Grid>
         </Border>
 
@@ -230,40 +223,52 @@
                                         <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="Auto"/>
                                     </Grid.RowDefinitions>
-
                                     <!-- מספר קריאה -->
                                     <StackPanel Grid.Row="0" Orientation="Horizontal">
                                         <TextBlock Text="מספר קריאה:" Style="{StaticResource LabelTextStyle}"/>
                                         <TextBlock Text="{Binding CurrentVolunteer.CallInProgress.IdCall}" 
-                                                 Style="{StaticResource ValueTextStyle}"
-                                                 FontWeight="Bold"
-                                                 Foreground="#4CAF50"/>
+                                                     Style="{StaticResource ValueTextStyle}"
+                                                     FontWeight="Bold"
+                                                     Foreground="#4CAF50"/>
                                     </StackPanel>
-
                                     <!-- סוג קריאה -->
                                     <StackPanel Grid.Row="1" Orientation="Horizontal">
                                         <TextBlock Text="סוג:" Style="{StaticResource LabelTextStyle}"/>
-                                        <TextBlock Text="{Binding CurrentVolunteer.CallInProgress.Type}" 
-                                                 Style="{StaticResource ValueTextStyle}"/>
+                                        <TextBlock Text="{Binding CurrentVolunteer.CallInProgress.Type}" Style="{StaticResource ValueTextStyle}"/>
                                     </StackPanel>
-
                                     <!-- כתובת -->
                                     <StackPanel Grid.Row="2" Orientation="Horizontal">
                                         <TextBlock Text="כתובת:" Style="{StaticResource LabelTextStyle}"/>
                                         <TextBlock Text="{Binding CurrentVolunteer.CallInProgress.FullAddress, FallbackValue='לא צוין'}" 
-                                                 Style="{StaticResource ValueTextStyle}"
-                                                 TextWrapping="Wrap"/>
+                                                     Style="{StaticResource ValueTextStyle}"
+                                                     TextWrapping="Wrap"/>
                                     </StackPanel>
                                 </Grid>
                             </Border>
 
-                            <Button Content="נהל קריאה"
-                                    Style="{StaticResource PrimaryButton}"
-                                    Click="ManageCallButton_Click"
-                                    IsEnabled="{Binding HasCallInProgress}"
-                                    HorizontalAlignment="Center"/>
-                        </StackPanel>
+                            <!-- שני כפתורים באותה שורה -->
+                            <StackPanel Orientation="Horizontal" 
+                                       HorizontalAlignment="Center">
+                                <Button Content="נהל קריאה"
+                                        Style="{StaticResource PrimaryButton}"
+                                        Click="ManageCallButton_Click"
+                                        IsEnabled="{Binding HasCallInProgress}"
+                                        Margin="0,0,10,0"/>
 
+                                <Button Content="הושלם"
+                                        Style="{StaticResource SecondaryButton}"
+                                        Click="CompleteCallButton_Click"
+                                        IsEnabled="{Binding HasCallInProgress}"
+                                        Margin="4,0,4,0"/>
+
+                                <Button Content="ביטול"
+                                        Style="{StaticResource DeleteButton}"
+                                        Click="DeleteCallButton_Click"
+                                        IsEnabled="{Binding HasCallInProgress}"
+                                        Margin="10,0,0,0"/>
+                            </StackPanel>
+                        </StackPanel>
+                        
                         <!-- אין קריאה בטיפול -->
                         <StackPanel Visibility="{Binding HasCallInProgress, Converter={StaticResource InverseBoolToVisibilityConverter}}">
                             <Border Background="#FFF3E0" 
@@ -275,7 +280,6 @@
                                          Foreground="#F57C00"
                                          TextAlignment="Center"/>
                             </Border>
-
                             <Button Content="בחר קריאה חדשה"
                                     Style="{StaticResource PrimaryButton}"
                                     Click="SelectCallButton_Click"
